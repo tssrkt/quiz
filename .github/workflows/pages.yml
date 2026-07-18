@@ -25,6 +25,28 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Persist missing quiz IDs
+        id: normalize
+        run: |
+          python tools/normalize_quiz_ids.py
+          if git diff --quiet -- data/quizzes; then
+            echo "changed=false" >> "${GITHUB_OUTPUT}"
+            echo "source_sha=${GITHUB_SHA}" >> "${GITHUB_OUTPUT}"
+          else
+            git fetch origin main
+            if [ "$(git rev-parse origin/main)" != "${GITHUB_SHA}" ]; then
+              echo "A newer main commit exists; refusing to normalize a stale checkout."
+              exit 1
+            fi
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -- data/quizzes
+            git commit -m "Add missing quiz IDs"
+            git push origin HEAD:main
+            echo "changed=true" >> "${GITHUB_OUTPUT}"
+            echo "source_sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+          fi
+
       - name: Validate content
         run: python tools/build_site.py --check
 
@@ -57,6 +79,8 @@ jobs:
 
       - name: Prepare deployment repository
         working-directory: _site
+        env:
+          SOURCE_SHA: ${{ steps.normalize.outputs.source_sha }}
         run: |
           touch .nojekyll
           git init
@@ -64,18 +88,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add --all
-          git commit -m "Deploy ${GITHUB_SHA}"
+          git commit -m "Deploy ${SOURCE_SHA}"
 
       - name: Check that this is still the latest main commit
         id: freshness
         run: |
           git fetch origin main
-          if [ "$(git rev-parse origin/main)" = "${GITHUB_SHA}" ]; then
+          if [ "$(git rev-parse origin/main)" = "${SOURCE_SHA}" ]; then
             echo "current=true" >> "${GITHUB_OUTPUT}"
           else
             echo "current=false" >> "${GITHUB_OUTPUT}"
             echo "A newer main commit exists; skipping this stale deployment."
           fi
+        env:
+          SOURCE_SHA: ${{ steps.normalize.outputs.source_sha }}
 
       - name: Replace gh-pages with the new build
         if: steps.freshness.outputs.current == 'true'

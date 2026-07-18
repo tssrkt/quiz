@@ -1,3 +1,7 @@
+settings:
+  content:
+    merge: true
+
 media:
   - name: covers
     label: Обложки викторин
@@ -134,6 +138,10 @@ content:
             collapsed: true
             summary: "{question}"
         fields:
+          - name: id
+            type: string
+            hidden: true
+            required: false
           - name: question
             label: Текст вопроса
             type: text
@@ -161,6 +169,10 @@ content:
                 collapsed: false
                 summary: "{text}"
             fields:
+              - name: id
+                type: string
+                hidden: true
+                required: false
               - name: text
                 label: Текст варианта
                 type: string

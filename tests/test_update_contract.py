@@ -8,21 +8,26 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class UpdateContractTests(unittest.TestCase):
-    def test_current_quiz_has_five_questions_without_manual_ids(self):
+    def test_current_quiz_has_five_persisted_stable_ids(self):
         quiz = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
         self.assertEqual(len(quiz["questions"]), 5)
-        self.assertTrue(all("id" not in question for question in quiz["questions"]))
-        self.assertTrue(all("id" not in answer for question in quiz["questions"] for answer in question["answers"]))
+        self.assertEqual([question["id"] for question in quiz["questions"]], [f"question-{index:02d}" for index in range(1, 6)])
+        self.assertTrue(all([answer["id"] for answer in question["answers"]] == [f"answer-{index:02d}" for index in range(1, 5)] for question in quiz["questions"]))
         self.assertEqual(
             [question["image"] for question in quiz["questions"]],
             [f"img/quiz/horse-colors/{index:02d}.webp" for index in range(1, 6)],
         )
 
-    def test_cms_schema_has_no_manual_id_fields_or_id_summaries(self):
+    def test_cms_schema_preserves_hidden_ids_and_merge(self):
         schema = (ROOT / ".pages.yml").read_text(encoding="utf-8")
         self.assertNotIn("Уникальный идентификатор", schema)
         self.assertNotIn("{id}", schema)
-        self.assertNotRegex(schema, r"(?m)^\s+- name: id\s*$")
+        self.assertEqual(len(re.findall(r"(?m)^\s+- name: id\s*$", schema)), 2)
+        hidden_id = r"- name: id\s+type: string\s+hidden: true\s+required: false"
+        self.assertEqual(len(re.findall(hidden_id, schema)), 2)
+        self.assertRegex(schema, r"settings:\s+content:\s+merge: true")
+        self.assertIn('summary: "{question}"', schema)
+        self.assertIn('summary: "{text}"', schema)
 
     def test_json_and_question_images_are_cache_busted(self):
         catalog_js = (ROOT / "js" / "quizzes.js").read_text(encoding="utf-8")

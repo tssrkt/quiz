@@ -17,6 +17,8 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "_site"
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+QUESTION_ID_RE = re.compile(r"^question-\d{2,}$")
+ANSWER_ID_RE = re.compile(r"^answer-\d{2,}$")
 HTML_FILES = ("index.html", "quizzes.html", "quiz.html", "contacts.html")
 COPY_DIRS = ("css", "js")
 
@@ -152,13 +154,21 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
         if not isinstance(questions, list) or not questions:
             errors.append(f"{label}.questions: требуется непустой массив")
             questions = []
+        question_ids: dict[str, int] = {}
         for q_index, question in enumerate(questions, 1):
             qlabel = f"{label}.questions[{q_index}]"
             if not isinstance(question, dict):
                 errors.append(f"{qlabel}: требуется объект")
                 continue
-            if "id" in question:
-                errors.append(f"{qlabel}.id: ручной идентификатор не допускается")
+            question_id = require_string(question, "id", qlabel, errors)
+            if question_id and not QUESTION_ID_RE.fullmatch(question_id):
+                errors.append(f"{qlabel}.id: требуется формат question-N с минимум двумя цифрами")
+            if question_id in question_ids:
+                errors.append(
+                    f"{label}: конфликтующий ID вопроса «{question_id}» в questions[{question_ids[question_id]}] и questions[{q_index}]"
+                )
+            elif question_id:
+                question_ids[question_id] = q_index
             require_string(question, "question", qlabel, errors)
             require_string(question, "explanation", qlabel, errors)
             image = question.get("image", "")
@@ -174,14 +184,22 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
             if not isinstance(answers, list) or not 2 <= len(answers) <= 6:
                 errors.append(f"{qlabel}.answers: требуется от 2 до 6 вариантов")
                 answers = []
+            answer_ids: dict[str, int] = {}
             correct_count = 0
             for a_index, answer in enumerate(answers, 1):
                 alabel = f"{qlabel}.answers[{a_index}]"
                 if not isinstance(answer, dict):
                     errors.append(f"{alabel}: требуется объект")
                     continue
-                if "id" in answer:
-                    errors.append(f"{alabel}.id: ручной идентификатор не допускается")
+                answer_id = require_string(answer, "id", alabel, errors)
+                if answer_id and not ANSWER_ID_RE.fullmatch(answer_id):
+                    errors.append(f"{alabel}.id: требуется формат answer-N с минимум двумя цифрами")
+                if answer_id in answer_ids:
+                    errors.append(
+                        f"{label}: конфликтующий ID ответа «{answer_id}» в questions[{q_index}].answers[{answer_ids[answer_id]}] и questions[{q_index}].answers[{a_index}]"
+                    )
+                elif answer_id:
+                    answer_ids[answer_id] = a_index
                 require_string(answer, "text", alabel, errors)
                 if not isinstance(answer.get("correct"), bool):
                     errors.append(f"{alabel}.correct: требуется true или false")
@@ -199,13 +217,10 @@ def normalize_quiz(source: dict) -> dict:
     quiz = copy.deepcopy(source)
     slug = quiz["slug"]
     for q_index, question in enumerate(quiz["questions"], 1):
-        question["id"] = f"{slug}-question-{q_index:03d}"
         image = question.get("image", "")
         if image:
             question["_source_image"] = image
             question["image"] = f"img/quiz/{slug}/{q_index:02d}{Path(image).suffix.lower()}"
-        for a_index, answer in enumerate(question["answers"], 1):
-            answer["id"] = f"answer-{a_index:02d}"
     version_quiz = copy.deepcopy(quiz)
     image_hashes = []
     for question in version_quiz["questions"]:

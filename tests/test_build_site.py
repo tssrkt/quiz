@@ -33,7 +33,7 @@ class BuildSiteTests(unittest.TestCase):
         (self.data / "quizzes" / name).write_text(json.dumps(quiz, ensure_ascii=False, indent=2), encoding="utf-8")
 
     def assert_quiz_error(self, mutate, expected):
-        quiz = self.horse()
+        quiz = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
         mutate(quiz)
         self.write_quiz(quiz)
         tags, known = build_site.load_tags(self.data)
@@ -64,15 +64,17 @@ class BuildSiteTests(unittest.TestCase):
     def test_two_correct_answers(self):
         self.assert_quiz_error(lambda quiz: quiz["questions"][0]["answers"][0].update(correct=True), "ровно один вариант")
 
-    def test_manual_question_and_answer_ids_are_rejected(self):
-        self.assert_quiz_error(lambda quiz: quiz["questions"][0].update(id="manual"), "ручной идентификатор")
-        self.assert_quiz_error(lambda quiz: quiz["questions"][0]["answers"][0].update(id="manual"), "ручной идентификатор")
+    def test_invalid_and_duplicate_ids_are_rejected(self):
+        self.assert_quiz_error(lambda quiz: quiz["questions"][0].update(id="manual"), "формат question-N")
+        self.assert_quiz_error(lambda quiz: quiz["questions"][0]["answers"][0].update(id="manual"), "формат answer-N")
+        self.assert_quiz_error(lambda quiz: quiz["questions"][1].update(id="question-01"), "конфликтующий ID вопроса «question-01»")
+        self.assert_quiz_error(lambda quiz: quiz["questions"][0]["answers"][1].update(id="answer-01"), "конфликтующий ID ответа «answer-01»")
 
     def test_generates_stable_ids_and_content_version(self):
         _, quizzes = self.load()
         horse = quizzes[0]
-        self.assertEqual(horse["questions"][0]["id"], "horse-colors-question-001")
-        self.assertEqual(horse["questions"][4]["id"], "horse-colors-question-005")
+        self.assertEqual(horse["questions"][0]["id"], "question-01")
+        self.assertEqual(horse["questions"][4]["id"], "question-05")
         self.assertEqual([answer["id"] for answer in horse["questions"][0]["answers"]], ["answer-01", "answer-02", "answer-03", "answer-04"])
         self.assertRegex(horse["content_version"], r"^[0-9a-f]{64}$")
 
@@ -90,6 +92,7 @@ class BuildSiteTests(unittest.TestCase):
 
         changed = self.horse()
         changed["questions"].append(copy.deepcopy(changed["questions"][-1]))
+        changed["questions"][-1]["id"] = "question-06"
         changed["questions"][-1]["question"] = "Шестой тестовый вопрос?"
         self.write_quiz(changed)
         _, changed_quizzes = self.load()
@@ -113,6 +116,15 @@ class BuildSiteTests(unittest.TestCase):
         self.assertEqual(len(built["questions"]), 5)
         self.assertEqual(catalog["quizzes"][0]["question_count"], 5)
         self.assertEqual(catalog["quizzes"][0]["content_version"], built["content_version"])
+        source_quiz = json.loads(source.read_text(encoding="utf-8"))
+        self.assertEqual(
+            [question["id"] for question in built["questions"]],
+            [question["id"] for question in source_quiz["questions"]],
+        )
+        self.assertEqual(
+            [[answer["id"] for answer in question["answers"]] for question in built["questions"]],
+            [[answer["id"] for answer in question["answers"]] for question in source_quiz["questions"]],
+        )
         self.assertEqual(sorted(path.name for path in (output / "img" / "quiz" / "horse-colors").iterdir()), ["01.webp", "02.webp", "03.webp", "04.webp", "05.webp"])
 
     def test_unknown_tag(self):
