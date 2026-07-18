@@ -115,6 +115,7 @@ class BuildSiteTests(unittest.TestCase):
         built = json.loads((output / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
         self.assertEqual(len(built["questions"]), 5)
         self.assertEqual(catalog["quizzes"][0]["question_count"], 5)
+        self.assertEqual(catalog["quizzes"][0]["difficulty"], "low")
         self.assertEqual(catalog["quizzes"][0]["content_version"], built["content_version"])
         source_quiz = json.loads(source.read_text(encoding="utf-8"))
         self.assertEqual(
@@ -129,6 +130,10 @@ class BuildSiteTests(unittest.TestCase):
 
     def test_unknown_tag(self):
         self.assert_quiz_error(lambda quiz: quiz.update(tags=["missing-tag"]), "неизвестный тег")
+
+    def test_difficulty_is_required_and_restricted(self):
+        self.assert_quiz_error(lambda quiz: quiz.pop("difficulty"), "difficulty: требуется одно из значений")
+        self.assert_quiz_error(lambda quiz: quiz.update(difficulty="expert"), "difficulty: требуется одно из значений")
 
     def test_missing_image(self):
         self.assert_quiz_error(lambda quiz: quiz["questions"][0].update(image="img/quiz/missing.webp"), "файл не найден")

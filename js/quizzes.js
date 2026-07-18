@@ -12,6 +12,7 @@
 
   const PAGE_SIZE = 25;
   const SORTS = new Set(['new', 'old', 'az']);
+  const DIFFICULTY_LABELS = Object.freeze({ low: 'низкая', medium: 'средняя', high: 'высокая' });
   const ruCollator = new Intl.Collator('ru', { sensitivity: 'base', numeric: true });
 
   function validateQuiz(quiz, source = 'неизвестный файл') {
@@ -19,6 +20,7 @@
     ['slug', 'title', 'short_description', 'intro'].forEach((field) => {
       if (typeof quiz?.[field] !== 'string' || !quiz[field].trim()) errors.push(`поле «${field}» обязательно`);
     });
+    if (!Object.hasOwn(DIFFICULTY_LABELS, quiz?.difficulty)) errors.push('поле «difficulty» должно содержать low, medium или high');
     if (typeof quiz?.published !== 'boolean') errors.push('поле «published» должно быть логическим');
     if (!Array.isArray(quiz?.tags) || quiz.tags.some((tag) => typeof tag !== 'string' || !tag.trim())) errors.push('поле «tags» должно быть массивом непустых строк');
     if (!Array.isArray(quiz?.questions) || quiz.questions.length === 0) errors.push('массив «questions» не должен быть пустым');
@@ -195,7 +197,7 @@
         ? `<img src="${escapeHtml(quiz.cover)}" alt="Обложка викторины «${escapeHtml(quiz.title)}»" loading="lazy">`
         : '<div class="cover-placeholder" aria-hidden="true"><span>?</span><small>Quiz</small></div>';
       const cardTags = visibleCardTags(quiz).map((slug) => `<button class="tag" type="button" data-card-tag="${escapeHtml(slug)}">${escapeHtml(tags.get(slug).name)}</button>`).join('');
-      return `<article class="quiz-card"><a class="quiz-card-link" href="quiz.html?quiz=${encodeURIComponent(quiz.slug)}" aria-label="Открыть викторину «${escapeHtml(quiz.title)}»"></a><div class="quiz-cover">${cover}</div><div class="quiz-card-body"><div><h3>${escapeHtml(title)}</h3><p>${escapeHtml(quiz.short_description)}</p></div><div class="quiz-tags" aria-label="Теги викторины">${cardTags}</div></div></article>`;
+      return `<article class="quiz-card"><a class="quiz-card-link" href="quiz.html?quiz=${encodeURIComponent(quiz.slug)}" aria-label="Открыть викторину «${escapeHtml(quiz.title)}»"></a><div class="quiz-cover">${cover}</div><div class="quiz-card-body"><div><h3>${escapeHtml(title)}</h3><p class="quiz-card-description">${escapeHtml(quiz.short_description)}</p></div><div class="quiz-card-meta"><span class="quiz-card-difficulty">Сложность: ${DIFFICULTY_LABELS[quiz.difficulty]}</span><div class="quiz-tags" aria-label="Теги викторины">${cardTags}</div></div></div></article>`;
     }
 
     function renderPagination(totalPages) {
@@ -302,5 +304,5 @@
     })();
   }
 
-  return { PAGE_SIZE, validateQuiz, validDateValue, sortQuizzes, arrangeQuizzes, countTags, paginationItems, getStateFromUrl, buildUrl, questionWord, init };
+  return { PAGE_SIZE, DIFFICULTY_LABELS, validateQuiz, validDateValue, sortQuizzes, arrangeQuizzes, countTags, paginationItems, getStateFromUrl, buildUrl, questionWord, init };
 });

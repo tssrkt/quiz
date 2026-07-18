@@ -132,6 +132,25 @@ def adaptive_checks(page):
         assert not overflow, f"Переполнение пояснения при {width}px"
 
 
+def catalog_card_checks(page):
+    page.set_viewport_size({"width": 1440, "height": 900})
+    page.goto(f"{BASE_URL}/quizzes.html")
+    card = page.locator(".quiz-card").first
+    card.wait_for()
+    meta = card.locator(".quiz-card-meta")
+    assert meta.locator(":scope > *").first.get_attribute("class") == "quiz-card-difficulty"
+    assert card.locator(".quiz-card-difficulty").inner_text() == "Сложность: низкая"
+    assert card.locator(".quiz-tags").inner_text().splitlines() == ["Лошади", "Животные"]
+    assert page.evaluate("element => getComputedStyle(element).fontSize", card.locator(".quiz-card-description").element_handle()) == "19px"
+    difficulty_box = card.locator(".quiz-card-difficulty").bounding_box()
+    tags_box = card.locator(".quiz-tags").bounding_box()
+    assert abs((difficulty_box["y"] + difficulty_box["height"]) - (tags_box["y"] + tags_box["height"])) <= 2
+    for width in (1440, 375):
+        page.set_viewport_size({"width": width, "height": 900})
+        assert not page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth")
+    assert page.evaluate("element => getComputedStyle(element).fontSize", card.locator(".quiz-card-description").element_handle()) == "17.4px"
+
+
 def main():
     if PROFILE.exists():
         shutil.rmtree(PROFILE)
@@ -167,6 +186,7 @@ def main():
             page.goto(f"{BASE_URL}/quiz.html?quiz=ui-draft&preview=1")
             page.get_by_text("Предварительный просмотр. Викторина не опубликована.").wait_for()
             page.get_by_role("button", name="Начать викторину").wait_for()
+            catalog_card_checks(page)
             all_correct(page)
             all_wrong(page)
             page = mixed_with_reload(context, page)

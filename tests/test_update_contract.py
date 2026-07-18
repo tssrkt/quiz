@@ -30,7 +30,6 @@ class UpdateContractTests(unittest.TestCase):
         expected = {
             "horses.json": ("Лошади", "horses", 10),
             "animals.json": ("Животные", "animals", 20),
-            "beginner.json": ("Для начинающих", "beginner", 30),
         }
         tag_root = ROOT / "data" / "tags"
         self.assertEqual({path.name for path in tag_root.glob("*.json")}, set(expected))
@@ -39,7 +38,32 @@ class UpdateContractTests(unittest.TestCase):
             self.assertEqual(tag, {"name": name, "slug": slug, "order": order, "published": True})
 
         horse = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
-        self.assertEqual(horse["tags"], ["horses", "animals", "beginner"])
+        self.assertEqual(horse["tags"], ["horses", "animals"])
+        self.assertEqual(horse["difficulty"], "low")
+
+    def test_cms_has_required_single_difficulty_select(self):
+        schema = (ROOT / ".pages.yml").read_text(encoding="utf-8")
+        block = schema.split("      - name: difficulty\n", 1)[1].split("      - name: short_description\n", 1)[0]
+        self.assertIn("label: Уровень сложности", block)
+        self.assertIn("type: select", block)
+        self.assertIn("required: true", block)
+        self.assertIn("default: low", block)
+        self.assertNotIn("multiple:", block)
+        self.assertEqual(re.findall(r"- name: (low|medium|high)\s+label: (Низкая|Средняя|Высокая)", block), [("low", "Низкая"), ("medium", "Средняя"), ("high", "Высокая")])
+
+    def test_catalog_card_has_difficulty_before_tags_and_description_is_three_pixels_larger(self):
+        javascript = (ROOT / "js" / "quizzes.js").read_text(encoding="utf-8")
+        css = (ROOT / "css" / "style.css").read_text(encoding="utf-8")
+        self.assertLess(javascript.index('class="quiz-card-difficulty"'), javascript.index('class="quiz-tags"'))
+        self.assertIn("Сложность: ${DIFFICULTY_LABELS[quiz.difficulty]}", javascript)
+        self.assertIn(".quiz-card-description{font-size:calc(1rem + 3px)}", css)
+        self.assertIn(".quiz-card .quiz-card-description{font-size:calc(.9rem + 3px)}", css)
+
+    def test_removed_level_tag_is_absent_everywhere_that_is_published(self):
+        removed_slug = "begin" + "ner"
+        self.assertFalse((ROOT / "data" / "tags" / f"{removed_slug}.json").exists())
+        horse = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
+        self.assertNotIn(removed_slug, horse["tags"])
 
     def test_current_quiz_has_five_persisted_stable_ids(self):
         quiz = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))

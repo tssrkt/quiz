@@ -19,6 +19,7 @@ OUTPUT = ROOT / "_site"
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 QUESTION_ID_RE = re.compile(r"^question-\d{2,}$")
 ANSWER_ID_RE = re.compile(r"^answer-\d{2,}$")
+DIFFICULTIES = {"low", "medium", "high"}
 HTML_FILES = ("index.html", "quizzes.html", "quiz.html", "contacts.html")
 COPY_DIRS = ("css", "js")
 
@@ -136,6 +137,9 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
             require_string(data, field, label, errors)
         if not isinstance(data.get("published"), bool):
             errors.append(f"{label}.published: требуется true или false")
+        difficulty = data.get("difficulty")
+        if difficulty not in DIFFICULTIES:
+            errors.append(f"{label}.difficulty: требуется одно из значений low, medium, high")
         publication_date = require_string(data, "publication_date", label, errors)
         if publication_date:
             try:
@@ -244,6 +248,7 @@ def make_catalog(tags: list[dict], quizzes: list[dict]) -> dict:
             "published": True,
             "publication_date": quiz["publication_date"],
             "short_description": quiz["short_description"],
+            "difficulty": quiz["difficulty"],
             "cover": quiz.get("cover", ""),
             "tags": quiz["tags"],
             "question_count": len(quiz["questions"]),

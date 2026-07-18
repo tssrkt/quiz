@@ -99,6 +99,19 @@ content:
         options:
           time: false
           format: yyyy-MM-dd
+      - name: difficulty
+        label: Уровень сложности
+        type: select
+        required: true
+        default: low
+        options:
+          values:
+            - name: low
+              label: Низкая
+            - name: medium
+              label: Средняя
+            - name: high
+              label: Высокая
       - name: short_description
         label: Краткое описание
         type: text

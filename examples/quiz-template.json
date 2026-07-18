@@ -3,6 +3,7 @@
   "title": "Название викторины",
   "published": false,
   "publication_date": "2026-07-18",
+  "difficulty": "low",
   "short_description": "Короткое описание для карточки каталога.",
   "intro": "Вступительный текст перед началом прохождения.",
   "cover": "img/covers/example.webp",

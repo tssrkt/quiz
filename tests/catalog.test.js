@@ -3,6 +3,8 @@
 const assert = require('node:assert/strict');
 const {
   PAGE_SIZE,
+  DIFFICULTY_LABELS,
+  validateQuiz,
   sortQuizzes,
   arrangeQuizzes,
   countTags,
@@ -16,6 +18,9 @@ function quiz(index, overrides = {}) {
     slug: `quiz-${index}`,
     title: `Викторина ${String(index).padStart(3, '0')}`,
     publication_date: `2026-01-${String((index % 28) + 1).padStart(2, '0')}`,
+    difficulty: 'low',
+    short_description: 'Описание',
+    intro: 'Вступление',
     tags: index % 2 ? ['horses'] : ['biology', 'horses'],
     ...overrides
   };
@@ -26,6 +31,7 @@ function pagesFor(count) {
 }
 
 assert.equal(PAGE_SIZE, 25);
+assert.deepEqual(DIFFICULTY_LABELS, { low: 'низкая', medium: 'средняя', high: 'высокая' });
 assert.equal(pagesFor(0), 1);
 assert.equal(pagesFor(1), 1);
 assert.equal(pagesFor(25), 1);
