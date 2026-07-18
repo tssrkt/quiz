@@ -8,6 +8,39 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class UpdateContractTests(unittest.TestCase):
+    def test_pages_cms_tag_titles_and_references_use_explicit_fields(self):
+        schema = (ROOT / ".pages.yml").read_text(encoding="utf-8")
+        tags_collection = schema.split("  - name: tags\n", 1)[1].split("  - name: quizzes\n", 1)[0]
+        self.assertIn('template: "{fields.slug}.json"', tags_collection)
+        self.assertIn("field: false", tags_collection)
+        self.assertRegex(tags_collection, r"view:\s+fields: \[name, slug, order, published\]\s+primary: name")
+        self.assertIn("sort: [order, name]", tags_collection)
+        self.assertIn("search: [name, slug]", tags_collection)
+        self.assertRegex(tags_collection, r"default:\s+sort: order\s+order: asc")
+
+        quiz_collection = schema.split("  - name: quizzes\n", 1)[1]
+        reference = quiz_collection.split("      - name: tags\n", 1)[1].split("      - name: questions\n", 1)[0]
+        self.assertIn("type: reference", reference)
+        self.assertIn("collection: tags", reference)
+        self.assertIn('value: "{fields.slug}"', reference)
+        self.assertIn('label: "{fields.name}"', reference)
+        self.assertNotIn('label: "{name}"', reference)
+
+    def test_tag_files_keep_technical_names_and_russian_labels(self):
+        expected = {
+            "horses.json": ("Лошади", "horses", 10),
+            "animals.json": ("Животные", "animals", 20),
+            "beginner.json": ("Для начинающих", "beginner", 30),
+        }
+        tag_root = ROOT / "data" / "tags"
+        self.assertEqual({path.name for path in tag_root.glob("*.json")}, set(expected))
+        for filename, (name, slug, order) in expected.items():
+            tag = json.loads((tag_root / filename).read_text(encoding="utf-8"))
+            self.assertEqual(tag, {"name": name, "slug": slug, "order": order, "published": True})
+
+        horse = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
+        self.assertEqual(horse["tags"], ["horses", "animals", "beginner"])
+
     def test_current_quiz_has_five_persisted_stable_ids(self):
         quiz = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
         self.assertEqual(len(quiz["questions"]), 5)

@@ -45,6 +45,7 @@ def all_correct(page):
         wait_next(page, index)
     assert page.locator(".result-score").inner_text() == f"{len(QUIZ['questions'])} из {len(QUIZ['questions'])}"
     assert page.locator(".result-percent").inner_text() == "100%"
+    assert page.locator(".low-result").count() == 0
 
 
 def all_wrong(page):
@@ -63,9 +64,23 @@ def all_wrong(page):
         wait_next(page, index)
     assert page.locator(".result-score").inner_text() == f"0 из {len(QUIZ['questions'])}"
     assert page.locator(".result-percent").inner_text() == "0%"
+    low_result = page.locator(".low-result")
+    assert low_result.is_visible()
+    assert "Что ж, некоторые вопросы оказались непростыми — и это отличный повод узнать больше! Если желаете разобраться в теме глубже, откройте сборник статей о лошадках, а затем попробуйте пройти викторину еще раз. Наверняка после этого результат вас приятно удивит." in low_result.inner_text()
+    articles = low_result.get_by_role("link", name="📖📖 Сборник статей о лошадках")
+    assert articles.get_attribute("href") == "https://author.today/work/439719"
+    assert articles.get_attribute("target") == "_blank"
+    assert "noopener" in articles.get_attribute("rel")
     page.evaluate("Object.defineProperty(navigator, 'share', {value: undefined, configurable: true})")
     page.locator("[data-share]").click()
     page.get_by_text("Результат скопирован.").wait_for()
+    low_result.get_by_role("link", name="↻ Пройти викторину еще раз").click()
+    page.get_by_role("button", name="Начать викторину").wait_for()
+    saved = page.evaluate("JSON.parse(localStorage.getItem('quiz-progress:horse-colors'))")
+    assert saved["current_index"] == 0
+    assert saved["correct_count"] == 0
+    assert saved["answers"] == {}
+    assert saved["completed"] is False
 
 
 def mixed_with_reload(context, page):

@@ -44,6 +44,8 @@ const last = answerAndAdvance(moved.state, quiz, 'a-02');
 assert.equal(last.advanced.state.completed, true); assert.equal(last.advanced.state.current_index, 2, '10: последний вопрос завершает попытку');
 assert.equal(last.advanced.state.correct_count, 1, '11: правильные ответы подсчитаны');
 assert.equal(core.resultPercent(34, 40), 85, '12: процент округляется');
+assert.equal(core.shouldShowLowResult(49), true, 'блок дополнительного материала показан ниже 50%');
+assert.equal(core.shouldShowLowResult(50), false, 'блок дополнительного материала скрыт при 50%');
 assert.equal(core.resultMessage(90), 'Отличный результат!');
 assert.equal(core.resultMessage(89), 'Очень хороший результат!');
 assert.equal(core.resultMessage(74), 'Неплохо, но есть что повторить.');

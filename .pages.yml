@@ -25,11 +25,11 @@ content:
     path: data/tags
     format: json
     filename:
-      template: "{slug}.json"
+      template: "{fields.slug}.json"
       field: false
     view:
-      primary: name
       fields: [name, slug, order, published]
+      primary: name
       sort: [order, name]
       search: [name, slug]
       default:
@@ -126,8 +126,8 @@ content:
           multiple: true
           min: 1
           search: "name,slug"
-          value: "{slug}"
-          label: "{name}"
+          value: "{fields.slug}"
+          label: "{fields.name}"
       - name: questions
         label: Вопросы
         type: object
