@@ -1,0 +1,192 @@
+media:
+  - name: covers
+    label: Обложки викторин
+    input: img/covers
+    output: img/covers
+    categories: [image]
+    extensions: [jpg, jpeg, png, webp, avif, svg]
+    rename: safe
+  - name: quiz_images
+    label: Изображения вопросов
+    input: img/quiz
+    output: img/quiz
+    categories: [image]
+    extensions: [jpg, jpeg, png, webp, avif, svg]
+    rename: safe
+
+content:
+  - name: tags
+    label: Теги
+    type: collection
+    path: data/tags
+    format: json
+    filename:
+      template: "{slug}.json"
+      field: false
+    exclude: [index.json]
+    view:
+      primary: name
+      fields: [name, slug, order, published]
+      sort: [order, name]
+      search: [name, slug]
+      default:
+        sort: order
+        order: asc
+    fields:
+      - name: name
+        label: Название
+        type: string
+        required: true
+      - name: slug
+        label: Slug
+        type: string
+        required: true
+        pattern:
+          regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          message: Используйте латинские строчные буквы, цифры и дефисы.
+      - name: order
+        label: Порядок отображения
+        type: number
+        required: true
+        options:
+          min: 0
+      - name: published
+        label: Опубликован
+        type: boolean
+        required: true
+        default: true
+
+  - name: quizzes
+    label: Викторины
+    type: collection
+    path: data/quizzes
+    format: json
+    filename:
+      template: "{slug}.json"
+      field: false
+    exclude: [index.json]
+    view:
+      primary: title
+      fields: [title, slug, published, publication_date]
+      sort: [publication_date, title]
+      search: [title, slug, short_description]
+      default:
+        sort: publication_date
+        order: desc
+    fields:
+      - name: title
+        label: Название
+        type: string
+        required: true
+      - name: slug
+        label: Slug
+        type: string
+        required: true
+        pattern:
+          regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          message: Используйте латинские строчные буквы, цифры и дефисы.
+      - name: published
+        label: Опубликована
+        type: boolean
+        required: true
+        default: false
+      - name: publication_date
+        label: Дата публикации
+        type: date
+        required: true
+        options:
+          time: false
+          format: yyyy-MM-dd
+      - name: short_description
+        label: Краткое описание
+        type: text
+        required: true
+        options:
+          maxlength: 300
+      - name: intro
+        label: Вступительный текст
+        type: text
+        required: true
+      - name: cover
+        label: Квадратная обложка
+        type: image
+        required: false
+        description: Рекомендуемое соотношение сторон — 1:1.
+        options:
+          media: covers
+          categories: [image]
+      - name: tags
+        label: Теги
+        type: reference
+        required: true
+        options:
+          collection: tags
+          multiple: true
+          min: 1
+          search: "name,slug"
+          value: "{slug}"
+          label: "{name}"
+      - name: questions
+        label: Вопросы
+        type: object
+        required: true
+        list:
+          min: 1
+          collapsible:
+            collapsed: true
+            summary: "{question} — {id}"
+        fields:
+          - name: id
+            label: Уникальный идентификатор
+            type: string
+            required: true
+            pattern:
+              regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+              message: Используйте латинские строчные буквы, цифры и дефисы.
+          - name: question
+            label: Текст вопроса
+            type: text
+            required: true
+          - name: image
+            label: Изображение
+            type: image
+            required: false
+            options:
+              media: quiz_images
+              categories: [image]
+          - name: image_alt
+            label: Альтернативный текст
+            type: string
+            required: false
+            description: Обязателен для содержательного изображения; оставьте пустым для декоративного.
+          - name: answers
+            label: Варианты ответа
+            type: string
+            required: true
+            list:
+              min: 2
+              max: 6
+          - name: correct_answer
+            label: Правильный вариант
+            type: string
+            required: true
+            description: Должен полностью совпадать с одним из вариантов ответа.
+          - name: explanation
+            label: Объяснение
+            type: text
+            required: true
+          - name: image_source
+            label: Источник изображения
+            type: string
+            required: false
+          - name: image_author
+            label: Автор изображения
+            type: string
+            required: false
+          - name: image_source_url
+            label: Ссылка на источник
+            type: string
+            required: false
+            pattern:
+              regex: "^$|^https?://.+$"
+              message: Укажите полный адрес с http:// или https:// либо оставьте поле пустым.

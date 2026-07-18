@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Каталог русскоязычных викторин.">
+  <title>Викторины — Quiz / Викторины</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/common.js" defer></script>
+  <script src="js/quizzes.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">К основному содержимому</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="Quiz / Викторины — главная">Quiz <span>/ Викторины</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Открыть меню"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></button>
+      <nav class="site-nav" id="site-menu" aria-label="Основная навигация">
+        <a href="index.html">Главная</a><a href="quizzes.html" aria-current="page">Викторины</a><a href="contacts.html">Контакты</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main" class="page-main container">
+    <header class="page-heading"><p class="eyebrow">Выберите тему</p><h1>Викторины</h1><p>Небольшие испытания для любознательных.</p></header>
+    <section class="catalog-tools" id="catalog-start" aria-label="Инструменты каталога">
+      <div class="tag-tool"><h2 class="tool-title">Теги</h2><div class="tag-scroll-shell"><div class="tag-viewport" tabindex="0" aria-label="Теги викторин: область с горизонтальной прокруткой"><div class="tag-list" id="tag-list" aria-live="polite"><span class="tag is-muted">Загрузка…</span></div></div></div></div>
+      <div class="sort-tool"><span class="tool-title" id="sort-label">Сортировка</span><div class="sort-control" id="sort-control" role="group" aria-labelledby="sort-label"><button type="button" data-sort="new" aria-pressed="true">Новые</button><button type="button" data-sort="old" aria-pressed="false">Старые</button><button type="button" data-sort="az" aria-pressed="false">А — Я</button></div></div>
+    </section>
+    <p class="catalog-status" id="catalog-status" role="status" hidden></p>
+    <section aria-labelledby="quiz-list-title"><h2 class="visually-hidden" id="quiz-list-title">Список викторин</h2><div class="quiz-list" id="quiz-list" aria-live="polite" aria-busy="true"><div class="loading-card">Загружаем викторины…</div></div></section>
+    <nav class="pagination" id="pagination" aria-label="Страницы каталога" hidden></nav>
+  </main>
+  <footer class="site-footer"><div class="footer-inner"><p>© <span data-current-year></span> Quiz / Викторины</p><a href="contacts.html">О проекте</a></div></footer>
+</body>
+</html>

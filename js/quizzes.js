@@ -1,0 +1,307 @@
+(function (root, factory) {
+  'use strict';
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else {
+    root.QuizCatalogCore = api;
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', api.init);
+    else api.init();
+  }
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+
+  const PAGE_SIZE = 25;
+  const SORTS = new Set(['new', 'old', 'az']);
+  const ruCollator = new Intl.Collator('ru', { sensitivity: 'base', numeric: true });
+
+  function validateQuiz(quiz, source = 'неизвестный файл') {
+    const errors = [];
+    ['slug', 'title', 'short_description', 'intro'].forEach((field) => {
+      if (typeof quiz?.[field] !== 'string' || !quiz[field].trim()) errors.push(`поле «${field}» обязательно`);
+    });
+    if (typeof quiz?.published !== 'boolean') errors.push('поле «published» должно быть логическим');
+    if (!Array.isArray(quiz?.tags) || quiz.tags.some((tag) => typeof tag !== 'string' || !tag.trim())) errors.push('поле «tags» должно быть массивом непустых строк');
+    if (!Array.isArray(quiz?.questions) || quiz.questions.length === 0) errors.push('массив «questions» не должен быть пустым');
+    const ids = new Set();
+    (Array.isArray(quiz?.questions) ? quiz.questions : []).forEach((item, index) => {
+      const label = `вопрос ${index + 1}`;
+      if (typeof item?.id !== 'string' || !item.id.trim()) errors.push(`${label}: отсутствует id`);
+      else if (ids.has(item.id)) errors.push(`${label}: id «${item.id}» повторяется`);
+      else ids.add(item.id);
+      if (typeof item?.question !== 'string' || !item.question.trim()) errors.push(`${label}: отсутствует текст`);
+      if (!Array.isArray(item?.answers) || item.answers.length < 2 || item.answers.length > 6 || item.answers.some((answer) => typeof answer !== 'string' || !answer.trim())) errors.push(`${label}: требуется от 2 до 6 непустых ответов`);
+      if (typeof item?.correct_answer !== 'string' || !item.answers?.includes(item.correct_answer)) errors.push(`${label}: correct_answer должен совпадать с одним из ответов`);
+      if (typeof item?.explanation !== 'string' || !item.explanation.trim()) errors.push(`${label}: объяснение обязательно`);
+    });
+    if (errors.length) {
+      console.error(`[Quiz] Викторина «${source}» пропущена из-за ошибок данных:\n- ${errors.join('\n- ')}`);
+      return false;
+    }
+    return true;
+  }
+
+  function validDateValue(value) {
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+    const timestamp = Date.parse(`${value}T00:00:00Z`);
+    if (!Number.isFinite(timestamp) || new Date(timestamp).toISOString().slice(0, 10) !== value) return null;
+    return timestamp;
+  }
+
+  function sortQuizzes(items, sort) {
+    return [...items].sort((a, b) => {
+      if (sort === 'az') return ruCollator.compare(a.title, b.title);
+      const dateA = validDateValue(a.publication_date);
+      const dateB = validDateValue(b.publication_date);
+      if (dateA === null && dateB !== null) return 1;
+      if (dateA !== null && dateB === null) return -1;
+      if (dateA !== null && dateB !== null && dateA !== dateB) return sort === 'old' ? dateA - dateB : dateB - dateA;
+      return ruCollator.compare(a.title, b.title);
+    });
+  }
+
+  function arrangeQuizzes(quizzes, activeTag, sort) {
+    if (activeTag === 'all') return sortQuizzes(quizzes, sort);
+    const matching = quizzes.filter((quiz) => quiz.tags.includes(activeTag));
+    const others = quizzes.filter((quiz) => !quiz.tags.includes(activeTag));
+    return [...sortQuizzes(matching, sort), ...sortQuizzes(others, sort)];
+  }
+
+  function countTags(quizzes, visibleTags) {
+    const counts = new Map(visibleTags.map((tag) => [tag.slug, 0]));
+    quizzes.forEach((quiz) => quiz.tags.forEach((slug) => {
+      if (counts.has(slug)) counts.set(slug, counts.get(slug) + 1);
+    }));
+    return counts;
+  }
+
+  function paginationItems(current, total) {
+    if (total <= 1) return [];
+    const pages = new Set([1, total, current - 1, current, current + 1]);
+    const valid = [...pages].filter((page) => page >= 1 && page <= total).sort((a, b) => a - b);
+    const result = [];
+    valid.forEach((page, index) => {
+      if (index && page - valid[index - 1] > 1) result.push('ellipsis');
+      result.push(page);
+    });
+    return result;
+  }
+
+  function getStateFromUrl(search, visibleTagSlugs, totalPages = Infinity) {
+    const params = new URLSearchParams(search);
+    const requestedTag = params.get('tag');
+    const tag = requestedTag && visibleTagSlugs.has(requestedTag) ? requestedTag : 'all';
+    const requestedSort = params.get('sort');
+    const sort = SORTS.has(requestedSort) ? requestedSort : 'new';
+    const requestedPage = Number.parseInt(params.get('page') || '1', 10);
+    const page = Math.min(Math.max(Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1, 1), Math.max(totalPages, 1));
+    return { tag, sort, page };
+  }
+
+  function buildUrl(url, state) {
+    const next = new URL(url);
+    if (state.tag === 'all') next.searchParams.delete('tag');
+    else next.searchParams.set('tag', state.tag);
+    next.searchParams.set('sort', state.sort);
+    next.searchParams.set('page', String(state.page));
+    return `${next.pathname}${next.search}${next.hash}`;
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[character]));
+  }
+
+  function questionWord(count) {
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+    return mod10 === 1 && mod100 !== 11 ? 'вопрос' : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14) ? 'вопроса' : 'вопросов';
+  }
+
+  async function fetchJson(path) {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+    return response.json();
+  }
+
+  function init() {
+    const list = document.getElementById('quiz-list');
+    const tagList = document.getElementById('tag-list');
+    const tagViewport = document.querySelector('.tag-viewport');
+    const sortControl = document.getElementById('sort-control');
+    const pagination = document.getElementById('pagination');
+    const status = document.getElementById('catalog-status');
+    const catalogStart = document.getElementById('catalog-start');
+    if (!list || !tagList || !sortControl || !pagination) return;
+
+    let quizzes = [];
+    let tags = new Map();
+    let visibleTags = [];
+    let state = { tag: 'all', sort: 'new', page: 1 };
+    let suppressTagClick = false;
+
+    function scrollToCatalog() {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      catalogStart?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    }
+
+    function totalPagesFor(currentState) {
+      return Math.max(1, Math.ceil(arrangeQuizzes(quizzes, currentState.tag, currentState.sort).length / PAGE_SIZE));
+    }
+
+    function readAndNormalizeUrl() {
+      const slugs = new Set(visibleTags.map((tag) => tag.slug));
+      let next = getStateFromUrl(location.search, slugs);
+      next = getStateFromUrl(location.search, slugs, totalPagesFor(next));
+      state = next;
+      history.replaceState(null, '', buildUrl(location.href, state));
+    }
+
+    function writeUrl(mode = 'push') {
+      history[mode === 'replace' ? 'replaceState' : 'pushState'](null, '', buildUrl(location.href, state));
+    }
+
+    function renderTags() {
+      const counts = countTags(quizzes, visibleTags);
+      const items = [{ slug: 'all', name: 'Все', count: quizzes.length }, ...visibleTags.map((tag) => ({ ...tag, count: counts.get(tag.slug) }))];
+      tagList.innerHTML = items.map((tag) => `<button class="catalog-tag${state.tag === tag.slug ? ' is-active' : ''}" type="button" data-tag="${escapeHtml(tag.slug)}" aria-pressed="${state.tag === tag.slug}"><span>${escapeHtml(tag.name)}</span><small>${tag.count}</small></button>`).join('');
+      requestAnimationFrame(updateTagOverflowHint);
+    }
+
+    function renderSort() {
+      sortControl.querySelectorAll('[data-sort]').forEach((button) => {
+        const active = button.dataset.sort === state.sort;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+    }
+
+    function visibleCardTags(quiz) {
+      return quiz.tags.filter((slug) => tags.has(slug) && tags.get(slug).published);
+    }
+
+    function cardTemplate(quiz) {
+      const count = quiz.questions.length;
+      const title = `${quiz.title} (${count} ${questionWord(count)})`;
+      const cover = quiz.cover
+        ? `<img src="${escapeHtml(quiz.cover)}" alt="Обложка викторины «${escapeHtml(quiz.title)}»" loading="lazy">`
+        : '<div class="cover-placeholder" aria-hidden="true"><span>?</span><small>Quiz</small></div>';
+      const cardTags = visibleCardTags(quiz).map((slug) => `<button class="tag" type="button" data-card-tag="${escapeHtml(slug)}">${escapeHtml(tags.get(slug).name)}</button>`).join('');
+      return `<article class="quiz-card"><a class="quiz-card-link" href="quiz.html?quiz=${encodeURIComponent(quiz.slug)}" aria-label="Открыть викторину «${escapeHtml(quiz.title)}»"></a><div class="quiz-cover">${cover}</div><div class="quiz-card-body"><div><h3>${escapeHtml(title)}</h3><p>${escapeHtml(quiz.short_description)}</p></div><div class="quiz-tags" aria-label="Теги викторины">${cardTags}</div></div></article>`;
+    }
+
+    function renderPagination(totalPages) {
+      if (totalPages <= 1) { pagination.hidden = true; pagination.innerHTML = ''; return; }
+      pagination.hidden = false;
+      const middle = paginationItems(state.page, totalPages).map((item) => item === 'ellipsis'
+        ? '<span class="pagination-ellipsis" aria-hidden="true">…</span>'
+        : `<button type="button" data-page="${item}"${item === state.page ? ' class="is-active" aria-current="page"' : ''} aria-label="Страница ${item}">${item}</button>`).join('');
+      pagination.innerHTML = `<button type="button" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''} aria-label="Предыдущая страница">← <span>Назад</span></button>${middle}<button type="button" data-page="${state.page + 1}" ${state.page === totalPages ? 'disabled' : ''} aria-label="Следующая страница"><span>Вперёд</span> →</button>`;
+    }
+
+    function render() {
+      const ordered = arrangeQuizzes(quizzes, state.tag, state.sort);
+      const totalPages = Math.max(1, Math.ceil(ordered.length / PAGE_SIZE));
+      state.page = Math.min(Math.max(state.page, 1), totalPages);
+      const start = (state.page - 1) * PAGE_SIZE;
+      const pageItems = ordered.slice(start, start + PAGE_SIZE);
+      renderTags();
+      renderSort();
+      if (!quizzes.length) list.innerHTML = '<div class="empty-state"><p>Опубликованных викторин пока нет.</p></div>';
+      else list.innerHTML = pageItems.map(cardTemplate).join('');
+      renderPagination(totalPages);
+      list.setAttribute('aria-busy', 'false');
+    }
+
+    function selectTag(slug, shouldScroll, resetActivePage = false) {
+      if (slug === state.tag && !resetActivePage) return;
+      const stateChanged = slug !== state.tag || state.page !== 1;
+      state = { ...state, tag: slug, page: 1 };
+      if (stateChanged) { writeUrl(); render(); }
+      if (shouldScroll) scrollToCatalog();
+    }
+
+    function updateTagOverflowHint() {
+      if (!tagViewport) return;
+      const hasMore = tagViewport.scrollWidth - tagViewport.clientWidth - tagViewport.scrollLeft > 2;
+      tagViewport.parentElement.classList.toggle('has-more', hasMore);
+    }
+
+    function enableTagDragging() {
+      if (!tagViewport) return;
+      let pointerId = null, startX = 0, startY = 0, startScroll = 0, dragged = false;
+      tagViewport.addEventListener('pointerdown', (event) => {
+        if (event.pointerType !== 'mouse' || event.button !== 0) return;
+        pointerId = event.pointerId; startX = event.clientX; startY = event.clientY; startScroll = tagViewport.scrollLeft; dragged = false;
+      });
+      tagViewport.addEventListener('pointermove', (event) => {
+        if (event.pointerId !== pointerId) return;
+        const dx = event.clientX - startX, dy = event.clientY - startY;
+        if (!dragged && Math.hypot(dx, dy) < 6) return;
+        dragged = true; tagViewport.classList.add('is-dragging'); tagViewport.setPointerCapture(pointerId); tagViewport.scrollLeft = startScroll - dx; event.preventDefault();
+      });
+      const finish = (event) => {
+        if (event.pointerId !== pointerId) return;
+        if (dragged) { suppressTagClick = true; setTimeout(() => { suppressTagClick = false; }, 0); }
+        tagViewport.classList.remove('is-dragging'); pointerId = null; dragged = false; updateTagOverflowHint();
+      };
+      tagViewport.addEventListener('pointerup', finish);
+      tagViewport.addEventListener('pointercancel', finish);
+      tagViewport.addEventListener('scroll', updateTagOverflowHint, { passive: true });
+      window.addEventListener('resize', updateTagOverflowHint);
+    }
+
+    tagList.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-tag]');
+      if (!button || suppressTagClick) return;
+      selectTag(button.dataset.tag, false);
+    });
+    sortControl.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-sort]');
+      if (!button || button.dataset.sort === state.sort) return;
+      state = { ...state, sort: button.dataset.sort, page: 1 };
+      writeUrl(); render(); scrollToCatalog();
+    });
+    list.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-card-tag]');
+      if (!button) return;
+      event.preventDefault(); event.stopPropagation(); selectTag(button.dataset.cardTag, true, true);
+    });
+    pagination.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-page]');
+      if (!button || button.disabled) return;
+      const page = Number(button.dataset.page);
+      if (page === state.page) return;
+      state = { ...state, page }; writeUrl(); render(); scrollToCatalog();
+    });
+    window.addEventListener('popstate', () => { readAndNormalizeUrl(); render(); });
+    enableTagDragging();
+
+    (async function load() {
+      try {
+        const [quizFiles, tagFiles] = await Promise.all([fetchJson('data/quizzes/index.json'), fetchJson('data/tags/index.json')]);
+        if (!Array.isArray(quizFiles) || !Array.isArray(tagFiles)) throw new Error('Реестр данных должен быть массивом');
+        const tagResults = await Promise.allSettled(tagFiles.map((file) => fetchJson(`data/tags/${file}`)));
+        tagResults.forEach((result, index) => {
+          if (result.status === 'fulfilled' && typeof result.value?.slug === 'string') tags.set(result.value.slug, result.value);
+          else console.warn(`[Quiz] Тег «${tagFiles[index]}» пропущен из-за ошибки загрузки или данных.`, result.reason || result.value);
+        });
+        visibleTags = [...tags.values()].filter((tag) => tag.published === true).sort((a, b) => Number(a.order) - Number(b.order) || ruCollator.compare(a.name, b.name));
+        const quizResults = await Promise.allSettled(quizFiles.map((file) => fetchJson(`data/quizzes/${file}`)));
+        let skipped = 0;
+        quizResults.forEach((result, index) => {
+          if (result.status === 'rejected') { skipped += 1; console.error(`[Quiz] Викторина «${quizFiles[index]}» не загружена и пропущена.`, result.reason); }
+          else if (!validateQuiz(result.value, quizFiles[index])) skipped += 1;
+          else if (result.value.published) quizzes.push(result.value);
+        });
+        if (skipped && status) { status.hidden = false; status.textContent = skipped === 1 ? 'Одна викторина пропущена из-за ошибки данных.' : `Несколько викторин (${skipped}) пропущены из-за ошибок данных.`; }
+        readAndNormalizeUrl(); render();
+      } catch (error) {
+        console.error('[Quiz] Каталог не удалось загрузить.', error);
+        list.innerHTML = '<div class="error-state" role="alert"><strong>Не удалось загрузить каталог.</strong><p>Попробуйте обновить страницу немного позже.</p></div>';
+        tagList.innerHTML = '<span class="tag is-muted">Теги недоступны</span>';
+        pagination.hidden = true; list.setAttribute('aria-busy', 'false');
+      }
+    })();
+  }
+
+  return { PAGE_SIZE, validateQuiz, validDateValue, sortQuizzes, arrangeQuizzes, countTags, paginationItems, getStateFromUrl, buildUrl, questionWord, init };
+});
