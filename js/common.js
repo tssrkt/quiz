@@ -30,7 +30,7 @@
   if (copyDonate) {
     const activateCopy = async () => {
       const value = copyDonate.dataset.copy?.trim();
-      const status = copyDonate.closest('.donate-block')?.querySelector('.copy-message');
+      const status = document.querySelector('.copy-message');
       if (!value || !status) return;
 
       const showStatus = (message) => {
