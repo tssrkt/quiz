@@ -1,3 +1,7 @@
 _site/
+.idea/
+*.iml
+
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
