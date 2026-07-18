@@ -170,23 +170,28 @@
       "answers": [
         {
           "text": "Серая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Белая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Изабелловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Соловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Если точнее, то это светло-серая. От изабелловой и белой ее легко отличить по серой или черной коже, которая хорошо видна на мордочке.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-06"
     }
   ]
 }
