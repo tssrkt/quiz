@@ -53,7 +53,7 @@ assert.equal(core.resultRecommendation(100), null, 'при 100% рекоменд
 assert.equal(core.resultMessage(90), 'Отличный результат!');
 assert.equal(core.resultMessage(89), 'Очень хороший результат!');
 assert.equal(core.resultMessage(74), 'Неплохо, но есть что повторить.');
-assert.equal(core.resultMessage(49), 'Попробуйте пройти викторину ещё раз.', '13: все диапазоны оценок');
+assert.equal(core.resultMessage(49), 'Попробуйте пройти викторину еще раз.', '13: все диапазоны оценок');
 
 const saved = JSON.stringify(moved.state);
 const restored = core.restoreState(saved, quiz);

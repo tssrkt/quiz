@@ -11,7 +11,9 @@
   'use strict';
 
   const PAGE_SIZE = 25;
-  const SORTS = new Set(['new', 'old', 'az']);
+  const SORTS = new Set(['date', 'difficulty', 'title']);
+  const DIRECTIONS = new Set(['down', 'up']);
+  const DIFFICULTY_ORDER = Object.freeze({ low: 1, medium: 2, high: 3 });
   const DIFFICULTY_LABELS = Object.freeze({ low: 'низкая', medium: 'средняя', high: 'высокая' });
   const ruCollator = new Intl.Collator('ru', { sensitivity: 'base', numeric: true });
 
@@ -57,23 +59,46 @@
     return timestamp;
   }
 
-  function sortQuizzes(items, sort) {
+  function compareDatesNewestFirst(a, b) {
+    const dateA = validDateValue(a.publication_date);
+    const dateB = validDateValue(b.publication_date);
+    if (dateA === null && dateB !== null) return 1;
+    if (dateA !== null && dateB === null) return -1;
+    if (dateA !== null && dateB !== null && dateA !== dateB) return dateB - dateA;
+    return 0;
+  }
+
+  function sortQuizzes(items, sort = 'date', direction = 'down') {
     return [...items].sort((a, b) => {
-      if (sort === 'az') return ruCollator.compare(a.title, b.title);
+      if (sort === 'difficulty') {
+        const difficulty = (DIFFICULTY_ORDER[a.difficulty] - DIFFICULTY_ORDER[b.difficulty]) * (direction === 'up' ? -1 : 1);
+        return difficulty || compareDatesNewestFirst(a, b) || ruCollator.compare(a.title, b.title);
+      }
+      if (sort === 'title') {
+        const title = ruCollator.compare(a.title, b.title) * (direction === 'up' ? -1 : 1);
+        return title || compareDatesNewestFirst(a, b);
+      }
       const dateA = validDateValue(a.publication_date);
       const dateB = validDateValue(b.publication_date);
       if (dateA === null && dateB !== null) return 1;
       if (dateA !== null && dateB === null) return -1;
-      if (dateA !== null && dateB !== null && dateA !== dateB) return sort === 'old' ? dateA - dateB : dateB - dateA;
-      return ruCollator.compare(a.title, b.title);
+      const date = dateA !== null && dateB !== null ? (dateB - dateA) * (direction === 'up' ? -1 : 1) : 0;
+      return date || ruCollator.compare(a.title, b.title);
     });
   }
 
-  function arrangeQuizzes(quizzes, activeTag, sort) {
-    if (activeTag === 'all') return sortQuizzes(quizzes, sort);
-    const matching = quizzes.filter((quiz) => quiz.tags.includes(activeTag));
-    const others = quizzes.filter((quiz) => !quiz.tags.includes(activeTag));
-    return [...sortQuizzes(matching, sort), ...sortQuizzes(others, sort)];
+  function arrangeQuizzes(quizzes, activeTag, sort, direction) {
+    const filtered = activeTag === 'all' ? quizzes : quizzes.filter((quiz) => quiz.tags.includes(activeTag));
+    return sortQuizzes(filtered, sort, direction);
+  }
+
+  function sortTooltip(sort, direction) {
+    const labels = {
+      date: { down: 'Сначала новые', up: 'Сначала старые' },
+      difficulty: { down: 'Сначала лёгкие', up: 'Сначала сложные' },
+      title: { down: 'От А до Я', up: 'От Я до А' }
+    };
+    return labels[sort][direction];
   }
 
   function countTags(quizzes, visibleTags) {
@@ -101,10 +126,12 @@
     const requestedTag = params.get('tag');
     const tag = requestedTag && visibleTagSlugs.has(requestedTag) ? requestedTag : 'all';
     const requestedSort = params.get('sort');
-    const sort = SORTS.has(requestedSort) ? requestedSort : 'new';
+    const sort = SORTS.has(requestedSort) ? requestedSort : 'date';
+    const requestedDirection = params.get('direction');
+    const direction = DIRECTIONS.has(requestedDirection) ? requestedDirection : 'down';
     const requestedPage = Number.parseInt(params.get('page') || '1', 10);
     const page = Math.min(Math.max(Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1, 1), Math.max(totalPages, 1));
-    return { tag, sort, page };
+    return { tag, sort, direction, page };
   }
 
   function buildUrl(url, state) {
@@ -112,6 +139,7 @@
     if (state.tag === 'all') next.searchParams.delete('tag');
     else next.searchParams.set('tag', state.tag);
     next.searchParams.set('sort', state.sort);
+    next.searchParams.set('direction', state.direction);
     next.searchParams.set('page', String(state.page));
     return `${next.pathname}${next.search}${next.hash}`;
   }
@@ -139,15 +167,17 @@
     const tagList = document.getElementById('tag-list');
     const tagViewport = document.querySelector('.tag-viewport');
     const sortControl = document.getElementById('sort-control');
+    const sortCriterion = document.getElementById('sort-criterion');
+    const sortDirection = document.querySelector('[data-sort-direction]');
     const pagination = document.getElementById('pagination');
     const status = document.getElementById('catalog-status');
     const catalogStart = document.getElementById('catalog-start');
-    if (!list || !tagList || !sortControl || !pagination) return;
+    if (!list || !tagList || !sortControl || !sortCriterion || !sortDirection || !pagination) return;
 
     let quizzes = [];
     let tags = new Map();
     let visibleTags = [];
-    let state = { tag: 'all', sort: 'new', page: 1 };
+    let state = { tag: 'all', sort: 'date', direction: 'down', page: 1 };
     let suppressTagClick = false;
 
     function scrollToCatalog() {
@@ -156,7 +186,7 @@
     }
 
     function totalPagesFor(currentState) {
-      return Math.max(1, Math.ceil(arrangeQuizzes(quizzes, currentState.tag, currentState.sort).length / PAGE_SIZE));
+      return Math.max(1, Math.ceil(arrangeQuizzes(quizzes, currentState.tag, currentState.sort, currentState.direction).length / PAGE_SIZE));
     }
 
     function readAndNormalizeUrl() {
@@ -179,11 +209,11 @@
     }
 
     function renderSort() {
-      sortControl.querySelectorAll('[data-sort]').forEach((button) => {
-        const active = button.dataset.sort === state.sort;
-        button.classList.toggle('is-active', active);
-        button.setAttribute('aria-pressed', String(active));
-      });
+      sortCriterion.value = state.sort;
+      sortDirection.textContent = state.direction === 'down' ? '↓' : '↑';
+      const tooltip = sortTooltip(state.sort, state.direction);
+      sortDirection.title = tooltip;
+      sortDirection.setAttribute('aria-label', tooltip);
     }
 
     function visibleCardTags(quiz) {
@@ -210,7 +240,7 @@
     }
 
     function render() {
-      const ordered = arrangeQuizzes(quizzes, state.tag, state.sort);
+      const ordered = arrangeQuizzes(quizzes, state.tag, state.sort, state.direction);
       const totalPages = Math.max(1, Math.ceil(ordered.length / PAGE_SIZE));
       state.page = Math.min(Math.max(state.page, 1), totalPages);
       const start = (state.page - 1) * PAGE_SIZE;
@@ -266,10 +296,12 @@
       if (!button || suppressTagClick) return;
       selectTag(button.dataset.tag, false);
     });
-    sortControl.addEventListener('click', (event) => {
-      const button = event.target.closest('[data-sort]');
-      if (!button || button.dataset.sort === state.sort) return;
-      state = { ...state, sort: button.dataset.sort, page: 1 };
+    sortCriterion.addEventListener('change', () => {
+      state = { ...state, sort: sortCriterion.value, direction: 'down', page: 1 };
+      writeUrl(); render(); scrollToCatalog();
+    });
+    sortDirection.addEventListener('click', () => {
+      state = { ...state, direction: state.direction === 'down' ? 'up' : 'down', page: 1 };
       writeUrl(); render(); scrollToCatalog();
     });
     list.addEventListener('click', (event) => {
@@ -304,5 +336,5 @@
     })();
   }
 
-  return { PAGE_SIZE, DIFFICULTY_LABELS, validateQuiz, validDateValue, sortQuizzes, arrangeQuizzes, countTags, paginationItems, getStateFromUrl, buildUrl, questionWord, init };
+  return { PAGE_SIZE, DIFFICULTY_LABELS, DIFFICULTY_ORDER, validateQuiz, validDateValue, sortQuizzes, arrangeQuizzes, sortTooltip, countTags, paginationItems, getStateFromUrl, buildUrl, questionWord, init };
 });

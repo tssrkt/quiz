@@ -73,23 +73,36 @@ def all_wrong(page):
     assert page.locator(".result-summary").inner_text() == f"Ваш результат: 0 из {len(QUIZ['questions'])} (0%)"
     recommendation = page.locator(".result-recommendation")
     assert recommendation.is_visible()
+    assert page.get_by_role("button", name="Пройти еще раз", exact=True).is_visible()
     assert "Что ж, некоторые вопросы оказались непростыми — и это отличный повод узнать больше! Если желаете разобраться в теме глубже, откройте сборник статей о лошадках, а затем попробуйте пройти викторину еще раз. Наверняка после этого результат вас приятно удивит." in recommendation.inner_text()
     assert "Попробуйте пройти викторину ещё раз." not in page.locator(".result-card").inner_text()
-    articles = recommendation.get_by_role("link", name="📖 СБОРНИК СТАТЕЙ О ЛОШАДКАХ")
+    articles = recommendation.get_by_role("link", name="📖📖 СБОРНИК СТАТЕЙ О ЛОШАДКАХ")
     assert articles.get_attribute("href") == "https://author.today/work/439719"
     assert articles.get_attribute("target") == "_blank"
     assert "noopener" in articles.get_attribute("rel")
-    assert articles.inner_text().count("📖") == 1
+    assert articles.inner_text().count("📖") == 2
     page.set_viewport_size({"width": 1440, "height": 900})
+    content = articles.locator(".result-recommendation__articles-content")
+    outer_before = articles.bounding_box()
+    content_before = content.bounding_box()
+    actions_before = page.locator(".share-actions").bounding_box()
     articles.hover()
-    hover_style = articles.evaluate("element => ({ transform: getComputedStyle(element).transform, shadow: getComputedStyle(element).boxShadow, decoration: getComputedStyle(element).textDecorationLine })")
+    page.wait_for_timeout(200)
+    hover_style = content.evaluate("element => ({ transform: getComputedStyle(element).transform, filter: getComputedStyle(element).filter })")
     assert hover_style["transform"] != "none"
-    assert hover_style["shadow"] != "none"
+    assert hover_style["filter"] != "none"
+    assert articles.evaluate("element => getComputedStyle(element).transform") == "none"
+    assert articles.bounding_box() == outer_before
+    assert page.locator(".share-actions").bounding_box() == actions_before
+    assert content.bounding_box()["y"] < content_before["y"]
+    assert abs(content.bounding_box()["y"] - content_before["y"] + 2) < 0.2
+    hover_style = articles.evaluate("element => ({ decoration: getComputedStyle(element).textDecorationLine, background: getComputedStyle(element).backgroundColor })")
     assert hover_style["decoration"] == "none"
     articles.focus()
     page.keyboard.press("Tab")
     page.keyboard.press("Shift+Tab")
     assert articles.evaluate("element => element.matches(':focus-visible')")
+    assert content.evaluate("element => getComputedStyle(element).transform") != "none"
     for width in (1440, 375):
         page.set_viewport_size({"width": width, "height": 900})
         assert not page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth")
@@ -159,6 +172,13 @@ def catalog_card_checks(page):
     page.goto(f"{BASE_URL}/quizzes.html")
     card = page.locator(".quiz-card").first
     card.wait_for()
+    criterion = page.locator("#sort-criterion")
+    direction = page.locator("[data-sort-direction]")
+    assert criterion.input_value() == "date"
+    assert direction.inner_text() == "↓"
+    assert direction.get_attribute("title") == "Сначала новые"
+    assert direction.get_attribute("aria-label") == "Сначала новые"
+    assert direction.inner_text() in ("↓", "↑")
     meta = card.locator(".quiz-card-meta")
     assert meta.locator(":scope > *").first.get_attribute("class") == "quiz-card-difficulty"
     assert card.locator(".quiz-card-difficulty").inner_text() == "Сложность: низкая"
@@ -171,6 +191,20 @@ def catalog_card_checks(page):
         page.set_viewport_size({"width": width, "height": 900})
         assert not page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth")
     assert page.evaluate("element => getComputedStyle(element).fontSize", card.locator(".quiz-card-description").element_handle()) == "17.4px"
+    page.get_by_role("button", name="Лошади", exact=True).first.click()
+    assert "tag=horses" in page.url
+    criterion.select_option("difficulty")
+    assert criterion.input_value() == "difficulty"
+    assert direction.inner_text() == "↓"
+    assert direction.get_attribute("title") == "Сначала лёгкие"
+    assert "tag=horses" in page.url and "page=1" in page.url and "direction=down" in page.url
+    direction.click()
+    assert direction.inner_text() == "↑"
+    assert direction.get_attribute("title") == "Сначала сложные"
+    criterion.select_option("title")
+    assert direction.inner_text() == "↓"
+    assert direction.get_attribute("title") == "От А до Я"
+    assert "tag=horses" in page.url
 
 
 def main():

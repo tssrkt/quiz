@@ -7,6 +7,7 @@ const {
   validateQuiz,
   sortQuizzes,
   arrangeQuizzes,
+  sortTooltip,
   countTags,
   paginationItems,
   getStateFromUrl,
@@ -45,12 +46,12 @@ const grouped = arrangeQuizzes([
   quiz(2, { slug: 'match-old', title: 'Бета', publication_date: '2025-01-01', tags: ['horses'] }),
   quiz(3, { slug: 'match-new', title: 'Альфа', publication_date: '2026-03-01', tags: ['horses', 'biology'] }),
   quiz(4, { slug: 'other-old', title: 'Гамма', publication_date: '2024-01-01', tags: ['biology'] })
-], 'horses', 'new');
-assert.deepEqual(grouped.map((item) => item.slug), ['match-new', 'match-old', 'other-new', 'other-old']);
+], 'horses', 'date', 'down');
+assert.deepEqual(grouped.map((item) => item.slug), ['match-new', 'match-old']);
 assert.equal(new Set(grouped.map((item) => item.slug)).size, grouped.length);
 const counts = countTags(grouped, [{ slug: 'horses' }, { slug: 'biology' }]);
 assert.equal(counts.get('horses'), 2);
-assert.equal(counts.get('biology'), 3);
+assert.equal(counts.get('biology'), 1);
 assert.equal(counts.has('hidden'), false);
 
 const dated = [
@@ -59,9 +60,26 @@ const dated = [
   quiz(3, { title: 'Ошибка даты', publication_date: '2026-99-99' }),
   quiz(4, { title: 'Старая', publication_date: '2025-01-01' })
 ];
-assert.deepEqual(sortQuizzes(dated, 'new').map((item) => item.title), ['Альфа', 'Бета', 'Старая', 'Ошибка даты']);
-assert.deepEqual(sortQuizzes(dated, 'old').map((item) => item.title), ['Старая', 'Альфа', 'Бета', 'Ошибка даты']);
-assert.deepEqual(sortQuizzes(dated, 'az').map((item) => item.title), ['Альфа', 'Бета', 'Ошибка даты', 'Старая']);
+assert.deepEqual(sortQuizzes(dated, 'date', 'down').map((item) => item.title), ['Альфа', 'Бета', 'Старая', 'Ошибка даты']);
+assert.deepEqual(sortQuizzes(dated, 'date', 'up').map((item) => item.title), ['Старая', 'Альфа', 'Бета', 'Ошибка даты']);
+assert.deepEqual(sortQuizzes(dated, 'title', 'down').map((item) => item.title), ['Альфа', 'Бета', 'Ошибка даты', 'Старая']);
+assert.deepEqual(sortQuizzes(dated, 'title', 'up').map((item) => item.title), ['Старая', 'Ошибка даты', 'Бета', 'Альфа']);
+
+const difficulties = [
+  quiz(1, { title: 'Средняя старая', difficulty: 'medium', publication_date: '2025-01-01' }),
+  quiz(2, { title: 'Высокая', difficulty: 'high', publication_date: '2026-01-01' }),
+  quiz(3, { title: 'Низкая', difficulty: 'low', publication_date: '2024-01-01' }),
+  quiz(4, { title: 'Средняя новая', difficulty: 'medium', publication_date: '2026-02-01' })
+];
+assert.deepEqual(sortQuizzes(difficulties, 'difficulty', 'down').map((item) => item.difficulty), ['low', 'medium', 'medium', 'high']);
+assert.deepEqual(sortQuizzes(difficulties, 'difficulty', 'up').map((item) => item.difficulty), ['high', 'medium', 'medium', 'low']);
+assert.deepEqual(sortQuizzes(difficulties, 'difficulty', 'down').filter((item) => item.difficulty === 'medium').map((item) => item.title), ['Средняя новая', 'Средняя старая']);
+assert.equal(sortTooltip('date', 'down'), 'Сначала новые');
+assert.equal(sortTooltip('date', 'up'), 'Сначала старые');
+assert.equal(sortTooltip('difficulty', 'down'), 'Сначала лёгкие');
+assert.equal(sortTooltip('difficulty', 'up'), 'Сначала сложные');
+assert.equal(sortTooltip('title', 'down'), 'От А до Я');
+assert.equal(sortTooltip('title', 'up'), 'От Я до А');
 
 assert.deepEqual(paginationItems(1, 1), []);
 assert.deepEqual(paginationItems(1, 12), [1, 2, 'ellipsis', 12]);
@@ -69,10 +87,15 @@ assert.deepEqual(paginationItems(6, 12), [1, 'ellipsis', 5, 6, 7, 'ellipsis', 12
 assert.deepEqual(paginationItems(12, 12), [1, 'ellipsis', 11, 12]);
 
 const visible = new Set(['horses', 'biology']);
-assert.deepEqual(getStateFromUrl('?tag=horses&sort=old&page=2', visible, 3), { tag: 'horses', sort: 'old', page: 2 });
-assert.deepEqual(getStateFromUrl('?tag=hidden&sort=popular&page=999', visible, 3), { tag: 'all', sort: 'new', page: 3 });
-assert.deepEqual(getStateFromUrl('?page=-4', visible, 3), { tag: 'all', sort: 'new', page: 1 });
-const url = buildUrl('https://example.test/quiz/quizzes.html?source=email&tag=horses', { tag: 'all', sort: 'az', page: 1 });
-assert.equal(url, '/quiz/quizzes.html?source=email&sort=az&page=1');
+assert.deepEqual(getStateFromUrl('?tag=horses&sort=difficulty&direction=up&page=2', visible, 3), { tag: 'horses', sort: 'difficulty', direction: 'up', page: 2 });
+assert.deepEqual(getStateFromUrl('?tag=hidden&sort=popular&direction=sideways&page=999', visible, 3), { tag: 'all', sort: 'date', direction: 'down', page: 3 });
+assert.deepEqual(getStateFromUrl('?page=-4', visible, 3), { tag: 'all', sort: 'date', direction: 'down', page: 1 });
+const url = buildUrl('https://example.test/quiz/quizzes.html?source=email&tag=horses', { tag: 'all', sort: 'title', direction: 'up', page: 1 });
+assert.equal(url, '/quiz/quizzes.html?source=email&sort=title&direction=up&page=1');
+
+const paged = Array.from({ length: 30 }, (_, index) => quiz(index, { title: `Название ${String(29 - index).padStart(2, '0')}`, tags: index < 27 ? ['horses'] : ['biology'] }));
+const filteredSorted = arrangeQuizzes(paged, 'horses', 'title', 'down');
+assert.equal(filteredSorted.length, 27);
+assert.deepEqual(filteredSorted.slice(0, PAGE_SIZE), sortQuizzes(filteredSorted, 'title', 'down').slice(0, PAGE_SIZE));
 
 console.log('catalog.test.js: все проверки пройдены');
