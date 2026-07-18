@@ -29,8 +29,16 @@
       else if (ids.has(item.id)) errors.push(`${label}: id «${item.id}» повторяется`);
       else ids.add(item.id);
       if (typeof item?.question !== 'string' || !item.question.trim()) errors.push(`${label}: отсутствует текст`);
-      if (!Array.isArray(item?.answers) || item.answers.length < 2 || item.answers.length > 6 || item.answers.some((answer) => typeof answer !== 'string' || !answer.trim())) errors.push(`${label}: требуется от 2 до 6 непустых ответов`);
-      if (typeof item?.correct_answer !== 'string' || !item.answers?.includes(item.correct_answer)) errors.push(`${label}: correct_answer должен совпадать с одним из ответов`);
+      if (!Array.isArray(item?.answers) || item.answers.length < 2 || item.answers.length > 6) errors.push(`${label}: требуется от 2 до 6 ответов`);
+      else {
+        const answerIds = new Set();
+        let correctCount = 0;
+        item.answers.forEach((answer) => {
+          if (!answer || typeof answer.id !== 'string' || typeof answer.text !== 'string' || typeof answer.correct !== 'boolean') errors.push(`${label}: вариант ответа заполнен некорректно`);
+          else { if (answerIds.has(answer.id)) errors.push(`${label}: id ответа «${answer.id}» повторяется`); answerIds.add(answer.id); if (answer.correct) correctCount += 1; }
+        });
+        if (correctCount !== 1) errors.push(`${label}: правильным должен быть ровно один вариант`);
+      }
       if (typeof item?.explanation !== 'string' || !item.explanation.trim()) errors.push(`${label}: объяснение обязательно`);
     });
     if (errors.length) {
@@ -179,7 +187,7 @@
     }
 
     function cardTemplate(quiz) {
-      const count = quiz.questions.length;
+      const count = quiz.question_count;
       const title = `${quiz.title} (${count} ${questionWord(count)})`;
       const cover = quiz.cover
         ? `<img src="${escapeHtml(quiz.cover)}" alt="Обложка викторины «${escapeHtml(quiz.title)}»" loading="lazy">`
@@ -277,22 +285,11 @@
 
     (async function load() {
       try {
-        const [quizFiles, tagFiles] = await Promise.all([fetchJson('data/quizzes/index.json'), fetchJson('data/tags/index.json')]);
-        if (!Array.isArray(quizFiles) || !Array.isArray(tagFiles)) throw new Error('Реестр данных должен быть массивом');
-        const tagResults = await Promise.allSettled(tagFiles.map((file) => fetchJson(`data/tags/${file}`)));
-        tagResults.forEach((result, index) => {
-          if (result.status === 'fulfilled' && typeof result.value?.slug === 'string') tags.set(result.value.slug, result.value);
-          else console.warn(`[Quiz] Тег «${tagFiles[index]}» пропущен из-за ошибки загрузки или данных.`, result.reason || result.value);
-        });
-        visibleTags = [...tags.values()].filter((tag) => tag.published === true).sort((a, b) => Number(a.order) - Number(b.order) || ruCollator.compare(a.name, b.name));
-        const quizResults = await Promise.allSettled(quizFiles.map((file) => fetchJson(`data/quizzes/${file}`)));
-        let skipped = 0;
-        quizResults.forEach((result, index) => {
-          if (result.status === 'rejected') { skipped += 1; console.error(`[Quiz] Викторина «${quizFiles[index]}» не загружена и пропущена.`, result.reason); }
-          else if (!validateQuiz(result.value, quizFiles[index])) skipped += 1;
-          else if (result.value.published) quizzes.push(result.value);
-        });
-        if (skipped && status) { status.hidden = false; status.textContent = skipped === 1 ? 'Одна викторина пропущена из-за ошибки данных.' : `Несколько викторин (${skipped}) пропущены из-за ошибок данных.`; }
+        const catalog = await fetchJson('data/catalog.json');
+        if (!Array.isArray(catalog?.tags) || !Array.isArray(catalog?.quizzes)) throw new Error('Некорректный формат каталога');
+        visibleTags = catalog.tags.map((tag) => ({ ...tag, published: true })).sort((a, b) => Number(a.order) - Number(b.order) || ruCollator.compare(a.name, b.name));
+        visibleTags.forEach((tag) => tags.set(tag.slug, tag));
+        quizzes = catalog.quizzes;
         readAndNormalizeUrl(); render();
       } catch (error) {
         console.error('[Quiz] Каталог не удалось загрузить.', error);

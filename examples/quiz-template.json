@@ -1,0 +1,44 @@
+{
+  "slug": "quiz-example",
+  "title": "Название викторины",
+  "published": false,
+  "publication_date": "2026-07-18",
+  "short_description": "Короткое описание для карточки каталога.",
+  "intro": "Вступительный текст перед началом прохождения.",
+  "cover": "img/covers/example.webp",
+  "tags": ["animals"],
+  "questions": [
+    {
+      "id": "question-01",
+      "question": "Какой вариант правильный на изображении?",
+      "image": "img/quiz/example.webp",
+      "image_alt": "Описание содержимого изображения",
+      "answers": [
+        {"id": "answer-01", "text": "Первый вариант", "correct": false},
+        {"id": "answer-02", "text": "Второй вариант", "correct": true},
+        {"id": "answer-03", "text": "Третий вариант", "correct": false},
+        {"id": "answer-04", "text": "Четвёртый вариант", "correct": false}
+      ],
+      "explanation": "Объяснение правильного ответа.",
+      "image_source": "Название источника",
+      "image_author": "Имя автора",
+      "image_source_url": "https://example.com/source"
+    },
+    {
+      "id": "question-02",
+      "question": "Вопрос без изображения?",
+      "image": "",
+      "image_alt": "",
+      "answers": [
+        {"id": "answer-01", "text": "Первый вариант", "correct": true},
+        {"id": "answer-02", "text": "Второй вариант", "correct": false},
+        {"id": "answer-03", "text": "Третий вариант", "correct": false},
+        {"id": "answer-04", "text": "Четвёртый вариант", "correct": false}
+      ],
+      "explanation": "Объяснение ответа на вопрос без изображения.",
+      "image_source": "",
+      "image_author": "",
+      "image_source_url": ""
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+'use strict';
+const assert = require('node:assert/strict');
+const core = require('../js/quiz.js');
+
+function makeQuiz(published = true) {
+  return {
+    slug: 'demo-quiz', title: 'Демо', intro: 'Вступление', published,
+    questions: [
+      { id: 'question-01', question: 'Первый?', explanation: 'Пояснение 1', answers: [{ id: 'a-01', text: 'Да', correct: true }, { id: 'a-02', text: 'Нет', correct: false }] },
+      { id: 'question-02', question: 'Второй?', explanation: 'Пояснение 2', answers: [{ id: 'a-01', text: 'Нет', correct: false }, { id: 'a-02', text: 'Да', correct: true }] }
+    ]
+  };
+}
+function answerAndAdvance(state, quiz, answerId) {
+  const answered = core.answerQuestion(state, quiz, answerId, '2026-01-01T00:00:00.000Z');
+  const advanced = core.advance(answered.state, quiz, '2026-01-01T00:00:01.000Z');
+  return { answered, advanced };
+}
+
+const quiz = makeQuiz(true);
+assert.equal(core.validateQuiz(quiz), true, '1: опубликованная викторина валидна');
+assert.equal(core.canOpenQuiz(quiz, false), true, '1: опубликованная открывается');
+assert.equal(core.canOpenQuiz(makeQuiz(false), true), true, '2: черновик открывается в preview');
+assert.equal(core.canOpenQuiz(makeQuiz(false), false), false, '3: черновик закрыт без preview');
+assert.equal(core.validateQuiz({}), false, 'повреждённые данные отклоняются');
+
+let state = core.freshState(quiz, '2026-01-01T00:00:00.000Z');
+const correct = core.answerQuestion(state, quiz, 'a-01');
+assert.equal(correct.accepted, true); assert.equal(correct.correct, true); assert.equal(correct.state.correct_count, 1, '4: первый правильный ответ');
+const repeated = core.answerQuestion(correct.state, quiz, 'a-02');
+assert.equal(repeated.accepted, false); assert.equal(repeated.state.correct_count, 1, '6: повторный выбор заблокирован');
+assert.equal(core.autoAdvanceDelay(true), 800, '7: правильный ответ переходит через 800 мс');
+assert.equal(core.autoAdvanceDelay(false), null, '8: неправильный ответ не переходит автоматически');
+assert.equal(quiz.questions[0].explanation, 'Пояснение 1', '9: пояснение доступно для неправильного ответа');
+
+state = core.freshState(quiz);
+const wrong = core.answerQuestion(state, quiz, 'a-02');
+assert.equal(wrong.accepted, true); assert.equal(wrong.correct, false); assert.equal(wrong.state.correct_count, 0, '5: первый неправильный ответ');
+const moved = core.advance(wrong.state, quiz);
+assert.equal(moved.advanced, true); assert.equal(moved.state.current_index, 1, '9: кнопка переводит дальше');
+const notDouble = core.advance(moved.state, quiz);
+assert.equal(notDouble.advanced, false); assert.equal(notDouble.state.current_index, 1, '20: двойной переход невозможен');
+const last = answerAndAdvance(moved.state, quiz, 'a-02');
+assert.equal(last.advanced.state.completed, true); assert.equal(last.advanced.state.current_index, 2, '10: последний вопрос завершает попытку');
+assert.equal(last.advanced.state.correct_count, 1, '11: правильные ответы подсчитаны');
+assert.equal(core.resultPercent(34, 40), 85, '12: процент округляется');
+assert.equal(core.resultMessage(90), 'Отличный результат!');
+assert.equal(core.resultMessage(89), 'Очень хороший результат!');
+assert.equal(core.resultMessage(74), 'Неплохо, но есть что повторить.');
+assert.equal(core.resultMessage(49), 'Попробуйте пройти викторину ещё раз.', '13: все диапазоны оценок');
+
+const saved = JSON.stringify(moved.state);
+const restored = core.restoreState(saved, quiz);
+assert.equal(restored.current_index, 1); assert.equal(restored.answers['question-01'].answer_id, 'a-02', '14: сохранение восстановлено');
+const restarted = core.freshState(quiz);
+assert.equal(restarted.current_index, 0); assert.equal(Object.keys(restarted.answers).length, 0, '15: начало заново');
+const changedQuiz = makeQuiz(); changedQuiz.questions[0].answers.push({ id: 'a-03', text: 'Может быть', correct: false });
+const incompatible = core.restoreState(saved, changedQuiz);
+assert.equal(incompatible.current_index, 0); assert.equal(Object.keys(incompatible.answers).length, 0, '16: несовместимое сохранение сброшено');
+
+assert.equal(core.shareText({ title: 'Масти лошадей' }, 34, 40), 'Мой результат — 34 из 40 (85%) в викторине «Масти лошадей». А какой результат будет у вас?', '17: текст публикации');
+assert.equal(core.directQuizUrl('https://example.test/quiz/quiz.html?quiz=x&preview=1', 'horse-colors'), 'https://example.test/quiz/quiz.html?quiz=horse-colors');
+assert.equal(core.shareMethod(false), 'copy', '18: fallback без Web Share');
+assert.equal(core.shareMethod(true), 'share');
+const social = core.socialShareUrls('https://example.test/quiz.html?quiz=horse-colors', 'Результат 85%');
+assert.equal(social.telegram, 'https://t.me/share/url?url=https%3A%2F%2Fexample.test%2Fquiz.html%3Fquiz%3Dhorse-colors&text=%D0%A0%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%2085%25');
+assert.match(social.vk, /^https:\/\/vk\.com\/share\.php\?url=/);
+assert.equal(core.prefersReducedMotion(() => ({ matches: true })), true);
+assert.equal(core.shouldConfetti(true, true), false); assert.equal(core.shouldConfetti(true, false), true, '19: reduced motion отключает конфетти');
+
+function runScenario(answerIds, closeAfterFirst = false) {
+  let attempt = core.freshState(quiz);
+  answerIds.forEach((answerId, index) => {
+    const step = answerAndAdvance(attempt, quiz, answerId); attempt = step.advanced.state;
+    if (closeAfterFirst && index === 0) attempt = core.restoreState(JSON.stringify(attempt), quiz);
+  });
+  return attempt;
+}
+assert.equal(runScenario(['a-01', 'a-02']).correct_count, 2, 'сценарий: все правильные');
+assert.equal(runScenario(['a-02', 'a-01']).correct_count, 0, 'сценарий: все неправильные');
+const mixed = runScenario(['a-01', 'a-01'], true);
+assert.equal(mixed.correct_count, 1); assert.equal(mixed.completed, true, 'сценарий: смешанный с восстановлением');
+
+console.log('quiz.test.js: 20 требований и 3 сценария пройдены');

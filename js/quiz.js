@@ -1,0 +1,203 @@
+(function (root, factory) {
+  'use strict';
+  const core = factory();
+  if (typeof module === 'object' && module.exports) module.exports = core;
+  else {
+    root.QuizEngineCore = core;
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => init(core));
+    else init(core);
+  }
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const STATE_VERSION = 2;
+  const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+  function canOpenQuiz(data, previewMode) { return data?.published === true || (data?.published === false && previewMode === true); }
+  function validateQuiz(data) {
+    if (!data || !SLUG_PATTERN.test(data.slug || '') || typeof data.title !== 'string' || typeof data.intro !== 'string' || typeof data.published !== 'boolean' || !Array.isArray(data.questions) || !data.questions.length) return false;
+    const questionIds = new Set();
+    return data.questions.every((question) => {
+      if (!question || !SLUG_PATTERN.test(question.id || '') || questionIds.has(question.id) || typeof question.question !== 'string' || typeof question.explanation !== 'string' || !Array.isArray(question.answers) || question.answers.length < 2 || question.answers.length > 6) return false;
+      questionIds.add(question.id);
+      const answerIds = new Set(); let correct = 0;
+      const answersValid = question.answers.every((answer) => {
+        if (!answer || !SLUG_PATTERN.test(answer.id || '') || answerIds.has(answer.id) || typeof answer.text !== 'string' || typeof answer.correct !== 'boolean') return false;
+        answerIds.add(answer.id); if (answer.correct) correct += 1; return true;
+      });
+      return answersValid && correct === 1;
+    });
+  }
+  function structureSignature(quiz) { return `${quiz.slug}|${quiz.questions.map((question) => `${question.id}:${question.answers.map((answer) => answer.id).join(',')}`).join('|')}`; }
+  function freshState(quiz, now = new Date().toISOString()) {
+    return { version: STATE_VERSION, signature: structureSignature(quiz), question_ids: quiz.questions.map((question) => question.id), current_index: 0, answers: {}, correct_count: 0, saved_at: now, completed: false };
+  }
+  function restoreState(raw, quiz, now) {
+    const fresh = freshState(quiz, now);
+    if (!raw) return fresh;
+    let saved;
+    try { saved = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { return fresh; }
+    if (!saved || saved.version !== STATE_VERSION || saved.signature !== fresh.signature || JSON.stringify(saved.question_ids) !== JSON.stringify(fresh.question_ids) || !Number.isInteger(saved.current_index) || saved.current_index < 0 || saved.current_index > quiz.questions.length || !saved.answers || typeof saved.answers !== 'object' || !Number.isInteger(saved.correct_count) || typeof saved.saved_at !== 'string' || typeof saved.completed !== 'boolean') return fresh;
+    const verified = {};
+    let correctCount = 0;
+    for (const [questionId, record] of Object.entries(saved.answers)) {
+      const question = quiz.questions.find((item) => item.id === questionId);
+      const answer = question?.answers.find((item) => item.id === record?.answer_id);
+      if (!question || !answer || typeof record.correct !== 'boolean' || record.correct !== answer.correct) return fresh;
+      verified[questionId] = { answer_id: answer.id, correct: answer.correct };
+      if (answer.correct) correctCount += 1;
+    }
+    if (correctCount !== saved.correct_count) return fresh;
+    for (let index = 0; index < quiz.questions.length; index += 1) {
+      const answered = Boolean(verified[quiz.questions[index].id]);
+      if (index < saved.current_index && !answered) return fresh;
+      if (index > saved.current_index && answered) return fresh;
+    }
+    if (saved.completed !== (saved.current_index === quiz.questions.length) || (saved.completed && Object.keys(verified).length !== quiz.questions.length)) return fresh;
+    return { ...saved, answers: verified };
+  }
+  function answerQuestion(state, quiz, answerId, now = new Date().toISOString()) {
+    if (state.completed) return { state, accepted: false, correct: false };
+    const question = quiz.questions[state.current_index];
+    if (!question || state.answers[question.id]) return { state, accepted: false, correct: false };
+    const answer = question.answers.find((item) => item.id === answerId);
+    if (!answer) return { state, accepted: false, correct: false };
+    const next = { ...state, answers: { ...state.answers, [question.id]: { answer_id: answer.id, correct: answer.correct } }, correct_count: state.correct_count + (answer.correct ? 1 : 0), saved_at: now };
+    return { state: next, accepted: true, correct: answer.correct };
+  }
+  function advance(state, quiz, now = new Date().toISOString()) {
+    if (state.completed) return { state, advanced: false };
+    const question = quiz.questions[state.current_index];
+    if (!question || !state.answers[question.id]) return { state, advanced: false };
+    const nextIndex = state.current_index + 1;
+    return { state: { ...state, current_index: Math.min(nextIndex, quiz.questions.length), completed: nextIndex >= quiz.questions.length, saved_at: now }, advanced: true };
+  }
+  function resultPercent(correct, total) { return total > 0 ? Math.round(correct / total * 100) : 0; }
+  function resultMessage(percent) {
+    if (percent >= 90) return 'Отличный результат!';
+    if (percent >= 75) return 'Очень хороший результат!';
+    if (percent >= 50) return 'Неплохо, но есть что повторить.';
+    return 'Попробуйте пройти викторину ещё раз.';
+  }
+  function shareText(quiz, correct, total) { const percent = resultPercent(correct, total); return `Мой результат — ${correct} из ${total} (${percent}%) в викторине «${quiz.title}». А какой результат будет у вас?`; }
+  function directQuizUrl(currentUrl, slug) { const url = new URL(currentUrl); url.search = ''; url.hash = ''; url.pathname = url.pathname.replace(/[^/]*$/, 'quiz.html'); url.searchParams.set('quiz', slug); return url.href; }
+  function prefersReducedMotion(matchMedia) { return Boolean(matchMedia?.('(prefers-reduced-motion: reduce)').matches); }
+  function autoAdvanceDelay(correct) { return correct ? 800 : null; }
+  function shouldConfetti(correct, reducedMotion) { return Boolean(correct && !reducedMotion); }
+  function shareMethod(webShareAvailable) { return webShareAvailable ? 'share' : 'copy'; }
+  function socialShareUrls(url, text) { return { telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, vk: `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(text)}` }; }
+  return { STATE_VERSION, canOpenQuiz, validateQuiz, structureSignature, freshState, restoreState, answerQuestion, advance, resultPercent, resultMessage, shareText, directQuizUrl, prefersReducedMotion, autoAdvanceDelay, shouldConfetti, shareMethod, socialShareUrls };
+});
+
+function init(core) {
+  'use strict';
+  const app = document.getElementById('quiz-app');
+  const previewBanner = document.getElementById('preview-banner');
+  if (!app) return;
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('quiz') || '';
+  const preview = params.get('preview') === '1';
+  const reduceMotion = core.prefersReducedMotion(window.matchMedia.bind(window));
+  let quiz, state, answerLocked = false, transitionScheduled = false;
+  const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[character]));
+  const storageKey = () => `quiz-progress:${quiz.slug}`;
+  const saveState = () => { try { localStorage.setItem(storageKey(), JSON.stringify(state)); } catch (error) { console.warn('[Quiz] Не удалось сохранить прогресс.', error); } };
+  const clearState = () => { try { localStorage.removeItem(storageKey()); } catch (error) { console.warn('[Quiz] Не удалось очистить прогресс.', error); } };
+  const errorScreen = (message) => { app.setAttribute('aria-busy', 'false'); app.innerHTML = `<div class="error-state" role="alert"><strong>${escapeHtml(message)}</strong><p><a class="button" href="quizzes.html">К списку викторин</a></p></div>`; };
+
+  function confetti(count = 22) {
+    if (reduceMotion) return;
+    const layer = document.createElement('div'); layer.className = 'confetti-layer'; layer.setAttribute('aria-hidden', 'true');
+    for (let index = 0; index < count; index += 1) {
+      const piece = document.createElement('i'); piece.style.setProperty('--x', `${8 + Math.random() * 84}%`); piece.style.setProperty('--delay', `${Math.random() * 100}ms`); piece.style.setProperty('--spin', `${Math.random() * 300 - 150}deg`); piece.className = `confetti-piece confetti-${index % 4}`; layer.appendChild(piece);
+    }
+    document.body.appendChild(layer); window.setTimeout(() => layer.remove(), 1100);
+  }
+  function preloadNextImage() { const next = quiz.questions[state.current_index + 1]; if (next?.image) { const image = new Image(); image.src = next.image; } }
+  function coverTemplate() { return quiz.cover ? `<img class="quiz-intro-cover" src="${escapeHtml(quiz.cover)}" alt="Обложка викторины «${escapeHtml(quiz.title)}»">` : ''; }
+  function imageTemplate(question) {
+    if (!question.image) return '';
+    const source = question.image_source_url ? `<a href="${escapeHtml(question.image_source_url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(question.image_source || 'Источник изображения')}</a>` : escapeHtml(question.image_source || '');
+    const credit = [question.image_author ? `Автор: ${escapeHtml(question.image_author)}` : '', source].filter(Boolean).join(' · ');
+    return `<figure class="question-image"><img src="${escapeHtml(question.image)}" alt="${escapeHtml(question.image_alt || '')}">${credit ? `<figcaption>${credit}</figcaption>` : ''}</figure>`;
+  }
+  function restart() { transitionScheduled = false; answerLocked = false; clearState(); state = core.freshState(quiz); saveState(); renderIntro(); }
+  function renderIntro() {
+    const hasProgress = Object.keys(state.answers).length > 0 && !state.completed;
+    app.innerHTML = `<section class="quiz-intro">${coverTemplate()}<p class="eyebrow">${quiz.questions.length} вопросов</p><h1>${escapeHtml(quiz.title)}</h1><p class="lead">${escapeHtml(quiz.intro)}</p><div class="quiz-intro-actions"><button class="button" type="button" data-start>${hasProgress ? 'Продолжить' : 'Начать викторину'}</button>${hasProgress ? '<button class="button button-secondary" type="button" data-restart>Начать заново</button>' : ''}</div></section>`;
+    app.querySelector('[data-start]').addEventListener('click', renderQuestion);
+    app.querySelector('[data-restart]')?.addEventListener('click', restart);
+  }
+  function advanceOnce() {
+    if (!transitionScheduled) return;
+    transitionScheduled = false;
+    const result = core.advance(state, quiz); if (!result.advanced) return;
+    state = result.state; saveState(); answerLocked = false;
+    if (state.completed) renderResult(); else renderQuestion();
+  }
+  function renderQuestion(celebrateCorrect = false) {
+    if (state.completed || state.current_index >= quiz.questions.length) { renderResult(); return; }
+    transitionScheduled = false; answerLocked = Boolean(state.answers[quiz.questions[state.current_index].id]);
+    const question = quiz.questions[state.current_index]; const record = state.answers[question.id];
+    const answers = question.answers.map((answer) => {
+      const selected = record?.answer_id === answer.id;
+      const status = record ? (answer.correct ? ' is-correct' : selected ? ' is-wrong' : '') : '';
+      const icon = record && answer.correct ? '<span class="answer-icon" aria-hidden="true">✓</span><span class="visually-hidden">Правильный ответ.</span>' : record && selected ? '<span class="answer-icon" aria-hidden="true">×</span><span class="visually-hidden">Неправильный ответ.</span>' : '';
+      return `<button class="answer-option${status}" type="button" data-answer="${escapeHtml(answer.id)}" ${record ? 'disabled' : ''}>${icon}<span>${escapeHtml(answer.text)}</span></button>`;
+    }).join('');
+    const correct = record?.correct === true;
+    const feedback = record ? `<div class="answer-feedback${correct ? ' is-success' : ' is-error'}" role="status" aria-live="polite"><strong>${correct ? 'Верно!' : 'Неверно'}</strong>${correct ? '' : `<p>${escapeHtml(question.explanation)}</p><button class="button" type="button" data-next>${state.current_index + 1 === quiz.questions.length ? 'Показать результат' : 'Следующий вопрос'}</button>`}</div>` : '<div class="answer-feedback-placeholder" aria-live="polite"></div>';
+    app.innerHTML = `<section class="question-card"><p class="quiz-name">${escapeHtml(quiz.title)}</p><div class="quiz-progress"><span id="question-position">Вопрос ${state.current_index + 1} из ${quiz.questions.length}</span><progress aria-labelledby="question-position" value="${state.current_index + 1}" max="${quiz.questions.length}">${state.current_index + 1}/${quiz.questions.length}</progress></div>${imageTemplate(question)}<h1>${escapeHtml(question.question)}</h1><div class="answer-list" aria-label="Варианты ответа">${answers}</div>${feedback}</section>`;
+    preloadNextImage();
+    app.querySelectorAll('[data-answer]').forEach((button) => button.addEventListener('click', () => selectAnswer(button.dataset.answer)));
+    app.querySelector('[data-next]')?.addEventListener('click', () => { if (transitionScheduled) return; transitionScheduled = true; advanceOnce(); });
+    if (correct) { if (celebrateCorrect) confetti(); transitionScheduled = true; window.setTimeout(advanceOnce, core.autoAdvanceDelay(true)); }
+  }
+  function selectAnswer(answerId) {
+    if (answerLocked || transitionScheduled) return;
+    answerLocked = true;
+    const result = core.answerQuestion(state, quiz, answerId);
+    if (!result.accepted) return;
+    state = result.state; saveState(); renderQuestion(result.correct);
+  }
+  async function copyResult(text, status) {
+    try {
+      let copied = false;
+      if (navigator.clipboard && window.isSecureContext) { try { await navigator.clipboard.writeText(text); copied = true; } catch (error) { console.warn('[Quiz] Clipboard API недоступен, используется резервное копирование.', error); } }
+      if (!copied) { const area = document.createElement('textarea'); area.value = text; area.setAttribute('readonly', ''); area.className = 'copy-helper'; document.body.appendChild(area); area.select(); copied = document.execCommand('copy'); area.remove(); }
+      if (!copied) throw new Error('copy failed');
+      status.textContent = 'Результат скопирован.'; window.setTimeout(() => { status.textContent = ''; }, 2500); return true;
+    } catch (error) { console.warn('[Quiz] Копирование недоступно.', error); status.textContent = 'Не удалось скопировать результат.'; return false; }
+  }
+  function openExternal(url) { const opened = window.open(url, '_blank', 'noopener,noreferrer'); if (opened) opened.opener = null; }
+  function renderResult() {
+    state = { ...state, completed: true, current_index: quiz.questions.length, saved_at: new Date().toISOString() }; saveState();
+    const total = quiz.questions.length; const percent = core.resultPercent(state.correct_count, total); const message = core.resultMessage(percent); const text = core.shareText(quiz, state.correct_count, total); const url = core.directQuizUrl(location.href, quiz.slug); const sharePayload = `${text}\n${url}`;
+    app.innerHTML = `<section class="result-card"><p class="eyebrow">Викторина завершена</p><h1>${escapeHtml(quiz.title)}</h1><p class="result-score">${state.correct_count} из ${total}</p><p class="result-percent">${percent}%</p><h2>${escapeHtml(message)}</h2><div class="share-actions"><button class="button" type="button" data-share>Поделиться</button><button class="button button-secondary" type="button" data-telegram>Telegram</button><button class="button button-secondary" type="button" data-vk>ВКонтакте</button><button class="button button-secondary" type="button" data-copy>Скопировать результат</button></div><p class="share-status" role="status" aria-live="polite"></p><div class="result-actions"><button class="button" type="button" data-restart>Пройти ещё раз</button><a class="button button-secondary" href="quizzes.html">К списку викторин</a></div></section>`;
+    const status = app.querySelector('.share-status');
+    app.querySelector('[data-share]').addEventListener('click', async () => { if (navigator.share) { try { await navigator.share({ title: quiz.title, text, url }); return; } catch (error) { if (error.name === 'AbortError') return; } } await copyResult(sharePayload, status); });
+    app.querySelector('[data-copy]').addEventListener('click', () => copyResult(sharePayload, status));
+    const socialUrls = core.socialShareUrls(url, text);
+    app.querySelector('[data-telegram]').addEventListener('click', () => openExternal(socialUrls.telegram));
+    app.querySelector('[data-vk]').addEventListener('click', () => openExternal(socialUrls.vk));
+    app.querySelector('[data-restart]').addEventListener('click', restart);
+    if (percent >= 90) confetti(34);
+  }
+  async function load() {
+    if (location.protocol === 'file:') { errorScreen('Для запуска викторины откройте собранный сайт через локальный HTTP-сервер.'); return; }
+    if (!slug) { errorScreen('Не указана викторина для открытия.'); return; }
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) { errorScreen('Викторина не найдена.'); return; }
+    try {
+      const response = await fetch(`data/quizzes/${encodeURIComponent(slug)}.json`);
+      if (response.status === 404) { errorScreen('Викторина не найдена.'); return; }
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      quiz = await response.json();
+      if (!core.validateQuiz(quiz) || quiz.slug !== slug) { console.error('[Quiz] Повреждённый JSON или несовместимые данные викторины.'); errorScreen('Эту викторину сейчас невозможно открыть.'); return; }
+      if (!core.canOpenQuiz(quiz, preview)) { errorScreen('Эта викторина пока не опубликована.'); return; }
+      if (!quiz.published) previewBanner.hidden = false;
+      let raw = null; try { raw = localStorage.getItem(storageKey()); } catch {}
+      state = core.restoreState(raw, quiz); saveState(); app.setAttribute('aria-busy', 'false');
+      if (state.completed) renderResult(); else renderIntro();
+    } catch (error) { console.error('[Quiz] Ошибка загрузки викторины.', error); errorScreen('Не удалось загрузить викторину. Попробуйте позже.'); }
+  }
+  load();
+}

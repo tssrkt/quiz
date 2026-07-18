@@ -23,7 +23,6 @@ content:
     filename:
       template: "{slug}.json"
       field: false
-    exclude: [index.json]
     view:
       primary: name
       fields: [name, slug, order, published]
@@ -64,7 +63,6 @@ content:
     filename:
       template: "{slug}.json"
       field: false
-    exclude: [index.json]
     view:
       primary: title
       fields: [title, slug, published, publication_date]
@@ -161,16 +159,32 @@ content:
             description: Обязателен для содержательного изображения; оставьте пустым для декоративного.
           - name: answers
             label: Варианты ответа
-            type: string
+            type: object
             required: true
             list:
               min: 2
               max: 6
-          - name: correct_answer
-            label: Правильный вариант
-            type: string
-            required: true
-            description: Должен полностью совпадать с одним из вариантов ответа.
+              collapsible:
+                collapsed: false
+                summary: "{text} — {id}"
+            fields:
+              - name: id
+                label: Уникальный идентификатор
+                type: string
+                required: true
+                pattern:
+                  regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                  message: Используйте латинские строчные буквы, цифры и дефисы.
+              - name: text
+                label: Текст варианта
+                type: string
+                required: true
+              - name: correct
+                label: Правильный ответ
+                type: boolean
+                required: true
+                default: false
+                description: Во всём вопросе отметьте ровно один правильный вариант.
           - name: explanation
             label: Объяснение
             type: text
