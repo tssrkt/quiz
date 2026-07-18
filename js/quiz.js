@@ -86,7 +86,12 @@
     return { state: { ...state, current_index: Math.min(nextIndex, quiz.questions.length), completed: nextIndex >= quiz.questions.length, saved_at: now }, advanced: true };
   }
   function resultPercent(correct, total) { return total > 0 ? Math.round(correct / total * 100) : 0; }
-  function shouldShowLowResult(percent) { return percent < 50; }
+  function resultRecommendation(percent) {
+    if (percent < 50) return 'Что ж, некоторые вопросы оказались непростыми — и это отличный повод узнать больше! Если желаете разобраться в теме глубже, откройте сборник статей о лошадках, а затем попробуйте пройти викторину еще раз. Наверняка после этого результат вас приятно удивит.';
+    if (percent < 75) return 'Неплохой результат! Вы уже многое знаете о лошадках, но некоторые вопросы все же оказались непростыми. Если желаете разобраться в теме глубже, откройте сборник статей, а затем попробуйте пройти викторину повторно. Наверняка после этого результат окажется еще лучше.';
+    if (percent < 100) return 'Хороший результат! Вы разбираетесь в теме и уже совсем близки к безупречности. В сборнике статей о лошадках можно найти еще больше интересных фактов, которые помогут заполнить оставшиеся пробелы и, возможно, в следующий раз ответить правильно на все вопросы.';
+    return null;
+  }
   function resultMessage(percent) {
     if (percent >= 90) return 'Отличный результат!';
     if (percent >= 75) return 'Очень хороший результат!';
@@ -100,7 +105,7 @@
   function shouldConfetti(correct, reducedMotion) { return Boolean(correct && !reducedMotion); }
   function shareMethod(webShareAvailable) { return webShareAvailable ? 'share' : 'copy'; }
   function socialShareUrls(url, text) { return { telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, vk: `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(text)}` }; }
-  return { STATE_VERSION, canOpenQuiz, validateQuiz, structureSignature, versionedUrl, freshState, restoreState, answerQuestion, advance, resultPercent, shouldShowLowResult, resultMessage, shareText, directQuizUrl, prefersReducedMotion, autoAdvanceDelay, shouldConfetti, shareMethod, socialShareUrls };
+  return { STATE_VERSION, canOpenQuiz, validateQuiz, structureSignature, versionedUrl, freshState, restoreState, answerQuestion, advance, resultPercent, resultRecommendation, resultMessage, shareText, directQuizUrl, prefersReducedMotion, autoAdvanceDelay, shouldConfetti, shareMethod, socialShareUrls };
 });
 
 function init(core) {
@@ -196,9 +201,9 @@ function init(core) {
     setWideLayout(false);
     state = { ...state, completed: true, current_index: quiz.questions.length, saved_at: new Date().toISOString() }; saveState();
     const total = quiz.questions.length; const percent = core.resultPercent(state.correct_count, total); const message = core.resultMessage(percent); const text = core.shareText(quiz, state.correct_count, total); const url = core.directQuizUrl(location.href, quiz.slug); const sharePayload = `${text}\n${url}`;
-    const isLowResult = core.shouldShowLowResult(percent);
-    const resultDetails = isLowResult
-      ? `<p class="result-summary">Ваш результат: ${state.correct_count} из ${total} (${percent}%)</p><div class="low-result"><p>Что ж, некоторые вопросы оказались непростыми — и это отличный повод узнать больше! Если желаете разобраться в теме глубже, откройте сборник статей о лошадках, а затем попробуйте пройти викторину еще раз. Наверняка после этого результат вас приятно удивит.</p><a class="low-result__articles" href="https://author.today/work/439719" target="_blank" rel="noopener noreferrer">📖 Сборник статей о лошадках</a></div>`
+    const recommendation = core.resultRecommendation(percent);
+    const resultDetails = recommendation
+      ? `<p class="result-summary">Ваш результат: ${state.correct_count} из ${total} (${percent}%)</p><div class="result-recommendation"><p>${escapeHtml(recommendation)}</p><a class="result-recommendation__articles" href="https://author.today/work/439719" target="_blank" rel="noopener noreferrer">📖 СБОРНИК СТАТЕЙ О ЛОШАДКАХ</a></div>`
       : `<p class="result-score">${state.correct_count} из ${total}</p><p class="result-percent">${percent}%</p><h2>${escapeHtml(message)}</h2>`;
     app.innerHTML = `<section class="result-card"><p class="eyebrow">Викторина завершена</p><h1>${escapeHtml(quiz.title)}</h1>${resultDetails}<div class="share-actions"><button class="button" type="button" data-share>Поделиться</button><button class="button button-secondary" type="button" data-telegram>Telegram</button><button class="button button-secondary" type="button" data-vk>ВКонтакте</button><button class="button button-secondary" type="button" data-copy>Скопировать результат</button></div><p class="share-status" role="status" aria-live="polite"></p><div class="result-actions"><button class="button" type="button" data-restart>Пройти ещё раз</button><a class="button button-secondary" href="quizzes.html">К списку викторин</a></div></section>`;
     const status = app.querySelector('.share-status');
