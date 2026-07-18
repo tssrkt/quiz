@@ -14,7 +14,8 @@ class PagesWorkflowTests(unittest.TestCase):
     def test_runs_for_main_and_can_be_started_manually(self):
         self.assertRegex(self.workflow, r"(?m)^\s+branches:\s*\n\s+- main\s*$")
         self.assertRegex(self.workflow, r"(?m)^\s+workflow_dispatch:\s*$")
-        self.assertRegex(self.workflow, r"uses: actions/checkout@v6\s+with:\s+ref: main")
+        self.assertIn("uses: actions/checkout@v6", self.workflow)
+        self.assertNotRegex(self.workflow, r"(?m)^\s+ref: main\s*$")
 
     def test_uses_single_branch_publication_mechanism(self):
         self.assertIn("git push --force origin HEAD:gh-pages", self.workflow)
@@ -43,6 +44,16 @@ class PagesWorkflowTests(unittest.TestCase):
         self.assertIn('git config user.name "github-actions[bot]"', self.workflow)
         self.assertNotRegex(self.workflow, r"(?m)^\s+pages: write\s*$")
         self.assertNotRegex(self.workflow, r"(?m)^\s+id-token: write\s*$")
+
+    def test_stale_runs_cannot_publish(self):
+        self.assertRegex(self.workflow, r"concurrency:\s+group: pages-publish\s+cancel-in-progress: true")
+        freshness = self.workflow.index("git fetch origin main")
+        comparison = self.workflow.index('git rev-parse origin/main')
+        condition = self.workflow.index("if: steps.freshness.outputs.current == 'true'")
+        push = self.workflow.index("git push --force origin HEAD:gh-pages")
+        self.assertLess(freshness, comparison)
+        self.assertLess(comparison, condition)
+        self.assertLess(condition, push)
 
 
 if __name__ == "__main__":

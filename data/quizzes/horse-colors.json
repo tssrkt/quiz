@@ -13,28 +13,23 @@
   ],
   "questions": [
     {
-      "id": "horse-colors-01",
       "question": "Что это за масть?",
-      "image": "img/quiz/1.webp",
+      "image": "img/quiz/horse-colors/01.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
-          "id": "white",
           "text": "Белая",
           "correct": false
         },
         {
-          "id": "grey",
           "text": "Серая",
           "correct": true
         },
         {
-          "id": "izabel",
           "text": "Изабелловая",
           "correct": false
         },
         {
-          "id": "black-roan",
           "text": "Вороно-чалая",
           "correct": false
         }
@@ -44,28 +39,23 @@
       "image_author": "Неизвестен"
     },
     {
-      "id": "horse-colors-02",
       "question": "Что это за масть?",
-      "image": "img/quiz/2-1.webp",
+      "image": "img/quiz/horse-colors/02.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
-          "id": "answer-01",
           "text": "Гнедая",
           "correct": false
         },
         {
-          "id": "answer-02",
           "text": "Рыжая с ОЗВ",
           "correct": true
         },
         {
-          "id": "answer-03",
           "text": "Игреневая",
           "correct": false
         },
         {
-          "id": "answer-04",
           "text": "Соловая",
           "correct": false
         }
@@ -75,28 +65,23 @@
       "image_author": "Неизвестен"
     },
     {
-      "id": "horse-colors-03",
       "question": "Что за мастевое явление у этого коня?",
-      "image": "img/quiz/3-1.webp",
+      "image": "img/quiz/horse-colors/03.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
-          "id": "answer-01",
           "text": "Зональное потемнение",
           "correct": false
         },
         {
-          "id": "answer-02",
           "text": "ОЗВ (осветление защитного волоса)",
           "correct": false
         },
         {
-          "id": "answer-03",
           "text": "Подласость",
           "correct": true
         },
         {
-          "id": "answer-04",
           "text": "Рабикано",
           "correct": false
         }
@@ -106,28 +91,23 @@
       "image_author": "Неизвестен"
     },
     {
-      "id": "horse-colors-04",
       "question": "Что это за масть?",
-      "image": "img/quiz/4-1.webp",
+      "image": "img/quiz/horse-colors/04.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
-          "id": "answer-01",
           "text": "Светло-гнедая с ЗП",
           "correct": false
         },
         {
-          "id": "answer-02",
           "text": "Буланая с ЗП",
           "correct": true
         },
         {
-          "id": "answer-03",
           "text": "Саврасая с ЗП",
           "correct": false
         },
         {
-          "id": "answer-04",
           "text": "Рыжая с ЗП",
           "correct": false
         }
@@ -137,28 +117,23 @@
       "image_author": "Неизвестен"
     },
     {
-      "id": "horse-colors-05",
       "question": "Что это за масть?",
-      "image": "img/quiz/5.webp",
+      "image": "img/quiz/horse-colors/05.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
-          "id": "answer-01",
           "text": "Гнедая",
           "correct": false
         },
         {
-          "id": "answer-02",
           "text": "Буланая",
           "correct": false
         },
         {
-          "id": "answer-03",
           "text": "Рыжая с ЗП",
           "correct": true
         },
         {
-          "id": "answer-04",
           "text": "Саврасая",
           "correct": false
         }

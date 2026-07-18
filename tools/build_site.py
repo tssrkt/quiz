@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import datetime as dt
+import hashlib
 import json
 import re
 import shutil
@@ -16,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "_site"
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 HTML_FILES = ("index.html", "quizzes.html", "quiz.html", "contacts.html")
-COPY_DIRS = ("css", "js", "img")
+COPY_DIRS = ("css", "js")
 
 
 class ContentError(Exception):
@@ -150,21 +152,21 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
         if not isinstance(questions, list) or not questions:
             errors.append(f"{label}.questions: требуется непустой массив")
             questions = []
-        question_ids: set[str] = set()
         for q_index, question in enumerate(questions, 1):
             qlabel = f"{label}.questions[{q_index}]"
             if not isinstance(question, dict):
                 errors.append(f"{qlabel}: требуется объект")
                 continue
-            question_id = require_string(question, "id", qlabel, errors)
-            validate_slug(question_id, f"{qlabel}.id", errors)
-            if question_id in question_ids:
-                errors.append(f"{qlabel}.id: повторяющийся идентификатор «{question_id}»")
-            question_ids.add(question_id)
+            if "id" in question:
+                errors.append(f"{qlabel}.id: ручной идентификатор не допускается")
             require_string(question, "question", qlabel, errors)
             require_string(question, "explanation", qlabel, errors)
             image = question.get("image", "")
             validate_local_image(image, "img/quiz/", f"{qlabel}.image", errors)
+            if isinstance(image, str) and image:
+                image_parts = Path(image).parts
+                if len(image_parts) > 3 and image_parts[:2] == ("img", "quiz") and image_parts[2] != slug:
+                    errors.append(f"{qlabel}.image: папка изображения должна совпадать со slug «{slug}»")
             if image and not isinstance(question.get("image_alt"), str):
                 errors.append(f"{qlabel}.image_alt: для изображения требуется строка")
             validate_external_url(question.get("image_source_url", ""), f"{qlabel}.image_source_url", errors)
@@ -172,18 +174,14 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
             if not isinstance(answers, list) or not 2 <= len(answers) <= 6:
                 errors.append(f"{qlabel}.answers: требуется от 2 до 6 вариантов")
                 answers = []
-            answer_ids: set[str] = set()
             correct_count = 0
             for a_index, answer in enumerate(answers, 1):
                 alabel = f"{qlabel}.answers[{a_index}]"
                 if not isinstance(answer, dict):
                     errors.append(f"{alabel}: требуется объект")
                     continue
-                answer_id = require_string(answer, "id", alabel, errors)
-                validate_slug(answer_id, f"{alabel}.id", errors)
-                if answer_id in answer_ids:
-                    errors.append(f"{alabel}.id: повторяющийся идентификатор «{answer_id}»")
-                answer_ids.add(answer_id)
+                if "id" in answer:
+                    errors.append(f"{alabel}.id: ручной идентификатор не допускается")
                 require_string(answer, "text", alabel, errors)
                 if not isinstance(answer.get("correct"), bool):
                     errors.append(f"{alabel}.correct: требуется true или false")
@@ -194,7 +192,29 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
         quizzes.append(data)
     if errors:
         raise ContentError("\n".join(errors))
-    return quizzes
+    return [normalize_quiz(quiz) for quiz in quizzes]
+
+
+def normalize_quiz(source: dict) -> dict:
+    quiz = copy.deepcopy(source)
+    slug = quiz["slug"]
+    for q_index, question in enumerate(quiz["questions"], 1):
+        question["id"] = f"{slug}-question-{q_index:03d}"
+        image = question.get("image", "")
+        if image:
+            question["_source_image"] = image
+            question["image"] = f"img/quiz/{slug}/{q_index:02d}{Path(image).suffix.lower()}"
+        for a_index, answer in enumerate(question["answers"], 1):
+            answer["id"] = f"answer-{a_index:02d}"
+    version_quiz = copy.deepcopy(quiz)
+    image_hashes = []
+    for question in version_quiz["questions"]:
+        source_image = question.pop("_source_image", None)
+        image_hashes.append(hashlib.sha256((ROOT / source_image).read_bytes()).hexdigest() if source_image else "")
+    version_payload = {"quiz": version_quiz, "question_image_sha256": image_hashes}
+    version_data = json.dumps(version_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    quiz["content_version"] = hashlib.sha256(version_data).hexdigest()
+    return quiz
 
 
 def make_catalog(tags: list[dict], quizzes: list[dict]) -> dict:
@@ -212,6 +232,7 @@ def make_catalog(tags: list[dict], quizzes: list[dict]) -> dict:
             "cover": quiz.get("cover", ""),
             "tags": quiz["tags"],
             "question_count": len(quiz["questions"]),
+            "content_version": quiz["content_version"],
         }
         for quiz in quizzes if quiz["published"]
     ]
@@ -229,7 +250,20 @@ def build(output: Path = OUTPUT) -> dict:
         shutil.copy2(ROOT / filename, output / filename)
     for dirname in COPY_DIRS:
         shutil.copytree(ROOT / dirname, output / dirname, ignore=shutil.ignore_patterns(".gitkeep"))
-    shutil.copytree(ROOT / "data", output / "data")
+    shutil.copytree(ROOT / "img" / "covers", output / "img" / "covers", ignore=shutil.ignore_patterns(".gitkeep"))
+    shutil.copytree(ROOT / "data" / "tags", output / "data" / "tags")
+    quiz_output = output / "data" / "quizzes"
+    quiz_output.mkdir(parents=True)
+    for quiz in quizzes:
+        for question in quiz["questions"]:
+            source_image = question.pop("_source_image", "")
+            if source_image:
+                destination = output / question["image"]
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / source_image, destination)
+        with (quiz_output / f"{quiz['slug']}.json").open("w", encoding="utf-8", newline="\n") as stream:
+            json.dump(quiz, stream, ensure_ascii=False, indent=2)
+            stream.write("\n")
     with (output / "data" / "catalog.json").open("w", encoding="utf-8", newline="\n") as stream:
         json.dump(catalog, stream, ensure_ascii=False, indent=2)
         stream.write("\n")

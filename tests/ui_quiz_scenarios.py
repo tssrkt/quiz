@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROFILE = ROOT / ".ui-test-profile"
 BASE_URL = "http://127.0.0.1:8766"
 QUIZ_URL = f"{BASE_URL}/quiz.html?quiz=horse-colors"
-QUIZ = json.loads((ROOT / "data/quizzes/horse-colors.json").read_text(encoding="utf-8"))
+QUIZ = json.loads((ROOT / "_site/data/quizzes/horse-colors.json").read_text(encoding="utf-8"))
 DRAFT_PATH = ROOT / "_site/data/quizzes/ui-draft.json"
 BROKEN_PATH = ROOT / "_site/data/quizzes/ui-broken.json"
 
@@ -43,7 +43,7 @@ def all_correct(page):
         page.get_by_text("Верно!").wait_for()
         assert page.locator(".answer-option.is-correct .answer-icon").inner_text() == "✓"
         wait_next(page, index)
-    assert page.locator(".result-score").inner_text() == "4 из 4"
+    assert page.locator(".result-score").inner_text() == f"{len(QUIZ['questions'])} из {len(QUIZ['questions'])}"
     assert page.locator(".result-percent").inner_text() == "100%"
 
 
@@ -54,13 +54,14 @@ def all_wrong(page):
         page.get_by_text("Неверно", exact=True).wait_for()
         assert page.locator(".answer-option.is-wrong .answer-icon").inner_text() == "×"
         assert page.locator(".answer-option.is-correct .answer-icon").inner_text() == "✓"
-        assert question["explanation"] in page.locator(".answer-feedback").inner_text()
+        feedback_text = page.locator(".answer-feedback").inner_text()
+        assert question["explanation"].strip() in feedback_text, f"Вопрос {index + 1}: {feedback_text!r}"
         if index == 0:
             page.wait_for_timeout(1000)
-            assert page.get_by_text("Вопрос 1 из 4").is_visible()
+            assert page.get_by_text(f"Вопрос 1 из {len(QUIZ['questions'])}").is_visible()
         page.locator("[data-next]").click()
         wait_next(page, index)
-    assert page.locator(".result-score").inner_text() == "0 из 4"
+    assert page.locator(".result-score").inner_text() == f"0 из {len(QUIZ['questions'])}"
     assert page.locator(".result-percent").inner_text() == "0%"
     page.evaluate("Object.defineProperty(navigator, 'share', {value: undefined, configurable: true})")
     page.locator("[data-share]").click()
@@ -76,13 +77,13 @@ def mixed_with_reload(context, page):
     page.locator(f'[data-answer="{chosen_id(second, False)}"]').click()
     page.get_by_text("Неверно", exact=True).wait_for()
     page.locator("[data-next]").click()
-    page.get_by_text("Вопрос 3 из 4").wait_for()
+    page.get_by_text(f"Вопрос 3 из {len(QUIZ['questions'])}").wait_for()
     page.close()
     page = context.new_page()
     page.goto(QUIZ_URL)
     page.get_by_role("button", name="Продолжить").click()
-    page.get_by_text("Вопрос 3 из 4").wait_for()
-    for index in (2, 3):
+    page.get_by_text(f"Вопрос 3 из {len(QUIZ['questions'])}").wait_for()
+    for index in range(2, len(QUIZ["questions"])):
         question = QUIZ["questions"][index]
         answer_id = chosen_id(question, index == 2)
         page.locator(f'[data-answer="{answer_id}"]').click()
@@ -91,8 +92,8 @@ def mixed_with_reload(context, page):
         else:
             page.locator("[data-next]").click()
             wait_next(page, index)
-    assert page.locator(".result-score").inner_text() == "2 из 4"
-    assert page.locator(".result-percent").inner_text() == "50%"
+    assert page.locator(".result-score").inner_text() == f"2 из {len(QUIZ['questions'])}"
+    assert page.locator(".result-percent").inner_text() == "40%"
     return page
 
 

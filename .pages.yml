@@ -132,15 +132,8 @@ content:
           min: 1
           collapsible:
             collapsed: true
-            summary: "{question} — {id}"
+            summary: "{question}"
         fields:
-          - name: id
-            label: Уникальный идентификатор
-            type: string
-            required: true
-            pattern:
-              regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-              message: Используйте латинские строчные буквы, цифры и дефисы.
           - name: question
             label: Текст вопроса
             type: text
@@ -166,15 +159,8 @@ content:
               max: 6
               collapsible:
                 collapsed: false
-                summary: "{text} — {id}"
+                summary: "{text}"
             fields:
-              - name: id
-                label: Уникальный идентификатор
-                type: string
-                required: true
-                pattern:
-                  regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-                  message: Используйте латинские строчные буквы, цифры и дефисы.
               - name: text
                 label: Текст варианта
                 type: string

@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: pages-publish
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build-and-publish:
@@ -19,8 +19,6 @@ jobs:
     steps:
       - name: Checkout main
         uses: actions/checkout@v6
-        with:
-          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -51,8 +49,11 @@ jobs:
           quizzes = catalog.get("quizzes")
           if not isinstance(quizzes, list):
               raise SystemExit("Invalid generated catalog: catalog.quizzes must be a list")
-          if not any(isinstance(quiz, dict) and quiz.get("slug") == "horse-colors" for quiz in quizzes):
+          horse = next((quiz for quiz in quizzes if isinstance(quiz, dict) and quiz.get("slug") == "horse-colors"), None)
+          if horse is None:
               raise SystemExit("Published quiz horse-colors is missing from the generated catalog")
+          if horse.get("question_count") != 5 or not horse.get("content_version"):
+              raise SystemExit("Published quiz horse-colors has an unexpected count or missing content version")
 
       - name: Prepare deployment repository
         working-directory: _site
@@ -65,7 +66,19 @@ jobs:
           git add --all
           git commit -m "Deploy ${GITHUB_SHA}"
 
+      - name: Check that this is still the latest main commit
+        id: freshness
+        run: |
+          git fetch origin main
+          if [ "$(git rev-parse origin/main)" = "${GITHUB_SHA}" ]; then
+            echo "current=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "current=false" >> "${GITHUB_OUTPUT}"
+            echo "A newer main commit exists; skipping this stale deployment."
+          fi
+
       - name: Replace gh-pages with the new build
+        if: steps.freshness.outputs.current == 'true'
         working-directory: _site
         env:
           GITHUB_TOKEN: ${{ github.token }}

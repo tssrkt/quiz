@@ -45,6 +45,8 @@ class BuildSiteTests(unittest.TestCase):
         (self.data / "tags" / "history.json").write_text(json.dumps(tag, ensure_ascii=False), encoding="utf-8")
         draft = self.horse()
         draft.update({"slug": "history-draft", "title": "Черновик", "published": False, "tags": ["history"]})
+        for question in draft["questions"]:
+            question["image"] = ""
         self.write_quiz(draft, "history-draft.json")
         tags, quizzes = self.load()
         catalog = build_site.make_catalog(tags, quizzes)
@@ -54,19 +56,64 @@ class BuildSiteTests(unittest.TestCase):
         self.write_quiz(draft, "history-draft.json")
         tags, quizzes = self.load()
         published = {item["slug"]: item for item in build_site.make_catalog(tags, quizzes)["quizzes"]}
-        self.assertEqual(published["history-draft"]["question_count"], 4)
+        self.assertEqual(published["history-draft"]["question_count"], 5)
 
     def test_no_correct_answer(self):
         self.assert_quiz_error(lambda quiz: [answer.update(correct=False) for answer in quiz["questions"][0]["answers"]], "ровно один вариант")
 
     def test_two_correct_answers(self):
-        self.assert_quiz_error(lambda quiz: quiz["questions"][0]["answers"][1].update(correct=True), "ровно один вариант")
+        self.assert_quiz_error(lambda quiz: quiz["questions"][0]["answers"][0].update(correct=True), "ровно один вариант")
 
-    def test_duplicate_question_id(self):
-        self.assert_quiz_error(lambda quiz: quiz["questions"][1].update(id=quiz["questions"][0]["id"]), "повторяющийся идентификатор")
+    def test_manual_question_and_answer_ids_are_rejected(self):
+        self.assert_quiz_error(lambda quiz: quiz["questions"][0].update(id="manual"), "ручной идентификатор")
+        self.assert_quiz_error(lambda quiz: quiz["questions"][0]["answers"][0].update(id="manual"), "ручной идентификатор")
 
-    def test_duplicate_answer_id(self):
-        self.assert_quiz_error(lambda quiz: quiz["questions"][0]["answers"][1].update(id=quiz["questions"][0]["answers"][0]["id"]), "повторяющийся идентификатор")
+    def test_generates_stable_ids_and_content_version(self):
+        _, quizzes = self.load()
+        horse = quizzes[0]
+        self.assertEqual(horse["questions"][0]["id"], "horse-colors-question-001")
+        self.assertEqual(horse["questions"][4]["id"], "horse-colors-question-005")
+        self.assertEqual([answer["id"] for answer in horse["questions"][0]["answers"]], ["answer-01", "answer-02", "answer-03", "answer-04"])
+        self.assertRegex(horse["content_version"], r"^[0-9a-f]{64}$")
+
+        changed = self.horse()
+        changed["questions"][3]["question"] += " Изменено"
+        self.write_quiz(changed)
+        _, changed_quizzes = self.load()
+        self.assertNotEqual(horse["content_version"], changed_quizzes[0]["content_version"])
+
+        image_changed = self.horse()
+        replacement = self.base / "replacement.webp"
+        replacement.write_bytes(b"replacement image bytes")
+        image_changed["questions"][0]["image"] = replacement.relative_to(ROOT).as_posix()
+        self.assertNotEqual(horse["content_version"], build_site.normalize_quiz(image_changed)["content_version"])
+
+        changed = self.horse()
+        changed["questions"].append(copy.deepcopy(changed["questions"][-1]))
+        changed["questions"][-1]["question"] = "Шестой тестовый вопрос?"
+        self.write_quiz(changed)
+        _, changed_quizzes = self.load()
+        self.assertEqual(len(changed_quizzes[0]["questions"]), 6)
+        self.assertNotEqual(horse["content_version"], changed_quizzes[0]["content_version"])
+
+        changed = self.horse()
+        changed["questions"][0]["answers"][0]["text"] += "!"
+        changed["questions"][0]["explanation"] += " Изменено"
+        self.write_quiz(changed)
+        _, changed_quizzes = self.load()
+        self.assertNotEqual(horse["content_version"], changed_quizzes[0]["content_version"])
+
+    def test_build_does_not_modify_source_and_writes_normalized_quiz(self):
+        source = ROOT / "data" / "quizzes" / "horse-colors.json"
+        before = source.read_bytes()
+        output = self.base / "site"
+        catalog = build_site.build(output)
+        self.assertEqual(source.read_bytes(), before)
+        built = json.loads((output / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(built["questions"]), 5)
+        self.assertEqual(catalog["quizzes"][0]["question_count"], 5)
+        self.assertEqual(catalog["quizzes"][0]["content_version"], built["content_version"])
+        self.assertEqual(sorted(path.name for path in (output / "img" / "quiz" / "horse-colors").iterdir()), ["01.webp", "02.webp", "03.webp", "04.webp", "05.webp"])
 
     def test_unknown_tag(self):
         self.assert_quiz_error(lambda quiz: quiz.update(tags=["missing-tag"]), "неизвестный тег")
@@ -74,11 +121,23 @@ class BuildSiteTests(unittest.TestCase):
     def test_missing_image(self):
         self.assert_quiz_error(lambda quiz: quiz["questions"][0].update(image="img/quiz/missing.webp"), "файл не найден")
 
-    def test_question_with_and_without_image(self):
+    def test_question_images_are_isolated_by_quiz_slug(self):
         _, quizzes = self.load()
-        questions = quizzes[0]["questions"]
-        self.assertTrue(any(question["image"] for question in questions))
-        self.assertTrue(any(not question["image"] for question in questions))
+        self.assertTrue(all(question["image"].startswith("img/quiz/horse-colors/") for question in quizzes[0]["questions"]))
+
+        other = self.horse()
+        other["slug"] = "other-quiz"
+        normalized = build_site.normalize_quiz(other)
+        self.assertTrue(all(question["image"].startswith("img/quiz/other-quiz/") for question in normalized["questions"]))
+        self.assertEqual(normalized["questions"][0]["image"], "img/quiz/other-quiz/01.webp")
+
+    def test_rejects_image_folder_owned_by_another_quiz(self):
+        quiz = self.horse()
+        quiz["slug"] = "other-quiz"
+        self.write_quiz(quiz, "other-quiz.json")
+        tags, known = build_site.load_tags(self.data)
+        with self.assertRaisesRegex(build_site.ContentError, "папка изображения должна совпадать"):
+            build_site.load_quizzes(self.data, known)
 
 
 if __name__ == "__main__":

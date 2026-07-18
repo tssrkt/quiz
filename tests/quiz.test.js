@@ -4,7 +4,7 @@ const core = require('../js/quiz.js');
 
 function makeQuiz(published = true) {
   return {
-    slug: 'demo-quiz', title: 'Демо', intro: 'Вступление', published,
+    slug: 'demo-quiz', title: 'Демо', intro: 'Вступление', published, content_version: 'a'.repeat(64),
     questions: [
       { id: 'question-01', question: 'Первый?', explanation: 'Пояснение 1', answers: [{ id: 'a-01', text: 'Да', correct: true }, { id: 'a-02', text: 'Нет', correct: false }] },
       { id: 'question-02', question: 'Второй?', explanation: 'Пояснение 2', answers: [{ id: 'a-01', text: 'Нет', correct: false }, { id: 'a-02', text: 'Да', correct: true }] }
@@ -57,6 +57,18 @@ assert.equal(restarted.current_index, 0); assert.equal(Object.keys(restarted.ans
 const changedQuiz = makeQuiz(); changedQuiz.questions[0].answers.push({ id: 'a-03', text: 'Может быть', correct: false });
 const incompatible = core.restoreState(saved, changedQuiz);
 assert.equal(incompatible.current_index, 0); assert.equal(Object.keys(incompatible.answers).length, 0, '16: несовместимое сохранение сброшено');
+for (const mutate of [
+  (value) => { value.questions[0].question = 'Изменённый вопрос?'; },
+  (value) => { value.questions[0].explanation = 'Новое объяснение'; },
+  (value) => { value.questions[0].answers[0].text = 'Изменённый ответ'; },
+  (value) => { value.questions.reverse(); },
+  (value) => { value.questions.push({ id: 'question-03', question: 'Третий?', image: 'img/quiz/demo/03.webp', explanation: 'Пояснение 3', answers: [{ id: 'a-01', text: 'Да', correct: true }, { id: 'a-02', text: 'Нет', correct: false }] }); }
+]) {
+  const changed = makeQuiz(); mutate(changed);
+  assert.equal(core.restoreState(saved, changed).current_index, 0, 'изменение содержимого сбрасывает прогресс');
+}
+assert.equal(core.versionedUrl('data/quizzes/horse-colors.json', 'abc123'), 'data/quizzes/horse-colors.json?v=abc123');
+assert.equal(core.versionedUrl('img/quiz/horse-colors/01.webp', 'abc123'), 'img/quiz/horse-colors/01.webp?v=abc123');
 
 assert.equal(core.shareText({ title: 'Масти лошадей' }, 34, 40), 'Мой результат — 34 из 40 (85%) в викторине «Масти лошадей». А какой результат будет у вас?', '17: текст публикации');
 assert.equal(core.directQuizUrl('https://example.test/quiz/quiz.html?quiz=x&preview=1', 'horse-colors'), 'https://example.test/quiz/quiz.html?quiz=horse-colors');

@@ -125,7 +125,9 @@
   }
 
   async function fetchJson(path) {
-    const response = await fetch(path);
+    const url = new URL(path, location.href);
+    url.searchParams.set('v', String(Date.now()));
+    const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
     return response.json();
   }
