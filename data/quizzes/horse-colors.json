@@ -1,12 +1,16 @@
 {
-  "slug": "horse-colors",
   "title": "Масти лошадей",
+  "slug": "horse-colors",
   "published": true,
   "publication_date": "2026-07-18",
-  "short_description": "Небольшая демонстрационная викторина о базовых мастях и отметинах лошадей.",
-  "intro": "Проверьте, насколько хорошо вы различаете распространённые масти лошадей. После каждого ответа предусмотрено пояснение.",
-  "cover": "",
-  "tags": ["horses", "animals", "beginner"],
+  "short_description": "В этой викторины вам будут показывать фотографии лошадей, а вы должны будете выбирать из списка правильную масть. Начальный уровень сложности.",
+  "intro": "В этой викторины вам будут показывать фотографии лошадей, а вы должны будете выбирать из списка правильную масть. Начальный уровень сложности.",
+  "cover": "img/covers/horse01.webp",
+  "tags": [
+    "horses",
+    "animals",
+    "beginner"
+  ],
   "questions": [
     {
       "id": "horse-colors-01",
@@ -14,63 +18,111 @@
       "image": "img/quiz/horse_colors/chestnut.svg",
       "image_alt": "Стилизованный силуэт рыжей лошади",
       "answers": [
-        {"id": "answer-01", "text": "Рыжая", "correct": true},
-        {"id": "answer-02", "text": "Гнедая", "correct": false},
-        {"id": "answer-03", "text": "Вороная", "correct": false},
-        {"id": "answer-04", "text": "Серая", "correct": false}
+        {
+          "id": "answer-01",
+          "text": "Рыжая",
+          "correct": true
+        },
+        {
+          "id": "answer-02",
+          "text": "Гнедая",
+          "correct": false
+        },
+        {
+          "id": "answer-03",
+          "text": "Вороная",
+          "correct": false
+        },
+        {
+          "id": "answer-04",
+          "text": "Серая",
+          "correct": false
+        }
       ],
       "explanation": "У рыжей лошади корпус, грива и хвост окрашены в оттенки рыжего; чёрных нижних частей ног, как у гнедой, нет.",
       "image_source": "Авторская демонстрационная иллюстрация",
-      "image_author": "Quiz / Викторины",
-      "image_source_url": ""
+      "image_author": "Quiz / Викторины"
     },
     {
       "id": "horse-colors-02",
       "question": "Какая масть обычно сочетает коричневый корпус с чёрными гривой, хвостом и нижними частями ног?",
-      "image": "",
-      "image_alt": "",
       "answers": [
-        {"id": "answer-01", "text": "Гнедая", "correct": true},
-        {"id": "answer-02", "text": "Рыжая", "correct": false},
-        {"id": "answer-03", "text": "Белая", "correct": false},
-        {"id": "answer-04", "text": "Соловая", "correct": false}
+        {
+          "id": "answer-01",
+          "text": "Гнедая",
+          "correct": true
+        },
+        {
+          "id": "answer-02",
+          "text": "Рыжая",
+          "correct": false
+        },
+        {
+          "id": "answer-03",
+          "text": "Белая",
+          "correct": false
+        },
+        {
+          "id": "answer-04",
+          "text": "Соловая",
+          "correct": false
+        }
       ],
-      "explanation": "Для гнедой масти характерен коричневый корпус и так называемые чёрные отметины: грива, хвост и нижние части ног.",
-      "image_source": "",
-      "image_author": "",
-      "image_source_url": ""
+      "explanation": "Для гнедой масти характерен коричневый корпус и так называемые чёрные отметины: грива, хвост и нижние части ног."
     },
     {
       "id": "horse-colors-03",
       "question": "Как называется полностью чёрная масть лошади?",
-      "image": "",
-      "image_alt": "",
       "answers": [
-        {"id": "answer-01", "text": "Буланая", "correct": false},
-        {"id": "answer-02", "text": "Чалая", "correct": false},
-        {"id": "answer-03", "text": "Вороная", "correct": true},
-        {"id": "answer-04", "text": "Игреневая", "correct": false}
+        {
+          "id": "answer-01",
+          "text": "Буланая",
+          "correct": false
+        },
+        {
+          "id": "answer-02",
+          "text": "Чалая",
+          "correct": false
+        },
+        {
+          "id": "answer-03",
+          "text": "Вороная",
+          "correct": true
+        },
+        {
+          "id": "answer-04",
+          "text": "Игреневая",
+          "correct": false
+        }
       ],
-      "explanation": "Вороная масть характеризуется чёрной окраской корпуса, гривы, хвоста и конечностей.",
-      "image_source": "",
-      "image_author": "",
-      "image_source_url": ""
+      "explanation": "Вороная масть характеризуется чёрной окраской корпуса, гривы, хвоста и конечностей."
     },
     {
       "id": "horse-colors-04",
       "question": "Как называется белая отметина на лбу лошади?",
-      "image": "",
-      "image_alt": "",
       "answers": [
-        {"id": "answer-01", "text": "Звезда", "correct": true},
-        {"id": "answer-02", "text": "Ремень", "correct": false},
-        {"id": "answer-03", "text": "Носки", "correct": false},
-        {"id": "answer-04", "text": "Подласина", "correct": false}
+        {
+          "id": "answer-01",
+          "text": "Звезда",
+          "correct": true
+        },
+        {
+          "id": "answer-02",
+          "text": "Ремень",
+          "correct": false
+        },
+        {
+          "id": "answer-03",
+          "text": "Носки",
+          "correct": false
+        },
+        {
+          "id": "answer-04",
+          "text": "Подласина",
+          "correct": false
+        }
       ],
-      "explanation": "Звездой называют ограниченную белую отметину на лбу. Её форма и размер могут заметно различаться.",
-      "image_source": "",
-      "image_author": "",
-      "image_source_url": ""
+      "explanation": "Звездой называют ограниченную белую отметину на лбу. Её форма и размер могут заметно различаться."
     }
   ]
 }
