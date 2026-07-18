@@ -6,7 +6,7 @@
   "difficulty": "low",
   "short_description": "В этой викторины вам будут показывать фотографии лошадей, а вы должны будете выбирать из списка правильную масть. Начальный уровень сложности.",
   "intro": "В этой викторины вам будут показывать фотографии лошадей, а вы должны будете выбирать из списка правильную масть. Начальный уровень сложности.",
-  "cover": "img/covers/1-1.webp",
+  "cover": "img/covers/horse-colors.webp",
   "tags": [
     "horses",
     "animals"
@@ -15,7 +15,7 @@
     {
       "id": "question-01",
       "question": "Что это за масть?",
-      "image": "img/quiz/1-2.webp",
+      "image": "img/quiz/horse-colors/01.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
@@ -45,7 +45,7 @@
     {
       "id": "question-02",
       "question": "Что это за масть?",
-      "image": "img/quiz/2-1.webp",
+      "image": "img/quiz/horse-colors/02.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
@@ -75,7 +75,7 @@
     {
       "id": "question-03",
       "question": "Что это за масть?",
-      "image": "img/quiz/3-1.webp",
+      "image": "img/quiz/horse-colors/03.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
@@ -106,7 +106,7 @@
     {
       "id": "question-04",
       "question": "Что это за масть?",
-      "image": "img/quiz/4-1.webp",
+      "image": "img/quiz/horse-colors/04.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
@@ -136,7 +136,7 @@
     {
       "id": "question-05",
       "question": "Что это за масть?",
-      "image": "img/quiz/5-1.webp",
+      "image": "img/quiz/horse-colors/05.webp",
       "image_alt": "Лошадка",
       "answers": [
         {

@@ -1,0 +1,67 @@
+name: Organize quiz media
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "data/quizzes/*.json"
+      - "data/quizzes/**/*.json"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: organize-quiz-media
+  cancel-in-progress: false
+
+jobs:
+  organize:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Organize images and commit changes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          for attempt in 1 2 3; do
+            echo "Attempt ${attempt}"
+
+            git fetch origin main
+            git reset --hard origin/main
+
+            python scripts/organize_quiz_media.py
+
+            if git diff --quiet -- data/quizzes img/covers img/quiz; then
+              echo "Quiz media is already organized."
+              exit 0
+            fi
+
+            git add -A data/quizzes img/covers img/quiz
+            git commit -m "Organize quiz media"
+
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+
+            echo "Remote main changed; retrying from the newest commit."
+            sleep 5
+          done
+
+          echo "Could not push organized media after three attempts."
+          exit 1

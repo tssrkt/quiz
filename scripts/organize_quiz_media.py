@@ -1,0 +1,386 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import shutil
+import sys
+from collections import Counter
+from pathlib import Path, PurePosixPath
+from typing import Any
+
+
+IMAGE_EXTENSIONS = {
+    ".avif",
+    ".gif",
+    ".jpeg",
+    ".jpg",
+    ".png",
+    ".svg",
+    ".webp",
+}
+
+MANAGED_ROOTS = (
+    PurePosixPath("img/covers"),
+    PurePosixPath("img/quiz"),
+)
+
+
+def safe_slug(value: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", value.strip().lower()).strip("-")
+    if not slug:
+        raise ValueError(f"Некорректный slug: {value!r}")
+    return slug
+
+
+def normalize_repo_path(value: Any) -> PurePosixPath | None:
+    if not isinstance(value, str):
+        return None
+
+    normalized = value.strip().replace("\\", "/")
+    while normalized.startswith("./"):
+        normalized = normalized[2:]
+    normalized = normalized.lstrip("/")
+
+    if not normalized:
+        return None
+
+    path = PurePosixPath(normalized)
+    if ".." in path.parts:
+        raise ValueError(f"Недопустимый путь с '..': {value}")
+
+    for root in MANAGED_ROOTS:
+        if path == root or root in path.parents:
+            return path
+
+    return None
+
+
+def repo_path(root: Path, relative: PurePosixPath) -> Path:
+    return root.joinpath(*relative.parts)
+
+
+def load_quizzes(root: Path) -> list[tuple[Path, dict[str, Any]]]:
+    quiz_root = root / "data" / "quizzes"
+    if not quiz_root.is_dir():
+        raise FileNotFoundError(f"Не найдена папка: {quiz_root}")
+
+    loaded: list[tuple[Path, dict[str, Any]]] = []
+    errors: list[str] = []
+
+    for json_path in sorted(quiz_root.rglob("*.json")):
+        try:
+            value = json.loads(json_path.read_text(encoding="utf-8"))
+            if not isinstance(value, dict):
+                raise TypeError("корень JSON должен быть объектом")
+            loaded.append((json_path, value))
+        except Exception as error:
+            errors.append(f"{json_path.relative_to(root).as_posix()}: {error}")
+
+    if errors:
+        raise RuntimeError(
+            "Организация изображений отменена из-за ошибок JSON:\n"
+            + "\n".join(f"- {item}" for item in errors)
+        )
+
+    if not loaded:
+        raise RuntimeError("Не найдено ни одной викторины.")
+
+    return loaded
+
+
+def collect_original_reference_counts(
+    quizzes: list[tuple[Path, dict[str, Any]]],
+) -> Counter[PurePosixPath]:
+    counts: Counter[PurePosixPath] = Counter()
+
+    for _, quiz in quizzes:
+        cover = normalize_repo_path(quiz.get("cover"))
+        if cover is not None:
+            counts[cover] += 1
+
+        questions = quiz.get("questions")
+        if isinstance(questions, list):
+            for question in questions:
+                if not isinstance(question, dict):
+                    continue
+                image = normalize_repo_path(question.get("image"))
+                if image is not None:
+                    counts[image] += 1
+
+    return counts
+
+
+def read_source_bytes(
+    root: Path,
+    references: Counter[PurePosixPath],
+) -> dict[PurePosixPath, bytes]:
+    payloads: dict[PurePosixPath, bytes] = {}
+    missing: list[str] = []
+
+    for relative in references:
+        absolute = repo_path(root, relative)
+        if not absolute.is_file():
+            missing.append(relative.as_posix())
+            continue
+        payloads[relative] = absolute.read_bytes()
+
+    if missing:
+        raise RuntimeError(
+            "Организация отменена: JSON ссылается на отсутствующие изображения:\n"
+            + "\n".join(f"- {item}" for item in missing)
+        )
+
+    return payloads
+
+
+def remove_same_stem_variants(
+    directory: Path,
+    stem: str,
+    keep: Path,
+    dry_run: bool,
+) -> None:
+    if not directory.is_dir():
+        return
+
+    for candidate in directory.iterdir():
+        if (
+            candidate.is_file()
+            and candidate.stem == stem
+            and candidate.suffix.lower() in IMAGE_EXTENSIONS
+            and candidate != keep
+        ):
+            print(
+                ("БУДЕТ УДАЛЁН СТАРЫЙ ВАРИАНТ: " if dry_run else "УДАЛЁН СТАРЫЙ ВАРИАНТ: ")
+                + candidate.as_posix()
+            )
+            if not dry_run:
+                candidate.unlink()
+
+
+def write_bytes_if_changed(path: Path, content: bytes, dry_run: bool) -> bool:
+    if path.is_file() and path.read_bytes() == content:
+        return False
+
+    if dry_run:
+        return True
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(content)
+    return True
+
+
+def organize_quizzes(
+    root: Path,
+    quizzes: list[tuple[Path, dict[str, Any]]],
+    source_bytes: dict[PurePosixPath, bytes],
+    dry_run: bool,
+) -> set[PurePosixPath]:
+    final_references: set[PurePosixPath] = set()
+
+    for json_path, quiz in quizzes:
+        slug = safe_slug(str(quiz.get("slug") or json_path.stem))
+        changed = False
+
+        cover_source = normalize_repo_path(quiz.get("cover"))
+        if cover_source is not None:
+            suffix = cover_source.suffix.lower()
+            cover_target = PurePosixPath("img/covers") / f"{slug}{suffix}"
+            cover_target_abs = repo_path(root, cover_target)
+
+            remove_same_stem_variants(
+                cover_target_abs.parent,
+                slug,
+                cover_target_abs,
+                dry_run,
+            )
+
+            if write_bytes_if_changed(
+                cover_target_abs,
+                source_bytes[cover_source],
+                dry_run,
+            ):
+                print(
+                    ("БУДЕТ ЗАПИСАНА ОБЛОЖКА: " if dry_run else "ЗАПИСАНА ОБЛОЖКА: ")
+                    + cover_target.as_posix()
+                )
+
+            if quiz.get("cover") != cover_target.as_posix():
+                quiz["cover"] = cover_target.as_posix()
+                changed = True
+
+            final_references.add(cover_target)
+
+        questions = quiz.get("questions")
+        if not isinstance(questions, list):
+            raise TypeError(
+                f"{json_path.relative_to(root).as_posix()}: questions должен быть массивом"
+            )
+
+        quiz_image_dir = root / "img" / "quiz" / slug
+
+        for index, question in enumerate(questions, start=1):
+            if not isinstance(question, dict):
+                raise TypeError(
+                    f"{json_path.relative_to(root).as_posix()}: "
+                    f"вопрос {index} должен быть объектом"
+                )
+
+            image_source = normalize_repo_path(question.get("image"))
+            if image_source is None:
+                continue
+
+            suffix = image_source.suffix.lower()
+            stable_stem = f"{index:02d}"
+            image_target = (
+                PurePosixPath("img/quiz") / slug / f"{stable_stem}{suffix}"
+            )
+            image_target_abs = repo_path(root, image_target)
+
+            remove_same_stem_variants(
+                quiz_image_dir,
+                stable_stem,
+                image_target_abs,
+                dry_run,
+            )
+
+            if write_bytes_if_changed(
+                image_target_abs,
+                source_bytes[image_source],
+                dry_run,
+            ):
+                print(
+                    ("БУДЕТ ЗАПИСАНО ИЗОБРАЖЕНИЕ: " if dry_run else "ЗАПИСАНО ИЗОБРАЖЕНИЕ: ")
+                    + image_target.as_posix()
+                )
+
+            if question.get("image") != image_target.as_posix():
+                question["image"] = image_target.as_posix()
+                changed = True
+
+            final_references.add(image_target)
+
+        if changed:
+            print(
+                ("БУДЕТ ОБНОВЛЁН JSON: " if dry_run else "ОБНОВЛЁН JSON: ")
+                + json_path.relative_to(root).as_posix()
+            )
+            if not dry_run:
+                json_path.write_text(
+                    json.dumps(quiz, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8",
+                    newline="\n",
+                )
+
+    return final_references
+
+
+def collect_managed_images(root: Path) -> list[Path]:
+    files: list[Path] = []
+
+    for relative_root in MANAGED_ROOTS:
+        absolute_root = repo_path(root, relative_root)
+        if not absolute_root.exists():
+            continue
+
+        for candidate in absolute_root.rglob("*"):
+            if (
+                candidate.is_file()
+                and not candidate.is_symlink()
+                and candidate.suffix.lower() in IMAGE_EXTENSIONS
+            ):
+                files.append(candidate)
+
+    return sorted(files)
+
+
+def cleanup_unreferenced(
+    root: Path,
+    final_references: set[PurePosixPath],
+    dry_run: bool,
+) -> None:
+    for candidate in collect_managed_images(root):
+        relative = PurePosixPath(candidate.relative_to(root).as_posix())
+        if relative in final_references:
+            continue
+
+        print(
+            ("БУДЕТ УДАЛЁН НЕИСПОЛЬЗУЕМЫЙ ФАЙЛ: " if dry_run else "УДАЛЁН НЕИСПОЛЬЗУЕМЫЙ ФАЙЛ: ")
+            + relative.as_posix()
+        )
+        if not dry_run:
+            candidate.unlink()
+
+    for relative_root in MANAGED_ROOTS:
+        absolute_root = repo_path(root, relative_root)
+        if not absolute_root.is_dir():
+            continue
+
+        directories = sorted(
+            (path for path in absolute_root.rglob("*") if path.is_dir()),
+            key=lambda path: len(path.parts),
+            reverse=True,
+        )
+        for directory in directories:
+            if any(directory.iterdir()):
+                continue
+            print(
+                ("БУДЕТ УДАЛЕНА ПУСТАЯ ПАПКА: " if dry_run else "УДАЛЕНА ПУСТАЯ ПАПКА: ")
+                + directory.relative_to(root).as_posix()
+            )
+            if not dry_run:
+                directory.rmdir()
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Организует медиа викторин по папкам slug, "
+            "задаёт стабильные имена и удаляет неиспользуемые копии."
+        )
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Показать изменения без записи и удаления.",
+    )
+    parser.add_argument(
+        "repo",
+        nargs="?",
+        default=".",
+        help="Корень репозитория; по умолчанию текущая папка.",
+    )
+    args = parser.parse_args()
+
+    root = Path(args.repo).resolve()
+    if not (root / ".git").exists():
+        raise RuntimeError(f"Это не корень Git-репозитория: {root}")
+
+    quizzes = load_quizzes(root)
+    original_references = collect_original_reference_counts(quizzes)
+    source_bytes = read_source_bytes(root, original_references)
+
+    final_references = organize_quizzes(
+        root,
+        quizzes,
+        source_bytes,
+        args.dry_run,
+    )
+    cleanup_unreferenced(root, final_references, args.dry_run)
+
+    print()
+    print(f"Обработано викторин: {len(quizzes)}")
+    print(f"Итоговых используемых изображений: {len(final_references)}")
+    if args.dry_run:
+        print("Это был предварительный просмотр; файлы не изменены.")
+
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except Exception as error:
+        print(f"Ошибка: {error}", file=sys.stderr)
+        raise SystemExit(1)
