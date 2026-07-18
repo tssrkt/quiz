@@ -68,13 +68,24 @@ jobs:
           except (OSError, json.JSONDecodeError) as error:
               raise SystemExit(f"Invalid generated catalog: {error}") from error
 
+          source_path = Path("data/quizzes/horse-colors.json")
+          try:
+              source_quiz = json.loads(source_path.read_text(encoding="utf-8"))
+          except (OSError, json.JSONDecodeError) as error:
+              raise SystemExit(f"Invalid source quiz horse-colors: {error}") from error
+
+          questions = source_quiz.get("questions")
+          if not isinstance(questions, list):
+              raise SystemExit("Invalid source quiz horse-colors: questions must be a list")
+          expected_count = len(questions)
+
           quizzes = catalog.get("quizzes")
           if not isinstance(quizzes, list):
               raise SystemExit("Invalid generated catalog: catalog.quizzes must be a list")
           horse = next((quiz for quiz in quizzes if isinstance(quiz, dict) and quiz.get("slug") == "horse-colors"), None)
           if horse is None:
               raise SystemExit("Published quiz horse-colors is missing from the generated catalog")
-          if horse.get("question_count") != 5 or not horse.get("content_version"):
+          if horse.get("question_count") != expected_count or not horse.get("content_version"):
               raise SystemExit("Published quiz horse-colors has an unexpected count or missing content version")
 
       - name: Prepare deployment repository

@@ -56,7 +56,7 @@ class BuildSiteTests(unittest.TestCase):
         self.write_quiz(draft, "history-draft.json")
         tags, quizzes = self.load()
         published = {item["slug"]: item for item in build_site.make_catalog(tags, quizzes)["quizzes"]}
-        self.assertEqual(published["history-draft"]["question_count"], 5)
+        self.assertEqual(published["history-draft"]["question_count"], len(draft["questions"]))
 
     def test_no_correct_answer(self):
         self.assert_quiz_error(lambda quiz: [answer.update(correct=False) for answer in quiz["questions"][0]["answers"]], "ровно один вариант")
@@ -92,11 +92,11 @@ class BuildSiteTests(unittest.TestCase):
 
         changed = self.horse()
         changed["questions"].append(copy.deepcopy(changed["questions"][-1]))
-        changed["questions"][-1]["id"] = "question-06"
-        changed["questions"][-1]["question"] = "Шестой тестовый вопрос?"
+        changed["questions"][-1]["id"] = f"question-{len(changed['questions']):02d}"
+        changed["questions"][-1]["question"] = "Новый тестовый вопрос?"
         self.write_quiz(changed)
         _, changed_quizzes = self.load()
-        self.assertEqual(len(changed_quizzes[0]["questions"]), 6)
+        self.assertEqual(len(changed_quizzes[0]["questions"]), len(horse["questions"]) + 1)
         self.assertNotEqual(horse["content_version"], changed_quizzes[0]["content_version"])
 
         changed = self.horse()
@@ -113,11 +113,11 @@ class BuildSiteTests(unittest.TestCase):
         catalog = build_site.build(output)
         self.assertEqual(source.read_bytes(), before)
         built = json.loads((output / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(built["questions"]), 5)
-        self.assertEqual(catalog["quizzes"][0]["question_count"], 5)
+        source_quiz = json.loads(source.read_text(encoding="utf-8"))
+        self.assertEqual(len(built["questions"]), len(source_quiz["questions"]))
+        self.assertEqual(catalog["quizzes"][0]["question_count"], len(source_quiz["questions"]))
         self.assertEqual(catalog["quizzes"][0]["difficulty"], "low")
         self.assertEqual(catalog["quizzes"][0]["content_version"], built["content_version"])
-        source_quiz = json.loads(source.read_text(encoding="utf-8"))
         self.assertEqual(
             [question["id"] for question in built["questions"]],
             [question["id"] for question in source_quiz["questions"]],
@@ -126,7 +126,7 @@ class BuildSiteTests(unittest.TestCase):
             [[answer["id"] for answer in question["answers"]] for question in built["questions"]],
             [[answer["id"] for answer in question["answers"]] for question in source_quiz["questions"]],
         )
-        self.assertEqual(sorted(path.name for path in (output / "img" / "quiz" / "horse-colors").iterdir()), ["01.webp", "02.webp", "03.webp", "04.webp", "05.webp"])
+        self.assertEqual(sorted(path.name for path in (output / "img" / "quiz" / "horse-colors").iterdir()), [f"{index:02d}.webp" for index in range(1, len(source_quiz["questions"]) + 1)])
 
     def test_unknown_tag(self):
         self.assert_quiz_error(lambda quiz: quiz.update(tags=["missing-tag"]), "неизвестный тег")

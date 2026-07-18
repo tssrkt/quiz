@@ -65,14 +65,15 @@ class UpdateContractTests(unittest.TestCase):
         horse = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
         self.assertNotIn(removed_slug, horse["tags"])
 
-    def test_current_quiz_has_five_persisted_stable_ids(self):
+    def test_current_quiz_has_persisted_stable_ids(self):
         quiz = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(quiz["questions"]), 5)
-        self.assertEqual([question["id"] for question in quiz["questions"]], [f"question-{index:02d}" for index in range(1, 6)])
+        question_count = len(quiz["questions"])
+        self.assertGreater(question_count, 0)
+        self.assertEqual([question["id"] for question in quiz["questions"]], [f"question-{index:02d}" for index in range(1, question_count + 1)])
         self.assertTrue(all([answer["id"] for answer in question["answers"]] == [f"answer-{index:02d}" for index in range(1, 5)] for question in quiz["questions"]))
         self.assertEqual(
             [question["image"] for question in quiz["questions"]],
-            [f"img/quiz/horse-colors/{index:02d}.webp" for index in range(1, 6)],
+            [f"img/quiz/horse-colors/{index:02d}.webp" for index in range(1, question_count + 1)],
         )
 
     def test_cms_schema_preserves_hidden_ids_and_merge(self):
