@@ -26,23 +26,49 @@
     window.addEventListener('resize', () => { if (window.matchMedia('(min-width: 769px)').matches) closeMenu(false); });
   }
   document.querySelectorAll('[data-current-year]').forEach((item) => { item.textContent = new Date().getFullYear(); });
-  const copyButton = document.querySelector('[data-copy-target]');
-  if (copyButton) {
-    copyButton.addEventListener('click', async () => {
-      const value = document.getElementById(copyButton.dataset.copyTarget)?.textContent.trim();
-      const status = copyButton.parentElement.querySelector('.copy-status');
+  const copyDonate = document.querySelector('[data-copy]');
+  if (copyDonate) {
+    const activateCopy = async () => {
+      const value = copyDonate.dataset.copy?.trim();
+      const status = copyDonate.closest('.donate-block')?.querySelector('.copy-message');
       if (!value || !status) return;
+
+      const showStatus = (message) => {
+        status.textContent = message;
+        window.setTimeout(() => { status.textContent = ''; }, 2200);
+      };
+
       try {
         if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(value);
         else {
-          const input = document.createElement('textarea'); input.value = value; input.setAttribute('readonly', ''); input.style.position = 'fixed'; input.style.opacity = '0';
-          document.body.appendChild(input); input.select();
-          if (!document.execCommand('copy')) throw new Error('Команда копирования недоступна');
+          const input = document.createElement('textarea');
+          input.value = value;
+          input.setAttribute('readonly', '');
+          input.style.position = 'fixed';
+          input.style.left = '-9999px';
+          input.style.top = '-9999px';
+          document.body.appendChild(input);
+          input.select();
+          const copied = document.execCommand('copy');
           input.remove();
+          if (!copied) throw new Error('Команда копирования недоступна');
         }
-        status.textContent = 'Скопировано!'; copyButton.textContent = 'Готово';
-      } catch (error) { status.textContent = 'Не удалось скопировать. Выделите номер вручную.'; console.warn('[Quiz] Ошибка копирования:', error); }
-      window.setTimeout(() => { status.textContent = ''; copyButton.textContent = 'Копировать'; }, 2500);
+
+        copyDonate.title = 'Скопировано!';
+        showStatus('Номер ЮMoney скопирован.');
+        window.setTimeout(() => { copyDonate.title = 'Нажмите, чтобы скопировать'; }, 2200);
+      } catch (error) {
+        showStatus('Не удалось скопировать автоматически. Выделите номер вручную.');
+        console.warn('[Quiz] Ошибка копирования:', error);
+      }
+    };
+
+    copyDonate.addEventListener('click', activateCopy);
+    copyDonate.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        activateCopy();
+      }
     });
   }
 })();
