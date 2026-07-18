@@ -62,19 +62,24 @@ def all_wrong(page):
             assert page.get_by_text(f"Вопрос 1 из {len(QUIZ['questions'])}").is_visible()
         page.locator("[data-next]").click()
         wait_next(page, index)
-    assert page.locator(".result-score").inner_text() == f"0 из {len(QUIZ['questions'])}"
-    assert page.locator(".result-percent").inner_text() == "0%"
+    assert page.locator(".result-summary").inner_text() == f"Ваш результат: 0 из {len(QUIZ['questions'])} (0%)"
     low_result = page.locator(".low-result")
     assert low_result.is_visible()
     assert "Что ж, некоторые вопросы оказались непростыми — и это отличный повод узнать больше! Если желаете разобраться в теме глубже, откройте сборник статей о лошадках, а затем попробуйте пройти викторину еще раз. Наверняка после этого результат вас приятно удивит." in low_result.inner_text()
-    articles = low_result.get_by_role("link", name="📖📖 Сборник статей о лошадках")
+    assert "Попробуйте пройти викторину ещё раз." not in page.locator(".result-card").inner_text()
+    articles = low_result.get_by_role("link", name="📖 Сборник статей о лошадках")
     assert articles.get_attribute("href") == "https://author.today/work/439719"
     assert articles.get_attribute("target") == "_blank"
     assert "noopener" in articles.get_attribute("rel")
+    for width in (1440, 375):
+        page.set_viewport_size({"width": width, "height": 900})
+        assert not page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth")
+        assert low_result.is_visible()
     page.evaluate("Object.defineProperty(navigator, 'share', {value: undefined, configurable: true})")
     page.locator("[data-share]").click()
     page.get_by_text("Результат скопирован.").wait_for()
-    low_result.get_by_role("link", name="↻ Пройти викторину еще раз").click()
+    assert low_result.get_by_role("link", name="↻ Пройти викторину еще раз").count() == 0
+    page.locator("[data-restart]").click()
     page.get_by_role("button", name="Начать викторину").wait_for()
     saved = page.evaluate("JSON.parse(localStorage.getItem('quiz-progress:horse-colors'))")
     assert saved["current_index"] == 0
@@ -107,8 +112,7 @@ def mixed_with_reload(context, page):
         else:
             page.locator("[data-next]").click()
             wait_next(page, index)
-    assert page.locator(".result-score").inner_text() == f"2 из {len(QUIZ['questions'])}"
-    assert page.locator(".result-percent").inner_text() == "40%"
+    assert page.locator(".result-summary").inner_text() == f"Ваш результат: 2 из {len(QUIZ['questions'])} (40%)"
     return page
 
 
