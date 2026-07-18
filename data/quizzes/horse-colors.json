@@ -13,159 +13,155 @@
   ],
   "questions": [
     {
+      "id": "question-01",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/01.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Белая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Серая",
-          "correct": true,
-          "id": "answer-02"
+          "correct": true
         },
         {
+          "id": "answer-03",
           "text": "Изабелловая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Вороно-чалая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "У серой масти цвет кожи варьирует от серого до черного, и глаза черные, в то время как цвет шерсти может быть любым в зависимости от основы, но с поседением, которое начинается с головы. На поздних стадиях поседения шерсть серого коня становится белоснежной.",
-      "image_source": "Неизвестен",
-      "image_author": "Неизвестен",
-      "id": "question-01"
+      "image_author": "Неизвестен"
     },
     {
+      "id": "question-02",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/02.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Гнедая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Рыжая с ОЗВ",
-          "correct": true,
-          "id": "answer-02"
+          "correct": true
         },
         {
+          "id": "answer-03",
           "text": "Игреневая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Соловая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
-      "explanation": "Игреневыми бывают только упряжные кони (к тому же эта масть уже устарела), а на фотке арабская чистокровная, которая также не бывает соловой, потому что у нее нет кремового гена. А у гнедых грива черная и на ушках есть кайма. ОЗВ - это осветление защитного волоса, то есть нависа (гривы с хвостом) и ног.",
-      "image_source": "Неизвестен",
-      "image_author": "Неизвестен",
-      "id": "question-02"
+      "explanation": "Игреневыми бывают только упряжные кони (к тому же эта масть уже устарела), а на фотке арабская чистокровная, которая также не бывает соловой, потому что у нее нет кремового гена. А у гнедых грива черная и на ушках есть кайма. ОЗВ — это осветление защитного волоса, то есть нависа (гривы с хвостом) и ног.",
+      "image_author": "Неизвестен"
     },
     {
-      "question": "Что за мастевое явление у этого коня?",
+      "id": "question-03",
+      "question": "Какое мастевое явление у этого коня?",
       "image": "img/quiz/horse-colors/03.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Зональное потемнение",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "ОЗВ (осветление защитного волоса)",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Подласость",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Рабикано",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "Подласость — это мастевое явление, при котором осветлена шерсть вокруг глаз, около ноздрей, под локтями, в паху, с внутренней стороны ног и внизу живота коня. ",
       "image_source": "Неизвестен",
-      "image_author": "Неизвестен",
-      "id": "question-03"
+      "image_author": "Неизвестен"
     },
     {
+      "id": "question-04",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/04.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Светло-гнедая с ЗП",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Буланая с ЗП",
-          "correct": true,
-          "id": "answer-02"
+          "correct": true
         },
         {
+          "id": "answer-03",
           "text": "Саврасая с ЗП",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Рыжая с ЗП",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
-      "explanation": "ЗП - это зональное потемнение. У буланых лошадей ноги, грива, хвост и окантовка уха остаются черными как у гнедых, хотя могут быть чуть светлее, а корпус, шея и мордочка приобретают песочно-желтый цвет. Кожа, как и у гнедых, темная, но может быть чуть светлее. Глаза карие или янтарные.",
-      "image_source": "Неизвестен",
-      "image_author": "Неизвестен",
-      "id": "question-04"
+      "explanation": "ЗП — это зональное потемнение. У буланых лошадей ноги, грива, хвост и окантовка уха остаются черными как у гнедых, хотя могут быть чуть светлее, а корпус, шея и мордочка приобретают песочно-желтый цвет. Кожа, как и у гнедых, темная, но может быть чуть светлее. Глаза карие или янтарные.",
+      "image_author": "Неизвестен"
     },
     {
+      "id": "question-05",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/05.webp",
       "image_alt": "Лошадка",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Гнедая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Буланая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Рыжая с ЗП",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Саврасая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "У этой лошадки навис темный из-за ЗП (зонального потемнения), больше всего рыжую масть выдают рыжие ноги, у гнедых они черные.",
-      "image_source": "Неизвестен",
-      "image_author": "Неизвестен",
-      "id": "question-05"
+      "image_author": "Неизвестен"
     }
   ]
 }
