@@ -46,6 +46,14 @@ def all_correct(page):
     assert page.locator(".result-score").inner_text() == f"{len(QUIZ['questions'])} из {len(QUIZ['questions'])}"
     assert page.locator(".result-percent").inner_text() == "100%"
     assert page.locator(".result-recommendation").count() == 0
+    page.evaluate("Object.defineProperty(navigator, 'share', {value: async payload => { window.__sharePayload = payload }, configurable: true})")
+    page.get_by_role("button", name="Поделиться результатом").click()
+    page.wait_for_function("window.__sharePayload")
+    payload = page.evaluate("window.__sharePayload")
+    assert payload["text"].startswith("Мой результат —")
+    assert payload["url"].endswith("quiz.html?quiz=horse-colors")
+    assert page.get_by_role("button", name="Telegram").count() == 0
+    assert page.get_by_role("button", name="ВКонтакте").count() == 0
 
 
 def all_wrong(page):
@@ -71,12 +79,26 @@ def all_wrong(page):
     assert articles.get_attribute("href") == "https://author.today/work/439719"
     assert articles.get_attribute("target") == "_blank"
     assert "noopener" in articles.get_attribute("rel")
+    assert articles.inner_text().count("📖") == 1
+    page.set_viewport_size({"width": 1440, "height": 900})
+    articles.hover()
+    hover_style = articles.evaluate("element => ({ transform: getComputedStyle(element).transform, shadow: getComputedStyle(element).boxShadow, decoration: getComputedStyle(element).textDecorationLine })")
+    assert hover_style["transform"] != "none"
+    assert hover_style["shadow"] != "none"
+    assert hover_style["decoration"] == "none"
+    articles.focus()
+    page.keyboard.press("Tab")
+    page.keyboard.press("Shift+Tab")
+    assert articles.evaluate("element => element.matches(':focus-visible')")
     for width in (1440, 375):
         page.set_viewport_size({"width": width, "height": 900})
         assert not page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth")
         assert recommendation.is_visible()
     page.evaluate("Object.defineProperty(navigator, 'share', {value: undefined, configurable: true})")
     page.locator("[data-share]").click()
+    page.get_by_text("Результат скопирован.").wait_for()
+    page.locator(".share-status").evaluate("element => { element.textContent = '' }")
+    page.locator("[data-copy]").click()
     page.get_by_text("Результат скопирован.").wait_for()
     assert recommendation.get_by_role("link", name="↻ Пройти викторину еще раз").count() == 0
     page.locator("[data-restart]").click()

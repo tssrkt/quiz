@@ -104,8 +104,7 @@
   function autoAdvanceDelay(correct) { return correct ? 800 : null; }
   function shouldConfetti(correct, reducedMotion) { return Boolean(correct && !reducedMotion); }
   function shareMethod(webShareAvailable) { return webShareAvailable ? 'share' : 'copy'; }
-  function socialShareUrls(url, text) { return { telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, vk: `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(text)}` }; }
-  return { STATE_VERSION, canOpenQuiz, validateQuiz, structureSignature, versionedUrl, freshState, restoreState, answerQuestion, advance, resultPercent, resultRecommendation, resultMessage, shareText, directQuizUrl, prefersReducedMotion, autoAdvanceDelay, shouldConfetti, shareMethod, socialShareUrls };
+  return { STATE_VERSION, canOpenQuiz, validateQuiz, structureSignature, versionedUrl, freshState, restoreState, answerQuestion, advance, resultPercent, resultRecommendation, resultMessage, shareText, directQuizUrl, prefersReducedMotion, autoAdvanceDelay, shouldConfetti, shareMethod };
 });
 
 function init(core) {
@@ -196,7 +195,6 @@ function init(core) {
       status.textContent = 'Результат скопирован.'; window.setTimeout(() => { status.textContent = ''; }, 2500); return true;
     } catch (error) { console.warn('[Quiz] Копирование недоступно.', error); status.textContent = 'Не удалось скопировать результат.'; return false; }
   }
-  function openExternal(url) { const opened = window.open(url, '_blank', 'noopener,noreferrer'); if (opened) opened.opener = null; }
   function renderResult() {
     setWideLayout(false);
     state = { ...state, completed: true, current_index: quiz.questions.length, saved_at: new Date().toISOString() }; saveState();
@@ -205,13 +203,10 @@ function init(core) {
     const resultDetails = recommendation
       ? `<p class="result-summary">Ваш результат: ${state.correct_count} из ${total} (${percent}%)</p><div class="result-recommendation"><p>${escapeHtml(recommendation)}</p><a class="result-recommendation__articles" href="https://author.today/work/439719" target="_blank" rel="noopener noreferrer">📖 СБОРНИК СТАТЕЙ О ЛОШАДКАХ</a></div>`
       : `<p class="result-score">${state.correct_count} из ${total}</p><p class="result-percent">${percent}%</p><h2>${escapeHtml(message)}</h2>`;
-    app.innerHTML = `<section class="result-card"><p class="eyebrow">Викторина завершена</p><h1>${escapeHtml(quiz.title)}</h1>${resultDetails}<div class="share-actions"><button class="button" type="button" data-share>Поделиться</button><button class="button button-secondary" type="button" data-telegram>Telegram</button><button class="button button-secondary" type="button" data-vk>ВКонтакте</button><button class="button button-secondary" type="button" data-copy>Скопировать результат</button></div><p class="share-status" role="status" aria-live="polite"></p><div class="result-actions"><button class="button" type="button" data-restart>Пройти ещё раз</button><a class="button button-secondary" href="quizzes.html">К списку викторин</a></div></section>`;
+    app.innerHTML = `<section class="result-card"><p class="eyebrow">Викторина завершена</p><h1>${escapeHtml(quiz.title)}</h1>${resultDetails}<div class="share-actions"><button class="button" type="button" data-share>Поделиться результатом</button><button class="button button-secondary" type="button" data-copy>Скопировать результат</button></div><p class="share-status" role="status" aria-live="polite"></p><div class="result-actions"><button class="button" type="button" data-restart>Пройти ещё раз</button><a class="button button-secondary" href="quizzes.html">К списку викторин</a></div></section>`;
     const status = app.querySelector('.share-status');
     app.querySelector('[data-share]').addEventListener('click', async () => { if (navigator.share) { try { await navigator.share({ title: quiz.title, text, url }); return; } catch (error) { if (error.name === 'AbortError') return; } } await copyResult(sharePayload, status); });
     app.querySelector('[data-copy]').addEventListener('click', () => copyResult(sharePayload, status));
-    const socialUrls = core.socialShareUrls(url, text);
-    app.querySelector('[data-telegram]').addEventListener('click', () => openExternal(socialUrls.telegram));
-    app.querySelector('[data-vk]').addEventListener('click', () => openExternal(socialUrls.vk));
     app.querySelector('[data-restart]').addEventListener('click', restart);
     if (percent >= 90) confetti(34);
   }

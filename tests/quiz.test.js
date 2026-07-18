@@ -80,9 +80,6 @@ assert.equal(core.shareText({ title: 'Масти лошадей' }, 34, 40), 'М
 assert.equal(core.directQuizUrl('https://example.test/quiz/quiz.html?quiz=x&preview=1', 'horse-colors'), 'https://example.test/quiz/quiz.html?quiz=horse-colors');
 assert.equal(core.shareMethod(false), 'copy', '18: fallback без Web Share');
 assert.equal(core.shareMethod(true), 'share');
-const social = core.socialShareUrls('https://example.test/quiz.html?quiz=horse-colors', 'Результат 85%');
-assert.equal(social.telegram, 'https://t.me/share/url?url=https%3A%2F%2Fexample.test%2Fquiz.html%3Fquiz%3Dhorse-colors&text=%D0%A0%D0%B5%D0%B7%D1%83%D0%BB%D1%8C%D1%82%D0%B0%D1%82%2085%25');
-assert.match(social.vk, /^https:\/\/vk\.com\/share\.php\?url=/);
 assert.equal(core.prefersReducedMotion(() => ({ matches: true })), true);
 assert.equal(core.shouldConfetti(true, true), false); assert.equal(core.shouldConfetti(true, false), true, '19: reduced motion отключает конфетти');
 
