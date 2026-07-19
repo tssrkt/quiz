@@ -1151,27 +1151,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/40-1.webp",
+      "image": "img/quiz/horse-colors/40.webp",
       "answers": [
         {
           "text": "Саврасая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Буланая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Каурая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Светло-гнедая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Главным отличием саврасой от буланой является черный ремень на спине, также часто мордочка темнее корпуса, а у буланых она обычно светлее. От каурой саврасая отличается черным нависом, а от гнедой — песочно-желтой шерстью.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-40"
     }
   ]
 }
