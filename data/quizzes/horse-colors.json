@@ -1092,33 +1092,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-38",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/38.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Соловая",
-          "correct": true,
-          "id": "answer-01"
+          "correct": true
         },
         {
+          "id": "answer-02",
           "text": "Буланая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Каурая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Светло-рыжая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "У соловой лошади темная кожа, но может быть светлее чем у рыжих, глаза карие, ореховые или янтарные, ресницы желтые или светло-рыжие, шерсть песочно-желтая, грива и хвост белые или светло-желтые.",
-      "image_author": "Неизвестен",
-      "id": "question-38"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/39.webp",
+      "answers": [
+        {
+          "text": "Светло-гнедая",
+          "correct": false
+        },
+        {
+          "text": "Саврасая",
+          "correct": false
+        },
+        {
+          "text": "Буланая",
+          "correct": true
+        },
+        {
+          "text": "Каурая",
+          "correct": false
+        }
+      ],
+      "explanation": "Буланую от других мастей можно отличить по желтой шерсти и светлому волосу в гриве и хвосте. Голова бывает чуть светлее корпуса, а у гнедых в тон или чуть темнее. На спине нет черного ремня, или он широкий и размытый, без четких границ (тогда это зональное потемнение).",
+      "image_author": "Неизвестен"
     }
   ]
 }
