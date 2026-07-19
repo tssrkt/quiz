@@ -16,7 +16,7 @@
     {
       "id": "question-01",
       "question": "Что это за масть?",
-      "image": "img/quiz/1.webp",
+      "image": "img/quiz/rare-horse-colors/01.webp",
       "answers": [
         {
           "id": "answer-01",
@@ -44,27 +44,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/2.webp",
+      "image": "img/quiz/rare-horse-colors/02.webp",
       "answers": [
         {
           "text": "Изабелловая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Светло-соловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Светло-серая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Белая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "У изабелловых лошадей розовая кожа, голубые глаза, а цвет шерсти может варьировать от кремового до белоснежного.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-02"
     }
   ]
 }
