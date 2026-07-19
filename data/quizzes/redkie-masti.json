@@ -72,33 +72,81 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-03",
       "question": "Что это за масть?",
       "image": "img/quiz/rare-horse-colors/03.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Вороная в загаре",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Гнедая с ЗП",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Буланая с ЗП",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Рыжая с ЗП",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "ЗП — это зональное потемнение. От других мастей буланую можно отличить по желтой шерсти и светлому волосу в гриве и хвосте. Голова бывает чуть светлее корпуса, а у гнедых в тон или чуть темнее.",
-      "image_author": "Неизвестен",
-      "id": "question-03"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/4-1.webp",
+      "answers": [
+        {
+          "text": "Темно-соловая",
+          "correct": false
+        },
+        {
+          "text": "Темно-игреневая",
+          "correct": false
+        },
+        {
+          "text": "Серебристо-вороная",
+          "correct": true
+        },
+        {
+          "text": "Бурая с ОЗВ",
+          "correct": false
+        }
+      ],
+      "explanation": "У серебристо-вороных темная шерсть (черная или немного осветленная черная) и осветленный навис (грива и хвост).",
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/5.webp",
+      "answers": [
+        {
+          "text": "Изабелловая",
+          "correct": false
+        },
+        {
+          "text": "Светло-соловая",
+          "correct": false
+        },
+        {
+          "text": "Светло-серая",
+          "correct": true
+        },
+        {
+          "text": "Белая",
+          "correct": false
+        }
+      ],
+      "explanation": "Светло-серая — это отмасток серой и предпоследняя стадия поседения, когда шерсть лошади обретает белоснежный окрас по всему телу или почти по всему.",
+      "image_author": "Неизвестен"
     }
   ]
 }
