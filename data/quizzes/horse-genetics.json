@@ -69,31 +69,53 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-03",
       "question": "Могут ли быть изабелловые жеребята у двух буланых лошадей?",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Да, вероятность 75%",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Да, вероятность 50%",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Да, вероятность 25%",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Нет, это невозможно",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
-      "explanation": "Буланые лошади — гетерозиготы по кремовому локусу, а изабелловые — гомозиготы: Cn + Cn -> CC, Cn, Cn, nn — вероятность 25%.",
-      "id": "question-03"
+      "explanation": "Буланые лошади — гетерозиготы по кремовому локусу, а изабелловые — гомозиготы: Cn + Cn -> CC, Cn, Cn, nn — вероятность 25%."
+    },
+    {
+      "question": "Какую масть даст кремовый ген на рыжей основе?",
+      "answers": [
+        {
+          "text": "Изабелловую",
+          "correct": false
+        },
+        {
+          "text": "Буланую",
+          "correct": false
+        },
+        {
+          "text": "Соловую",
+          "correct": true
+        },
+        {
+          "text": "Каурую",
+          "correct": false
+        }
+      ],
+      "explanation": "Изабелловая — это два кремовых гена на любой основе, буланая — один кремовый ген на гнедой основе, соловая — на рыжей, каурая вообще не обладает кремовым геном."
     }
   ]
 }
