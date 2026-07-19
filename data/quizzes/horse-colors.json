@@ -861,27 +861,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/30.webp",
+      "image": "img/quiz/horse-colors/30.webp",
       "answers": [
         {
           "text": "Белая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Серая",
-          "correct": true
+          "correct": true,
+          "id": "answer-02"
         },
         {
           "text": "Изабелловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Светло-соловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Серую масть легко отличить от изабелловой и белой по серой или черной коже, которую хорошо видно на мордочке. ",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-30"
     }
   ]
 }
