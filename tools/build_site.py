@@ -181,7 +181,7 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
                 image_parts = Path(image).parts
                 if len(image_parts) > 3 and image_parts[:2] == ("img", "quiz") and image_parts[2] != slug:
                     errors.append(f"{qlabel}.image: папка изображения должна совпадать со slug «{slug}»")
-            if image and not isinstance(question.get("image_alt"), str):
+            if "image_alt" in question and not isinstance(question["image_alt"], str):
                 errors.append(f"{qlabel}.image_alt: для изображения требуется строка")
             validate_external_url(question.get("image_source_url", ""), f"{qlabel}.image_source_url", errors)
             answers = question.get("answers")

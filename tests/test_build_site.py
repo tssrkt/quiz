@@ -138,6 +138,33 @@ class BuildSiteTests(unittest.TestCase):
     def test_missing_image(self):
         self.assert_quiz_error(lambda quiz: quiz["questions"][0].update(image="img/quiz/missing.webp"), "файл не найден")
 
+    def test_image_without_image_alt_is_valid(self):
+        quiz = self.horse()
+        quiz["questions"][0].pop("image_alt", None)
+        self.write_quiz(quiz)
+        _, quizzes = self.load()
+        self.assertNotIn("image_alt", quizzes[0]["questions"][0])
+
+    def test_image_alt_is_rejected_only_when_present_and_not_a_string(self):
+        self.assert_quiz_error(
+            lambda quiz: quiz["questions"][0].update(image_alt=None),
+            "image_alt:",
+        )
+
+    def test_ten_question_build_publishes_every_question_and_image(self):
+        source = self.horse()
+        self.assertEqual(len(source["questions"]), 10)
+        output = self.base / "ten-question-site"
+        catalog = build_site.build(output)
+        horse = next(item for item in catalog["quizzes"] if item["slug"] == "horse-colors")
+        published = json.loads((output / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
+        self.assertEqual(horse["question_count"], 10)
+        self.assertEqual(len(published["questions"]), 10)
+        self.assertEqual(
+            sorted(path.name for path in (output / "img" / "quiz" / "horse-colors").iterdir()),
+            [f"{index:02d}.webp" for index in range(1, 11)],
+        )
+
     def test_question_images_are_isolated_by_quiz_slug(self):
         _, quizzes = self.load()
         self.assertTrue(all(question["image"].startswith("img/quiz/horse-colors/") for question in quizzes[0]["questions"]))

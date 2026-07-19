@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: organize-quiz-media
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   organize:
@@ -45,6 +45,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
+            python tools/normalize_quiz_ids.py
             python scripts/organize_quiz_media.py
 
             if git diff --quiet -- data/quizzes img/covers img/quiz; then

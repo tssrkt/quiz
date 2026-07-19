@@ -41,6 +41,17 @@ class NormalizeQuizIdsTests(unittest.TestCase):
         self.assertEqual(quiz["questions"][1]["id"], "question-100")
         self.assertEqual(quiz["questions"][1]["answers"][1]["id"], "answer-100")
 
+    def test_tenth_question_and_its_answers_receive_expected_ids(self):
+        questions = [question(f"question-{index:02d}") for index in range(1, 10)]
+        questions.append(question(None, [answer(None) for _ in range(4)]))
+        quiz = {"questions": questions}
+        self.assertTrue(normalize_quiz_ids(quiz))
+        self.assertEqual(quiz["questions"][9]["id"], "question-10")
+        self.assertEqual(
+            [item["id"] for item in quiz["questions"][9]["answers"]],
+            ["answer-01", "answer-02", "answer-03", "answer-04"],
+        )
+
     def test_existing_ids_survive_edits_reordering_and_deletion(self):
         original = {"questions": [question("question-02"), question("question-05")]}
         changed = copy.deepcopy(original)

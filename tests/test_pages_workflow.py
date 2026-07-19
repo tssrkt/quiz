@@ -56,13 +56,10 @@ class PagesWorkflowTests(unittest.TestCase):
         self.assertLess(comparison, condition)
         self.assertLess(condition, push)
 
-    def test_id_normalization_commits_only_when_needed_without_loop(self):
-        self.assertIn("if git diff --quiet -- data/quizzes", self.workflow)
-        self.assertIn("git add -- data/quizzes", self.workflow)
-        self.assertIn('git commit -m "Add missing quiz IDs"', self.workflow)
-        self.assertIn("git push origin HEAD:main", self.workflow)
-        self.assertIn('git rev-parse origin/main)" != "${GITHUB_SHA}', self.workflow)
-        self.assertEqual(self.workflow.count('git commit -m "Add missing quiz IDs"'), 1)
+    def test_id_normalization_does_not_race_to_update_main(self):
+        self.assertIn("python tools/normalize_quiz_ids.py", self.workflow)
+        self.assertNotIn('git commit -m "Add missing quiz IDs"', self.workflow)
+        self.assertNotIn("git push origin HEAD:main", self.workflow)
 
 
 if __name__ == "__main__":
