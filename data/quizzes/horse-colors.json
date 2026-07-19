@@ -599,33 +599,81 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-21",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/21.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Вороная",
-          "correct": true,
-          "id": "answer-01"
+          "correct": true
         },
         {
+          "id": "answer-02",
           "text": "Темно-гнедая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Караковая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Бурая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "Вороной конь полностью покрыт черным волосом (конечно же может быть белена на мордочке и носочки). В жаркую погоду из-за длительного пребывания на солнце черный волос может осветляться вплоть до рыжего тогда такая масть называется вороной в загаре.",
-      "image_author": "Неизвестен",
-      "id": "question-21"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/22-1.webp",
+      "answers": [
+        {
+          "text": "Рыжая",
+          "correct": false
+        },
+        {
+          "text": "Светло-гнедая",
+          "correct": false
+        },
+        {
+          "text": "Светло-буланая",
+          "correct": false
+        },
+        {
+          "text": "Каурая",
+          "correct": true
+        }
+      ],
+      "explanation": "Каурая очень похожа на рыжую, но ее легко отличить от последней по темному ремню на спине, затемненному навису и ногам, на которых может проявляться небольшая зеброидность.",
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/23.webp",
+      "answers": [
+        {
+          "text": "Темно-буланая",
+          "correct": false
+        },
+        {
+          "text": "Саврасая",
+          "correct": false
+        },
+        {
+          "text": "Гнедая",
+          "correct": true
+        },
+        {
+          "text": "Рыжая",
+          "correct": false
+        }
+      ],
+      "explanation": "Гнедая масть одна из самых распространенных, ее легко узнать по черным ногам, гриве и хвосте в комплекте с рыжим, коричневым или темно-коричневым корпусом и мордочкой.",
+      "image_author": "Неизвестен"
     }
   ]
 }
