@@ -338,33 +338,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-12",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/12.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Вороная",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Темно-гнедая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Темно-буланая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Бурая",
-          "correct": true,
-          "id": "answer-04"
+          "correct": true
         }
       ],
       "explanation": "Бурая, еще известная как темно-рыжая, может обладать очень темной шерстю как у темно-гнедых или почти черной, как у вороных. Однако, ее выдают осветленные ноги, и особенно — венчик, которые не бывает светлым у гнедых и вороных.",
-      "image_author": "Неизвестен",
-      "id": "question-12"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/13.webp",
+      "answers": [
+        {
+          "text": "Гнедая с ЗП",
+          "correct": false
+        },
+        {
+          "text": "Буланая с ЗП",
+          "correct": true
+        },
+        {
+          "text": "Каурая с ЗП",
+          "correct": false
+        },
+        {
+          "text": "Соловая с ЗП",
+          "correct": false
+        }
+      ],
+      "explanation": "Буланую от других мастей можно отличить по желтой шерсти и светлому волосу в гриве и хвосте. Голова бывает светлее корпуса, а у гнедых — в тон или чуть темнее.",
+      "image_author": "Неизвестен"
     }
   ]
 }
