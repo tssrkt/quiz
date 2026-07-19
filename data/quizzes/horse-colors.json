@@ -773,33 +773,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-27",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/27.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Вороная",
-          "correct": true,
-          "id": "answer-01"
+          "correct": true
         },
         {
+          "id": "answer-02",
           "text": "Пепельно-вороная",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Вороно-чалая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Серебристо-вороная",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "Вороной конь полностью покрыт черным волосом (конечно же может быть белена на мордочке и носочки).",
-      "image_author": "Неизвестен",
-      "id": "question-27"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/28.webp",
+      "answers": [
+        {
+          "text": "Гнедая",
+          "correct": false
+        },
+        {
+          "text": "Игреневая",
+          "correct": false
+        },
+        {
+          "text": "Рыжая",
+          "correct": true
+        },
+        {
+          "text": "Мухортая",
+          "correct": false
+        }
+      ],
+      "explanation": "У рыжих лошадей серая кожа, а цвет шерсти варьирует от молочно-рыжего до темно-бурого, почти черного. Нет темной каймы на ушках и есть осветленный венчик.",
+      "image_author": "Неизвестен"
     }
   ]
 }
