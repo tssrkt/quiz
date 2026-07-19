@@ -918,33 +918,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-32",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/32.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Светло-соловая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Светло-серая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Изабелловая",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Белая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "У изабелловой лошади голубые глаза и розовая кожа, а цвет шерсти варьирует от кремового до белоснежного.",
-      "image_author": "Неизвестен",
-      "id": "question-32"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/33.webp",
+      "answers": [
+        {
+          "text": "Гнедая",
+          "correct": false
+        },
+        {
+          "text": "Буланая",
+          "correct": false
+        },
+        {
+          "text": "Саврасая",
+          "correct": true
+        },
+        {
+          "text": "Каурая",
+          "correct": false
+        }
+      ],
+      "explanation": "Саврасая отличается от буланой черным ремнем на спине, мордочка у нее часто затемнена или в тон корпусу, в то время как у буланой — светлее.",
+      "image_author": "Неизвестен"
     }
   ]
 }
