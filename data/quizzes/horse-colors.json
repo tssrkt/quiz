@@ -1034,33 +1034,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-36",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/36.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Гнедая",
-          "correct": true,
-          "id": "answer-01"
+          "correct": true
         },
         {
+          "id": "answer-02",
           "text": "Буланая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Каурая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Рыжая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "Гнедая масть одна из самых распространенных, ее легко узнать по черным ногам, гриве и хвосте в комплекте с рыжим, коричневым или темно-коричневым корпусом и мордочкой.",
-      "image_author": "Неизвестен",
-      "id": "question-36"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/37.webp",
+      "answers": [
+        {
+          "text": "Гнедая с ЗП",
+          "correct": false
+        },
+        {
+          "text": "Буланая с ЗП",
+          "correct": true
+        },
+        {
+          "text": "Саврасая с ЗП",
+          "correct": false
+        },
+        {
+          "text": "Рыжая с ЗП",
+          "correct": false
+        }
+      ],
+      "explanation": "Ахалтекинцы не бывают саврасыми, поскольку у них нет дикого гена, от гнедой буланую легко отличить по песочно-желтому цвету шерсти, а от рыжей — по черному навису, ногам и кайме на ушках.",
+      "image_author": "Неизвестен"
     }
   ]
 }
