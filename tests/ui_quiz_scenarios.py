@@ -1,6 +1,7 @@
 """Optional real-browser scenarios; requires Python Playwright and installed Chrome."""
 
 import json
+import os
 import shutil
 import subprocess
 import time
@@ -10,7 +11,7 @@ from playwright.sync_api import sync_playwright
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PROFILE = ROOT / ".ui-test-profile"
+PROFILE = ROOT / f".ui-test-profile-{os.getpid()}"
 BASE_URL = "http://127.0.0.1:8766"
 QUIZ_URL = f"{BASE_URL}/quiz.html?quiz=horse-colors"
 QUIZ = json.loads((ROOT / "_site/data/quizzes/horse-colors.json").read_text(encoding="utf-8"))
@@ -187,7 +188,7 @@ def catalog_card_checks(page):
     meta = card.locator(".quiz-card-meta")
     assert meta.locator(":scope > *").first.get_attribute("class") == "quiz-card-difficulty"
     assert card.locator(".quiz-card-difficulty").inner_text() == "Сложность: низкая"
-    assert card.locator(".quiz-tags").inner_text().splitlines() == ["Лошади", "Животные", "Картинки"]
+    assert card.locator(".quiz-tags").inner_text().splitlines() == ["Масти", "Картинки"]
     assert page.evaluate("element => getComputedStyle(element).fontSize", card.locator(".quiz-card-description").element_handle()) == "19px"
     difficulty_box = card.locator(".quiz-card-difficulty").bounding_box()
     tags_box = card.locator(".quiz-tags").bounding_box()
@@ -211,7 +212,7 @@ def catalog_card_checks(page):
         page.set_viewport_size({"width": width, "height": 900})
         assert not page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth")
     assert page.evaluate("element => getComputedStyle(element).fontSize", card.locator(".quiz-card-description").element_handle()) == "17.4px"
-    page.get_by_role("button", name="Лошади", exact=True).first.click()
+    page.get_by_role("button", name="Масти", exact=True).first.click()
     assert "tag=horses" in page.url
     criterion.select_option("difficulty")
     assert criterion.input_value() == "difficulty"

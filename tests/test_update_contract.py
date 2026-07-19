@@ -29,9 +29,9 @@ class UpdateContractTests(unittest.TestCase):
 
     def test_tag_files_keep_technical_names_and_russian_labels(self):
         expected = {
-            "horses.json": ("Лошади", "horses", 10),
-            "animals.json": ("Животные", "animals", 20),
+            "horses.json": ("Масти", "horses", 10),
             "images.json": ("Картинки", "images", 10),
+            "genetics.json": ("Генетика", "genetics", 15),
         }
         tag_root = ROOT / "data" / "tags"
         self.assertEqual({path.name for path in tag_root.glob("*.json")}, set(expected))
@@ -40,7 +40,7 @@ class UpdateContractTests(unittest.TestCase):
             self.assertEqual(tag, {"name": name, "slug": slug, "order": order, "published": True})
 
         horse = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
-        self.assertEqual(horse["tags"], ["horses", "animals", "images"])
+        self.assertEqual(horse["tags"], ["horses", "images"])
         self.assertEqual(horse["difficulty"], "low")
 
     def test_cms_has_required_single_difficulty_select(self):
@@ -81,6 +81,13 @@ class UpdateContractTests(unittest.TestCase):
         self.assertFalse((ROOT / "data" / "tags" / f"{removed_slug}.json").exists())
         horse = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
         self.assertNotIn(removed_slug, horse["tags"])
+
+    def test_removed_animals_tag_is_absent_from_tags_and_every_quiz(self):
+        removed_slug = "animals"
+        self.assertFalse((ROOT / "data" / "tags" / f"{removed_slug}.json").exists())
+        for quiz_path in (ROOT / "data" / "quizzes").glob("*.json"):
+            quiz = json.loads(quiz_path.read_text(encoding="utf-8"))
+            self.assertNotIn(removed_slug, quiz["tags"], quiz_path.name)
 
     def test_current_quiz_has_persisted_stable_ids(self):
         quiz = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
