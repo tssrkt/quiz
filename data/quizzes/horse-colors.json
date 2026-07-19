@@ -774,27 +774,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/27.webp",
+      "image": "img/quiz/horse-colors/27.webp",
       "answers": [
         {
           "text": "Вороная",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Пепельно-вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Вороно-чалая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Серебристо-вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Вороной конь полностью покрыт черным волосом (конечно же может быть белена на мордочке и носочки).",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-27"
     }
   ]
 }
