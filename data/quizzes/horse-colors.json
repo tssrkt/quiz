@@ -628,62 +628,86 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-22",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/22.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Рыжая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Светло-гнедая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Светло-буланая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Каурая",
-          "correct": true,
-          "id": "answer-04"
+          "correct": true
         }
       ],
       "explanation": "Каурая очень похожа на рыжую, но ее легко отличить от последней по темному ремню на спине, затемненному навису и ногам, на которых может проявляться небольшая зеброидность.",
-      "image_author": "Неизвестен",
-      "id": "question-22"
+      "image_author": "Неизвестен"
     },
     {
+      "id": "question-23",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/23.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Темно-буланая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Саврасая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Гнедая",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Рыжая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "Гнедая масть одна из самых распространенных, ее легко узнать по черным ногам, гриве и хвосте в комплекте с рыжим, коричневым или темно-коричневым корпусом и мордочкой.",
-      "image_author": "Неизвестен",
-      "id": "question-23"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/24.webp",
+      "answers": [
+        {
+          "text": "Светло-гнедая",
+          "correct": false
+        },
+        {
+          "text": "Светло-саврасая",
+          "correct": false
+        },
+        {
+          "text": "Буланая",
+          "correct": true
+        },
+        {
+          "text": "Мухортая",
+          "correct": false
+        }
+      ],
+      "explanation": "Буланую от других мастей можно отличить по желтой шерсти и светлому волосу в гриве и хвосте. Голова бывает чуть светлее корпуса, а у гнедых в тон или чуть темнее. На спине нет черного ремня, или он широкий и размытый, без четких границ (тогда это зональное потемнение).",
+      "image_author": "Неизвестен"
     }
   ]
 }
