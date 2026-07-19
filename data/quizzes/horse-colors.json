@@ -600,27 +600,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/21-1.webp",
+      "image": "img/quiz/horse-colors/21.webp",
       "answers": [
         {
           "text": "Вороная",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Темно-гнедая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Караковая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Бурая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Вороной конь полностью покрыт черным волосом (конечно же может быть белена на мордочке и носочки). В жаркую погоду из-за длительного пребывания на солнце черный волос может осветляться вплоть до рыжего тогда такая масть называется вороной в загаре.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-21"
     }
   ]
 }
