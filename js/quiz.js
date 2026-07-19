@@ -145,7 +145,7 @@ function init(core) {
   function renderIntro() {
     setWideLayout(false);
     const hasProgress = Object.keys(state.answers).length > 0 && !state.completed;
-    app.innerHTML = `<section class="quiz-intro">${coverTemplate()}<p class="eyebrow">${escapeHtml(core.formatQuestionCount(quiz.questions.length))}</p><h1>${escapeHtml(quiz.title)}</h1><p class="lead">${escapeHtml(quiz.intro)}</p><div class="quiz-intro-actions"><button class="button" type="button" data-start>${hasProgress ? 'Продолжить' : 'Начать викторину'}</button>${hasProgress ? '<button class="button button-secondary" type="button" data-restart>Начать заново</button>' : ''}</div></section>`;
+    app.innerHTML = `<section class="quiz-intro">${coverTemplate()}<p class="eyebrow">${escapeHtml(core.formatQuestionCount(quiz.questions.length))}</p><h1 class="page-title">${escapeHtml(quiz.title)}</h1><p class="lead">${escapeHtml(quiz.intro)}</p><div class="quiz-intro-actions"><button class="button" type="button" data-start>${hasProgress ? 'Продолжить' : 'Начать викторину'}</button>${hasProgress ? '<button class="button button-secondary" type="button" data-restart>Начать заново</button>' : ''}</div></section>`;
     app.querySelector('[data-start]').addEventListener('click', renderQuestion);
     app.querySelector('[data-restart]')?.addEventListener('click', restart);
   }
