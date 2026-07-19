@@ -98,7 +98,7 @@
     if (percent >= 50) return 'Неплохо, но есть что повторить.';
     return 'Попробуйте пройти викторину еще раз.';
   }
-  function shareText(quiz, correct, total) { const percent = resultPercent(correct, total); return `Мой результат — ${correct} из ${total} (${percent}%) в викторине «${quiz.title}». А какой результат будет у вас?`; }
+  function shareText(quiz, correct, total, quizUrl) { const percent = resultPercent(correct, total); const title = String(quiz.title).replace(/\s+/g, ' ').trim(); return `Мой результат — ${correct} из ${total} (${percent}%) в викторине «${title}». А какой у вас? Проверьте: ${quizUrl}`; }
   function directQuizUrl(currentUrl, slug) { const url = new URL(currentUrl); url.search = ''; url.hash = ''; url.pathname = url.pathname.replace(/[^/]*$/, 'quiz.html'); url.searchParams.set('quiz', slug); return url.href; }
   function prefersReducedMotion(matchMedia) { return Boolean(matchMedia?.('(prefers-reduced-motion: reduce)').matches); }
   function autoAdvanceDelay(correct) { return correct ? 800 : null; }
@@ -198,12 +198,12 @@ function init(core) {
   function renderResult() {
     setWideLayout(false);
     state = { ...state, completed: true, current_index: quiz.questions.length, saved_at: new Date().toISOString() }; saveState();
-    const total = quiz.questions.length; const percent = core.resultPercent(state.correct_count, total); const message = core.resultMessage(percent); const text = core.shareText(quiz, state.correct_count, total); const url = core.directQuizUrl(location.href, quiz.slug); const sharePayload = `${text}\n${url}`;
+    const total = quiz.questions.length; const percent = core.resultPercent(state.correct_count, total); const message = core.resultMessage(percent); const url = core.directQuizUrl(location.href, quiz.slug); const sharePayload = core.shareText(quiz, state.correct_count, total, url);
     const recommendation = core.resultRecommendation(percent);
     const resultDetails = `<p class="result-summary">Ваш результат: ${state.correct_count} из ${total} (${percent}%)</p><div class="result-recommendation"><h2>${escapeHtml(message)}</h2><p>${escapeHtml(recommendation)}</p><a class="result-recommendation__articles" href="https://author.today/work/439719" target="_blank" rel="noopener noreferrer"><span class="result-recommendation__articles-content">📖 СБОРНИК СТАТЕЙ О ЛОШАДКАХ</span></a></div>`;
     app.innerHTML = `<section class="result-card"><p class="eyebrow">Викторина завершена</p><h1>${escapeHtml(quiz.title)}</h1>${resultDetails}<div class="share-actions"><button class="button" type="button" data-share>Поделиться результатом</button><button class="button button-secondary" type="button" data-copy>Скопировать результат</button></div><p class="share-status" role="status" aria-live="polite"></p><div class="result-actions"><button class="button" type="button" data-restart>Пройти еще раз</button><a class="button button-secondary" href="quizzes.html">К списку викторин</a></div></section>`;
     const status = app.querySelector('.share-status');
-    app.querySelector('[data-share]').addEventListener('click', async () => { if (navigator.share) { try { await navigator.share({ title: quiz.title, text, url }); return; } catch (error) { if (error.name === 'AbortError') return; } } await copyResult(sharePayload, status); });
+    app.querySelector('[data-share]').addEventListener('click', async () => { if (navigator.share) { try { await navigator.share({ title: quiz.title, text: sharePayload }); return; } catch (error) { if (error.name === 'AbortError') return; } } await copyResult(sharePayload, status); });
     app.querySelector('[data-copy]').addEventListener('click', () => copyResult(sharePayload, status));
     app.querySelector('[data-restart]').addEventListener('click', restart);
     if (percent >= 90) confetti(34);

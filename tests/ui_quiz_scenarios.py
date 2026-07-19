@@ -52,8 +52,9 @@ def all_correct(page):
     page.get_by_role("button", name="Поделиться результатом").click()
     page.wait_for_function("window.__sharePayload")
     payload = page.evaluate("window.__sharePayload")
-    assert payload["text"].startswith("Мой результат —")
-    assert payload["url"].endswith("quiz.html?quiz=horse-colors")
+    assert payload["text"] == f"Мой результат — {len(QUIZ['questions'])} из {len(QUIZ['questions'])} (100%) в викторине «{QUIZ['title']}». А какой у вас? Проверьте: {QUIZ_URL}"
+    assert "url" not in payload
+    assert "\n" not in payload["text"]
     assert page.get_by_role("button", name="Telegram").count() == 0
     assert page.get_by_role("button", name="ВКонтакте").count() == 0
 

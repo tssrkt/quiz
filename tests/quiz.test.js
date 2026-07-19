@@ -86,7 +86,14 @@ for (const mutate of [
 assert.equal(core.versionedUrl('data/quizzes/horse-colors.json', 'abc123'), 'data/quizzes/horse-colors.json?v=abc123');
 assert.equal(core.versionedUrl('img/quiz/horse-colors/01.webp', 'abc123'), 'img/quiz/horse-colors/01.webp?v=abc123');
 
-assert.equal(core.shareText({ title: 'Масти лошадей' }, 34, 40), 'Мой результат — 34 из 40 (85%) в викторине «Масти лошадей». А какой результат будет у вас?', '17: текст публикации');
+const horseColorsUrl = 'https://tssrkt.github.io/quiz/quiz.html?quiz=horse-colors';
+const rareColorsUrl = 'https://tssrkt.github.io/quiz/quiz.html?quiz=rare-horse-colors';
+assert.equal(core.shareText({ title: 'Масти лошадей' }, 34, 40, horseColorsUrl), `Мой результат — 34 из 40 (85%) в викторине «Масти лошадей». А какой у вас? Проверьте: ${horseColorsUrl}`, '17: неполный результат публикации');
+const perfectShare = core.shareText({ title: 'Редкие масти' }, 5, 5, rareColorsUrl);
+assert.equal(perfectShare, `Мой результат — 5 из 5 (100%) в викторине «Редкие масти». А какой у вас? Проверьте: ${rareColorsUrl}`, '100%, название и ссылка текущей викторины');
+assert.equal(perfectShare.includes('\n'), false, 'текст публикации занимает одну строку');
+assert.equal(/\s{2,}/.test(perfectShare), false, 'в тексте публикации нет двойных пробелов');
+assert.equal(core.shareText({ title: 'Редкие  масти' }, 4, 5, rareColorsUrl).includes('«Редкие масти»'), true, 'пробелы в названии нормализуются');
 assert.equal(core.directQuizUrl('https://example.test/quiz/quiz.html?quiz=x&preview=1', 'horse-colors'), 'https://example.test/quiz/quiz.html?quiz=horse-colors');
 assert.equal(core.shareMethod(false), 'copy', '18: fallback без Web Share');
 assert.equal(core.shareMethod(true), 'share');
