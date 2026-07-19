@@ -172,7 +172,7 @@ def adaptive_checks(page):
 def catalog_card_checks(page):
     page.set_viewport_size({"width": 1440, "height": 900})
     page.goto(f"{BASE_URL}/quizzes.html")
-    card = page.locator(".quiz-card").first
+    card = page.locator('.quiz-card:has(.quiz-card-link[href="quiz.html?quiz=horse-colors"])')
     card.wait_for()
     criterion = page.locator("#sort-criterion")
     direction = page.locator("[data-sort-direction]")
@@ -184,11 +184,26 @@ def catalog_card_checks(page):
     meta = card.locator(".quiz-card-meta")
     assert meta.locator(":scope > *").first.get_attribute("class") == "quiz-card-difficulty"
     assert card.locator(".quiz-card-difficulty").inner_text() == "Сложность: низкая"
-    assert card.locator(".quiz-tags").inner_text().splitlines() == ["Лошади", "Животные"]
+    assert card.locator(".quiz-tags").inner_text().splitlines() == ["Лошади", "Животные", "Картинки"]
     assert page.evaluate("element => getComputedStyle(element).fontSize", card.locator(".quiz-card-description").element_handle()) == "19px"
     difficulty_box = card.locator(".quiz-card-difficulty").bounding_box()
     tags_box = card.locator(".quiz-tags").bounding_box()
     assert abs((difficulty_box["y"] + difficulty_box["height"]) - (tags_box["y"] + tags_box["height"])) <= 2
+    cover = card.locator(".quiz-cover")
+    image = cover.locator("img")
+    card_box = card.bounding_box()
+    cover_box = cover.bounding_box()
+    assert round(cover_box["width"]) == 220
+    assert abs(cover_box["height"] - card_box["height"]) <= 2
+    assert page.evaluate("element => getComputedStyle(element).objectFit", image.element_handle()) == "cover"
+    assert page.evaluate("element => getComputedStyle(element).objectPosition", image.element_handle()) == "100% 50%"
+    page.set_viewport_size({"width": 701, "height": 900})
+    assert page.evaluate("element => getComputedStyle(element).gridTemplateColumns.split(' ').length", card.element_handle()) == 2
+    page.set_viewport_size({"width": 700, "height": 900})
+    assert page.evaluate("element => getComputedStyle(element).gridTemplateColumns.split(' ').length", card.element_handle()) == 1
+    cover_box = cover.bounding_box()
+    assert abs(cover_box["width"] - cover_box["height"]) <= 2
+    assert page.evaluate("element => getComputedStyle(element).objectPosition", image.element_handle()) == "50% 50%"
     for width in (1440, 375):
         page.set_viewport_size({"width": width, "height": 900})
         assert not page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth")

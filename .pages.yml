@@ -117,7 +117,7 @@ content:
         type: text
         required: true
         options:
-          maxlength: 300
+          maxlength: 250
       - name: intro
         label: Вступительный текст
         type: text

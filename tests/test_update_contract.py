@@ -61,6 +61,21 @@ class UpdateContractTests(unittest.TestCase):
         self.assertIn(".quiz-card-description{font-size:calc(1rem + 3px)}", css)
         self.assertIn(".quiz-card .quiz-card-description{font-size:calc(.9rem + 3px)}", css)
 
+    def test_catalog_cards_have_bounded_horizontal_and_square_mobile_layouts(self):
+        css = (ROOT / "css" / "style.css").read_text(encoding="utf-8")
+        self.assertIn(".quiz-card{grid-template-columns:220px minmax(0,1fr);max-height:440px}", css)
+        self.assertIn(".quiz-cover{width:220px;height:100%;min-height:220px;aspect-ratio:auto}", css)
+        self.assertIn("object-fit:cover;object-position:right center", css)
+        self.assertIn("@media(max-width:700px){.quiz-card{grid-template-columns:1fr;max-height:none}", css)
+        self.assertIn(".quiz-cover{width:100%;height:auto;min-height:0;aspect-ratio:1}", css)
+        self.assertIn(".quiz-cover img{object-position:center}", css)
+
+    def test_cms_short_description_has_250_character_limit(self):
+        schema = (ROOT / ".pages.yml").read_text(encoding="utf-8")
+        block = schema.split("      - name: short_description\n", 1)[1].split("      - name: intro\n", 1)[0]
+        self.assertIn("type: text", block)
+        self.assertIn("maxlength: 250", block)
+
     def test_removed_level_tag_is_absent_everywhere_that_is_published(self):
         removed_slug = "begin" + "ner"
         self.assertFalse((ROOT / "data" / "tags" / f"{removed_slug}.json").exists())
