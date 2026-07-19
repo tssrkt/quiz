@@ -127,22 +127,27 @@
       "answers": [
         {
           "text": "Только изабелловые",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Изабелловые и соловые",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Изабелловые и буланые",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Изабелловые, буланые и соловые",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
-      "explanation": "Два доминантных гена в кремовом локусе у обоих родителей могут дать потомство только с таким же набором генов: CC + CC -> CC "
+      "explanation": "Два доминантных гена в кремовом локусе у обоих родителей могут дать потомство только с таким же набором генов: CC + CC -> CC ",
+      "id": "question-05"
     }
   ]
 }
