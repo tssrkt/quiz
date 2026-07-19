@@ -571,27 +571,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/20-1.webp",
+      "image": "img/quiz/horse-colors/20.webp",
       "answers": [
         {
           "text": "Серая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Вороно-чалая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Мышастая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Серебристо-вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Если точнее, то на фотографии темно-серая масть, то есть первая стадия поседения, когда конь только начал седеть, и этот процесс всегда начинается с мордочки.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-20"
     }
   ]
 }
