@@ -45,23 +45,28 @@
       "answers": [
         {
           "text": "Только вороные",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Вороные и рыжие",
-          "correct": true
+          "correct": true,
+          "id": "answer-02"
         },
         {
           "text": "Вороные и гнедые",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Вороные, рыжие и гнедые",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Вороной конь может быть носителем рецессивного рыжего гена, соответственно, помимо вороных у них могут быть и рыжие потомки.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-02"
     }
   ]
 }
