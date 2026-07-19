@@ -1035,27 +1035,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/36.webp",
+      "image": "img/quiz/horse-colors/36.webp",
       "answers": [
         {
           "text": "Гнедая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Буланая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Каурая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Рыжая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Гнедая масть одна из самых распространенных, ее легко узнать по черным ногам, гриве и хвосте в комплекте с рыжим, коричневым или темно-коричневым корпусом и мордочкой.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-36"
     }
   ]
 }
