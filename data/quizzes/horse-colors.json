@@ -6,7 +6,7 @@
   "difficulty": "low",
   "short_description": "Смотрите фотки лошадок и выбираете из списка что за масть на фотке. Отличная викторина для старта, особенно, если вы новичок в этой теме.",
   "intro": "Смотрите фотки лошадок и выбираете из списка что за масть на фотке. Отличная викторина для старта, особенно, если вы новичок в этой теме.",
-  "cover": "img/covers/horse-colors.webp",
+  "cover": "img/covers/1.webp",
   "tags": [
     "horses",
     "animals",
@@ -425,33 +425,33 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-15",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/15.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Буланая",
-          "correct": true,
-          "id": "answer-01"
+          "correct": true
         },
         {
+          "id": "answer-02",
           "text": "Саврасая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Светло-гнедая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Караковая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "Буланую от других мастей можно отличить по желтой шерсти и светлому волосу в гриве и хвосте. Голова бывает чуть светлее корпуса, а у гнедых в тон или чуть темнее. ",
-      "image_author": "Неизвестен",
-      "id": "question-15"
+      "image_author": "Неизвестен"
     }
   ]
 }
