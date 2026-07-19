@@ -310,26 +310,31 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/11.webp",
+      "image": "img/quiz/horse-colors/11.webp",
       "answers": [
         {
           "text": "Рыжая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Гнедая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Соловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Каурая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
-      "explanation": "У рыжих лошадей серая кожа, а цвет шерсти варьирует от молочно-рыжего до темно-бурого, почти черного. Нет темной каймы на ушках и есть осветленный венчик."
+      "explanation": "У рыжих лошадей серая кожа, а цвет шерсти варьирует от молочно-рыжего до темно-бурого, почти черного. Нет темной каймы на ушках и есть осветленный венчик.",
+      "id": "question-11"
     }
   ]
 }
