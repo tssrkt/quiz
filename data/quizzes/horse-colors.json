@@ -455,51 +455,61 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/16.webp",
+      "image": "img/quiz/horse-colors/16.webp",
       "answers": [
         {
           "text": "Белая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Светло-серая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Светло-соловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Изабелловая",
-          "correct": true
+          "correct": true,
+          "id": "answer-04"
         }
       ],
       "explanation": "У изабелловых лошадей голубые глаза и розовая кожа, а цвет шерсти варьирует от кремового до белоснежного.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-16"
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/17.webp",
+      "image": "img/quiz/horse-colors/17.webp",
       "answers": [
         {
           "text": "Соловая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Светло-рыжая с ОЗВ",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Светло-игреневая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Каурая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "У соловой масти темная кожа, но может быть светлее чем у рыжих, глаза карие, ореховые или янтарные, ресницы желтые или светло-рыжие, шерсть песочно-желтая, грива и хвост белые или светло-желтые.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-17"
     }
   ]
 }
