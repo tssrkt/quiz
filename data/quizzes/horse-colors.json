@@ -339,27 +339,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/12.webp",
+      "image": "img/quiz/horse-colors/12.webp",
       "answers": [
         {
           "text": "Вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Темно-гнедая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Темно-буланая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Бурая",
-          "correct": true
+          "correct": true,
+          "id": "answer-04"
         }
       ],
       "explanation": "Бурая, еще известная как темно-рыжая, может обладать очень темной шерстю как у темно-гнедых или почти черной, как у вороных. Однако, ее выдают осветленные ноги, и особенно — венчик, которые не бывает светлым у гнедых и вороных.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-12"
     }
   ]
 }
