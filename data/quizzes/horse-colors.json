@@ -919,27 +919,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/32-1.webp",
+      "image": "img/quiz/horse-colors/32.webp",
       "answers": [
         {
           "text": "Светло-соловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Светло-серая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Изабелловая",
-          "correct": true
+          "correct": true,
+          "id": "answer-03"
         },
         {
           "text": "Белая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "У изабелловой лошади голубые глаза и розовая кожа, а цвет шерсти варьирует от кремового до белоснежного.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-32"
     }
   ]
 }
