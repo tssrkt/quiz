@@ -1122,27 +1122,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/39.webp",
+      "image": "img/quiz/horse-colors/39.webp",
       "answers": [
         {
           "text": "Светло-гнедая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Саврасая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Буланая",
-          "correct": true
+          "correct": true,
+          "id": "answer-03"
         },
         {
           "text": "Каурая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Буланую от других мастей можно отличить по желтой шерсти и светлому волосу в гриве и хвосте. Голова бывает чуть светлее корпуса, а у гнедых в тон или чуть темнее. На спине нет черного ремня, или он широкий и размытый, без четких границ (тогда это зональное потемнение).",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-39"
     }
   ]
 }
