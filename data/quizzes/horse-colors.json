@@ -229,23 +229,28 @@
       "answers": [
         {
           "text": "Рыжая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Гнедая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Буланая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Соловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "У рыжих лошадей серая кожа, а цвет шерсти варьирует от молочно-рыжего до темно-бурого, почти черного. Нет темной каймы на ушках и есть осветленный венчик.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-08"
     }
   ]
 }
