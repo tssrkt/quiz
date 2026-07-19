@@ -860,33 +860,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-30",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/30.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Белая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Серая",
-          "correct": true,
-          "id": "answer-02"
+          "correct": true
         },
         {
+          "id": "answer-03",
           "text": "Изабелловая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Светло-соловая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "Серую масть легко отличить от изабелловой и белой по серой или черной коже, которую хорошо видно на мордочке. ",
-      "image_author": "Неизвестен",
-      "id": "question-30"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/31.webp",
+      "answers": [
+        {
+          "text": "Мышастая",
+          "correct": true
+        },
+        {
+          "text": "Вороно-чалая",
+          "correct": false
+        },
+        {
+          "text": "Пепельно-вороная",
+          "correct": false
+        },
+        {
+          "text": "Мухортая",
+          "correct": false
+        }
+      ],
+      "explanation": "У мышастой лошади равномерный зольный или пепельно-серый окрас корпуса, напоминающий цвет шерсти дикой мыши. При этом голова и нижняя часть ног заметно темнее, а вдоль спины обязательно проходит четкий ремень.",
+      "image_author": "Неизвестен"
     }
   ]
 }
