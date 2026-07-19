@@ -716,27 +716,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/25.webp",
+      "image": "img/quiz/horse-colors/25.webp",
       "answers": [
         {
           "text": "Мышастая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Пепельно-вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Вороно-чалая",
-          "correct": true
+          "correct": true,
+          "id": "answer-03"
         },
         {
           "text": "Мухортая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Вороно-чалая лошадь имеет дымчатый или сизый корпус из-за равномерной примеси белых волос к черной шерсти. При этом ее голова, нижняя часть ног, грива и хвост остаются черными.",
-      "image_author": "Неизвестный"
+      "image_author": "Неизвестный",
+      "id": "question-25"
     }
   ]
 }
