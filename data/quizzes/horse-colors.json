@@ -686,33 +686,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-24",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/24.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Светло-гнедая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Светло-саврасая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Буланая",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Мухортая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "Буланую от других мастей можно отличить по желтой шерсти и светлому волосу в гриве и хвосте. Голова бывает чуть светлее корпуса, а у гнедых в тон или чуть темнее. На спине нет черного ремня, или он широкий и размытый, без четких границ (тогда это зональное потемнение).",
-      "image_author": "Неизвестен",
-      "id": "question-24"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/25.webp",
+      "answers": [
+        {
+          "text": "Мышастая",
+          "correct": false
+        },
+        {
+          "text": "Пепельно-вороная",
+          "correct": false
+        },
+        {
+          "text": "Вороно-чалая",
+          "correct": true
+        },
+        {
+          "text": "Мухортая",
+          "correct": false
+        }
+      ],
+      "explanation": "Вороно-чалая лошадь имеет дымчатый или сизый корпус из-за равномерной примеси белых волос к черной шерсти. При этом ее голова, нижняя часть ног, грива и хвост остаются черными.",
+      "image_author": "Неизвестный"
     }
   ]
 }
