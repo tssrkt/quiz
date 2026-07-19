@@ -195,33 +195,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-07",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/07.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Рыжая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Буланая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Гнедая",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Караковая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "Гнедая масть одна из самых распространенных, ее легко узнать по черным ногам, гриве и хвосте в комплекте с рыжим, коричневым или темно-коричневым корпусом и мордочкой.",
-      "image_author": "Неизвестен",
-      "id": "question-07"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/8-1.webp",
+      "answers": [
+        {
+          "text": "Рыжая",
+          "correct": true
+        },
+        {
+          "text": "Гнедая",
+          "correct": false
+        },
+        {
+          "text": "Буланая",
+          "correct": false
+        },
+        {
+          "text": "Соловая",
+          "correct": false
+        }
+      ],
+      "explanation": "У рыжих лошадей серая кожа, а цвет шерсти варьирует от молочно-рыжего до темно-бурого, почти черного. Нет темной каймы на ушках и есть осветленный венчик.",
+      "image_author": "Неизвестен"
     }
   ]
 }
