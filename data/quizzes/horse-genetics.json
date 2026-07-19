@@ -262,22 +262,27 @@
       "answers": [
         {
           "text": "Изабелловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Буланая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Соловая",
-          "correct": true
+          "correct": true,
+          "id": "answer-03"
         },
         {
           "text": "Пепельно-вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
-      "explanation": "Если в локусе Extension только рецессивные гены — это рыжая масть, и доминантные гены в локусе Agouti никак на это не влияют, а доминантный ген в кремовом локусе делает из рыжей масти соловую."
+      "explanation": "Если в локусе Extension только рецессивные гены — это рыжая масть, и доминантные гены в локусе Agouti никак на это не влияют, а доминантный ген в кремовом локусе делает из рыжей масти соловую.",
+      "id": "question-10"
     }
   ]
 }
