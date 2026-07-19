@@ -43,3 +43,7 @@ main{min-height:calc(100vh - 157px)}.hero{padding-block:92px 72px;text-align:cen
   .social-links li{min-width:0}
   .social-links a{min-width:0;padding-inline:12px;white-space:nowrap}
 }
+
+/* Общий каркас с подвалом у нижней границы коротких страниц */
+body{display:flex;min-height:100vh;flex-direction:column}
+main{flex:1 0 auto;min-height:0}
