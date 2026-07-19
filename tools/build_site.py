@@ -150,6 +150,12 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
             for tag in tags:
                 if tag not in known_tags:
                     errors.append(f"{label}.tags: неизвестный тег «{tag}»")
+        next_quiz = data.get("next_quiz")
+        if next_quiz not in (None, ""):
+            if not isinstance(next_quiz, str):
+                errors.append(f"{label}.next_quiz: требуется slug викторины")
+            else:
+                validate_slug(next_quiz, f"{label}.next_quiz", errors)
         validate_local_image(data.get("cover", ""), "img/covers/", f"{label}.cover", errors)
         questions = data.get("questions")
         if not isinstance(questions, list) or not questions:
@@ -209,6 +215,16 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
             if correct_count != 1:
                 errors.append(f"{qlabel}.answers: правильным должен быть ровно один вариант, найдено {correct_count}")
         quizzes.append(data)
+    quiz_by_slug = {quiz.get("slug"): quiz for quiz in quizzes}
+    for quiz in quizzes:
+        next_slug = quiz.get("next_quiz")
+        if not next_slug or not isinstance(next_slug, str):
+            continue
+        target = quiz_by_slug.get(next_slug)
+        if target is None:
+            errors.append(f"{quiz.get('slug', 'викторина')}.next_quiz: неизвестная викторина «{next_slug}»")
+        elif quiz.get("published") and not target.get("published"):
+            errors.append(f"{quiz['slug']}.next_quiz: опубликованная викторина не может ссылаться на неопубликованную «{next_slug}»")
     if errors:
         raise ContentError("\n".join(errors))
     return [normalize_quiz(quiz) for quiz in quizzes]

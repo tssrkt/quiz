@@ -135,6 +135,16 @@ content:
           search: "name,slug"
           value: "{fields.slug}"
           label: "{fields.name}"
+      - name: next_quiz
+        label: Следующая викторина
+        type: reference
+        required: false
+        options:
+          collection: quizzes
+          multiple: false
+          search: "title,slug"
+          value: "{fields.slug}"
+          label: "{fields.title}"
       - name: questions
         label: Вопросы
         type: object

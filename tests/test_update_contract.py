@@ -28,6 +28,15 @@ class UpdateContractTests(unittest.TestCase):
         self.assertIn('label: "{fields.name}"', reference)
         self.assertNotIn('label: "{name}"', reference)
 
+        next_quiz = quiz_collection.split("      - name: next_quiz\n", 1)[1].split("      - name: questions\n", 1)[0]
+        self.assertIn("label: Следующая викторина", next_quiz)
+        self.assertIn("type: reference", next_quiz)
+        self.assertIn("required: false", next_quiz)
+        self.assertIn("collection: quizzes", next_quiz)
+        self.assertIn("multiple: false", next_quiz)
+        self.assertIn('value: "{fields.slug}"', next_quiz)
+        self.assertIn('label: "{fields.title}"', next_quiz)
+
     def test_tag_files_keep_technical_names_and_russian_labels(self):
         expected = {
             "horses.json": ("Масти", "horses"),
@@ -61,6 +70,15 @@ class UpdateContractTests(unittest.TestCase):
         self.assertIn("Сложность: ${DIFFICULTY_LABELS[quiz.difficulty]}", javascript)
         self.assertIn(".quiz-card-description{font-size:calc(1rem + 3px)}", css)
         self.assertIn(".quiz-card .quiz-card-description{font-size:calc(.9rem + 3px)}", css)
+
+    def test_result_page_renders_optional_next_quiz_link(self):
+        javascript = (ROOT / "js" / "quiz.js").read_text(encoding="utf-8")
+        stylesheet = (ROOT / "css" / "style.css").read_text(encoding="utf-8")
+        self.assertIn('class="next-quiz"', javascript)
+        self.assertIn('class="next-quiz__label">Следующая викторина', javascript)
+        self.assertIn('quiz.html?quiz=${encodeURIComponent(nextQuiz.slug)}', javascript)
+        self.assertIn("nextQuiz ?", javascript)
+        self.assertIn(".next-quiz__link:hover span", stylesheet)
 
     def test_catalog_cards_have_bounded_horizontal_and_square_mobile_layouts(self):
         css = (ROOT / "css" / "style.css").read_text(encoding="utf-8")

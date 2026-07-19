@@ -16,6 +16,7 @@
   function canOpenQuiz(data, previewMode) { return data?.published === true || (data?.published === false && previewMode === true); }
   function validateQuiz(data) {
     if (!data || !SLUG_PATTERN.test(data.slug || '') || !/^[0-9a-f]{64}$/.test(data.content_version || '') || typeof data.title !== 'string' || typeof data.intro !== 'string' || typeof data.published !== 'boolean' || !Array.isArray(data.questions) || !data.questions.length) return false;
+    if (data.next_quiz != null && data.next_quiz !== '' && !SLUG_PATTERN.test(data.next_quiz)) return false;
     const questionIds = new Set();
     return data.questions.every((question) => {
       if (!question || !SLUG_PATTERN.test(question.id || '') || questionIds.has(question.id) || typeof question.question !== 'string' || typeof question.explanation !== 'string' || !Array.isArray(question.answers) || question.answers.length < 2 || question.answers.length > 6) return false;
@@ -117,7 +118,7 @@ function init(core) {
   const slug = params.get('quiz') || '';
   const preview = params.get('preview') === '1';
   const reduceMotion = core.prefersReducedMotion(window.matchMedia.bind(window));
-  let quiz, state, answerLocked = false, transitionScheduled = false;
+  let quiz, state, nextQuiz = null, answerLocked = false, transitionScheduled = false;
   const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[character]));
   const storageKey = () => `quiz-progress:${quiz.slug}`;
   const saveState = () => { try { localStorage.setItem(storageKey(), JSON.stringify(state)); } catch (error) { console.warn('[Quiz] Не удалось сохранить прогресс.', error); } };
@@ -202,7 +203,8 @@ function init(core) {
     const recommendation = core.resultRecommendation(percent);
     const explanation = message ? `${message} ${recommendation}` : recommendation;
     const resultDetails = `<p class="result-summary">Ваш результат: ${state.correct_count} из ${total} (${percent}%)</p><div class="result-recommendation"><p>${escapeHtml(explanation)}</p><a class="result-recommendation__articles" href="https://author.today/work/439719" target="_blank" rel="noopener noreferrer"><span class="result-recommendation__articles-content">📖 СБОРНИК СТАТЕЙ О ЛОШАДКАХ</span></a></div>`;
-    app.innerHTML = `<section class="result-card"><p class="eyebrow">Викторина завершена</p><h1>${escapeHtml(quiz.title)}</h1>${resultDetails}<div class="share-actions"><button class="button" type="button" data-share>Поделиться результатом</button><button class="button button-secondary" type="button" data-copy>Скопировать результат</button></div><p class="share-status" role="status" aria-live="polite"></p><div class="result-actions"><button class="button" type="button" data-restart>Пройти еще раз</button><a class="button button-secondary" href="quizzes.html">К списку викторин</a></div></section>`;
+    const nextQuizBlock = nextQuiz ? `<div class="next-quiz"><p class="next-quiz__label">Следующая викторина</p><a class="next-quiz__link" href="quiz.html?quiz=${encodeURIComponent(nextQuiz.slug)}"><span>${escapeHtml(nextQuiz.title)}</span></a></div>` : '';
+    app.innerHTML = `<section class="result-card"><p class="eyebrow">Викторина завершена</p><h1>${escapeHtml(quiz.title)}</h1>${resultDetails}<div class="share-actions"><button class="button" type="button" data-share>Поделиться результатом</button><button class="button button-secondary" type="button" data-copy>Скопировать результат</button></div><p class="share-status" role="status" aria-live="polite"></p><div class="result-actions"><button class="button" type="button" data-restart>Пройти еще раз</button><a class="button button-secondary" href="quizzes.html">К списку викторин</a></div>${nextQuizBlock}</section>`;
     const status = app.querySelector('.share-status');
     app.querySelector('[data-share]').addEventListener('click', async () => { if (navigator.share) { try { await navigator.share({ title: quiz.title, text: sharePayload }); return; } catch (error) { if (error.name === 'AbortError') return; } } await copyResult(sharePayload, status); });
     app.querySelector('[data-copy]').addEventListener('click', () => copyResult(sharePayload, status));
@@ -223,6 +225,7 @@ function init(core) {
       if (response.status === 404) { errorScreen('Викторина не найдена.'); return; }
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       quiz = await response.json();
+      nextQuiz = quiz.next_quiz && Array.isArray(catalog?.quizzes) ? catalog.quizzes.find((item) => item?.slug === quiz.next_quiz) || null : null;
       if (catalogQuiz && quiz.content_version !== catalogQuiz.content_version) throw new Error('Версия викторины не совпадает с каталогом');
       if (!core.validateQuiz(quiz) || quiz.slug !== slug) { console.error('[Quiz] Повреждённый JSON или несовместимые данные викторины.'); errorScreen('Эту викторину сейчас невозможно открыть.'); return; }
       if (!core.canOpenQuiz(quiz, preview)) { errorScreen('Эта викторина пока не опубликована.'); return; }

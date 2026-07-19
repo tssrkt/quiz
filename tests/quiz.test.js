@@ -23,6 +23,8 @@ assert.equal(core.canOpenQuiz(quiz, false), true, '1: опубликованна
 assert.equal(core.canOpenQuiz(makeQuiz(false), true), true, '2: черновик открывается в preview');
 assert.equal(core.canOpenQuiz(makeQuiz(false), false), false, '3: черновик закрыт без preview');
 assert.equal(core.validateQuiz({}), false, 'повреждённые данные отклоняются');
+assert.equal(core.validateQuiz({ ...quiz, next_quiz: 'next-quiz' }), true, 'slug следующей викторины валиден');
+assert.equal(core.validateQuiz({ ...quiz, next_quiz: 'Некорректный slug' }), false, 'некорректная связь следующей викторины отклоняется');
 
 let state = core.freshState(quiz, '2026-01-01T00:00:00.000Z');
 const correct = core.answerQuestion(state, quiz, 'a-01');

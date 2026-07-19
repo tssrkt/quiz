@@ -131,6 +131,28 @@ class BuildSiteTests(unittest.TestCase):
     def test_unknown_tag(self):
         self.assert_quiz_error(lambda quiz: quiz.update(tags=["missing-tag"]), "неизвестный тег")
 
+    def test_next_quiz_reference_is_optional_and_validated(self):
+        quiz = self.horse()
+        quiz["next_quiz"] = "horse-genetics"
+        self.write_quiz(quiz)
+        _, quizzes = self.load()
+        self.assertEqual(next(item for item in quizzes if item["slug"] == "horse-colors")["next_quiz"], "horse-genetics")
+
+        quiz["next_quiz"] = "missing-quiz"
+        self.write_quiz(quiz)
+        with self.assertRaisesRegex(build_site.ContentError, "next_quiz: неизвестная викторина"):
+            self.load()
+
+    def test_published_quiz_cannot_link_to_draft(self):
+        target = json.loads((self.data / "quizzes" / "horse-genetics.json").read_text(encoding="utf-8"))
+        target["published"] = False
+        self.write_quiz(target, "horse-genetics.json")
+        quiz = self.horse()
+        quiz["next_quiz"] = "horse-genetics"
+        self.write_quiz(quiz)
+        with self.assertRaisesRegex(build_site.ContentError, "не может ссылаться на неопубликованную"):
+            self.load()
+
     def test_difficulty_is_required_and_restricted(self):
         self.assert_quiz_error(lambda quiz: quiz.pop("difficulty"), "difficulty: требуется одно из значений")
         self.assert_quiz_error(lambda quiz: quiz.update(difficulty="expert"), "difficulty: требуется одно из значений")
