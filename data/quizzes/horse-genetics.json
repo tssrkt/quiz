@@ -235,22 +235,27 @@
       "answers": [
         {
           "text": "Изабелловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Буланая",
-          "correct": true
+          "correct": true,
+          "id": "answer-02"
         },
         {
           "text": "Соловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Пепельно-вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
-      "explanation": "Доминантный ген в локусе Extension дает вороную масть, доминантный ген в локусе Agouti делает из нее гнедую, а доминантный ген в кремовом локусе — буланую."
+      "explanation": "Доминантный ген в локусе Extension дает вороную масть, доминантный ген в локусе Agouti делает из нее гнедую, а доминантный ген в кремовом локусе — буланую.",
+      "id": "question-09"
     }
   ]
 }
