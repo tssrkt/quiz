@@ -73,27 +73,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/3-1.webp",
+      "image": "img/quiz/rare-horse-colors/03.webp",
       "answers": [
         {
           "text": "Вороная в загаре",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Гнедая с ЗП",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Буланая с ЗП",
-          "correct": true
+          "correct": true,
+          "id": "answer-03"
         },
         {
           "text": "Рыжая с ЗП",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "ЗП — это зональное потемнение. От других мастей буланую можно отличить по желтой шерсти и светлому волосу в гриве и хвосте. Голова бывает чуть светлее корпуса, а у гнедых в тон или чуть темнее.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-03"
     }
   ]
 }
