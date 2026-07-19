@@ -948,27 +948,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/33.webp",
+      "image": "img/quiz/horse-colors/33.webp",
       "answers": [
         {
           "text": "Гнедая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Буланая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Саврасая",
-          "correct": true
+          "correct": true,
+          "id": "answer-03"
         },
         {
           "text": "Каурая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Саврасая отличается от буланой черным ремнем на спине, мордочка у нее часто затемнена или в тон корпусу, в то время как у буланой — светлее.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-33"
     }
   ]
 }
