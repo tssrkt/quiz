@@ -832,27 +832,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/29.webp",
+      "image": "img/quiz/horse-colors/29.webp",
       "answers": [
         {
           "text": "Гнедая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Рыжая с ЗП",
-          "correct": true
+          "correct": true,
+          "id": "answer-02"
         },
         {
           "text": "Буланая с ЗП",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Игреневая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "ЗП — это зональное потемнение. Из-за него у этого коня темный навис, однако рыжую масть здесь выдают рыжие ноги, у гнедой они черные ниже скакательных суставов и «колен» (запястий).",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-29"
     }
   ]
 }
