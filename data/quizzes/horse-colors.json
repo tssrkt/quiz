@@ -889,33 +889,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-31",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/31.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Мышастая",
-          "correct": true,
-          "id": "answer-01"
+          "correct": true
         },
         {
+          "id": "answer-02",
           "text": "Вороно-чалая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Пепельно-вороная",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Мухортая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "У мышастой лошади равномерный зольный или пепельно-серый окрас корпуса, напоминающий цвет шерсти дикой мыши. При этом голова и нижняя часть ног заметно темнее, а вдоль спины обязательно проходит четкий ремень.",
-      "image_author": "Неизвестен",
-      "id": "question-31"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/32-1.webp",
+      "answers": [
+        {
+          "text": "Светло-соловая",
+          "correct": false
+        },
+        {
+          "text": "Светло-серая",
+          "correct": false
+        },
+        {
+          "text": "Изабелловая",
+          "correct": true
+        },
+        {
+          "text": "Белая",
+          "correct": false
+        }
+      ],
+      "explanation": "У изабелловой лошади голубые глаза и розовая кожа, а цвет шерсти варьирует от кремового до белоснежного.",
+      "image_author": "Неизвестен"
     }
   ]
 }
