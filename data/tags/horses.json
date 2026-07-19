@@ -1,1 +1,6 @@
-{"name":"Лошади","slug":"horses","order":10,"published":true}
+{
+  "name": "Масти",
+  "slug": "horses",
+  "order": 10,
+  "published": true
+}
