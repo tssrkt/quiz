@@ -1064,27 +1064,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/37.webp",
+      "image": "img/quiz/horse-colors/37.webp",
       "answers": [
         {
           "text": "Гнедая с ЗП",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Буланая с ЗП",
-          "correct": true
+          "correct": true,
+          "id": "answer-02"
         },
         {
           "text": "Саврасая с ЗП",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Рыжая с ЗП",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "Ахалтекинцы не бывают саврасыми, поскольку у них нет дикого гена, от гнедой буланую легко отличить по песочно-желтому цвету шерсти, а от рыжей — по черному навису, ногам и кайме на ушках.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-37"
     }
   ]
 }
