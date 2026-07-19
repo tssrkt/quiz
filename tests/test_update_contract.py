@@ -19,6 +19,7 @@ class UpdateContractTests(unittest.TestCase):
         self.assertRegex(tags_collection, r"default:\s+sort: order\s+order: asc")
 
         quiz_collection = schema.split("  - name: quizzes\n", 1)[1]
+        self.assertIn('template: "{fields.slug}.json"', quiz_collection)
         reference = quiz_collection.split("      - name: tags\n", 1)[1].split("      - name: questions\n", 1)[0]
         self.assertIn("type: reference", reference)
         self.assertIn("collection: tags", reference)
@@ -30,6 +31,7 @@ class UpdateContractTests(unittest.TestCase):
         expected = {
             "horses.json": ("Лошади", "horses", 10),
             "animals.json": ("Животные", "animals", 20),
+            "images.json": ("Картинки", "images", 10),
         }
         tag_root = ROOT / "data" / "tags"
         self.assertEqual({path.name for path in tag_root.glob("*.json")}, set(expected))
@@ -38,7 +40,7 @@ class UpdateContractTests(unittest.TestCase):
             self.assertEqual(tag, {"name": name, "slug": slug, "order": order, "published": True})
 
         horse = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
-        self.assertEqual(horse["tags"], ["horses", "animals"])
+        self.assertEqual(horse["tags"], ["horses", "animals", "images"])
         self.assertEqual(horse["difficulty"], "low")
 
     def test_cms_has_required_single_difficulty_select(self):

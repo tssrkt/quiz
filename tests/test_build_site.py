@@ -151,19 +151,24 @@ class BuildSiteTests(unittest.TestCase):
             "image_alt:",
         )
 
-    def test_ten_question_build_publishes_every_question_and_image(self):
+    def test_build_publishes_every_question_and_image(self):
         source = self.horse()
-        self.assertEqual(len(source["questions"]), 10)
-        output = self.base / "ten-question-site"
+        expected_count = len(source["questions"])
+        output = self.base / "complete-question-site"
         catalog = build_site.build(output)
         horse = next(item for item in catalog["quizzes"] if item["slug"] == "horse-colors")
         published = json.loads((output / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
-        self.assertEqual(horse["question_count"], 10)
-        self.assertEqual(len(published["questions"]), 10)
+        self.assertEqual(horse["question_count"], expected_count)
+        self.assertEqual(len(published["questions"]), expected_count)
         self.assertEqual(
             sorted(path.name for path in (output / "img" / "quiz" / "horse-colors").iterdir()),
-            [f"{index:02d}.webp" for index in range(1, 11)],
+            [f"{index:02d}.webp" for index in range(1, expected_count + 1)],
         )
+
+    def test_quiz_filenames_match_their_slugs(self):
+        for path in (ROOT / "data" / "quizzes").glob("*.json"):
+            quiz = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(path.stem, quiz["slug"])
 
     def test_question_images_are_isolated_by_quiz_slug(self):
         _, quizzes = self.load()
