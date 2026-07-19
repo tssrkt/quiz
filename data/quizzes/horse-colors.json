@@ -396,33 +396,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-14",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/14.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Светло-серая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Светло-соловая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Изабелловая",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Белая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "У изабелловых лошадей голубые глаза и розовая кожа, а окраска шерсти варьирует от кремового до белоснежного.",
-      "image_author": "Неизвестен",
-      "id": "question-14"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/15.webp",
+      "answers": [
+        {
+          "text": "Буланая",
+          "correct": true
+        },
+        {
+          "text": "Саврасая",
+          "correct": false
+        },
+        {
+          "text": "Светло-гнедая",
+          "correct": false
+        },
+        {
+          "text": "Караковая",
+          "correct": false
+        }
+      ],
+      "explanation": "Буланую от других мастей можно отличить по желтой шерсти и светлому волосу в гриве и хвосте. Голова бывает чуть светлее корпуса, а у гнедых в тон или чуть темнее. ",
+      "image_author": "Неизвестен"
     }
   ]
 }
