@@ -1093,27 +1093,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/38-1.webp",
+      "image": "img/quiz/horse-colors/38.webp",
       "answers": [
         {
           "text": "Соловая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Буланая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Каурая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Светло-рыжая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "У соловой лошади темная кожа, но может быть светлее чем у рыжих, глаза карие, ореховые или янтарные, ресницы желтые или светло-рыжие, шерсть песочно-желтая, грива и хвост белые или светло-желтые.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-38"
     }
   ]
 }
