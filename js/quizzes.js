@@ -109,6 +109,13 @@
     return counts;
   }
 
+  function orderTagsByCount(quizzes, visibleTags) {
+    const counts = countTags(quizzes, visibleTags);
+    return visibleTags
+      .map((tag) => ({ ...tag, count: counts.get(tag.slug) }))
+      .sort((a, b) => b.count - a.count || ruCollator.compare(a.name, b.name));
+  }
+
   function paginationItems(current, total) {
     if (total <= 1) return [];
     const pages = new Set([1, total, current - 1, current, current + 1]);
@@ -202,8 +209,7 @@
     }
 
     function renderTags() {
-      const counts = countTags(quizzes, visibleTags);
-      const items = [{ slug: 'all', name: 'Все', count: quizzes.length }, ...visibleTags.map((tag) => ({ ...tag, count: counts.get(tag.slug) }))];
+      const items = [{ slug: 'all', name: 'Все', count: quizzes.length }, ...orderTagsByCount(quizzes, visibleTags)];
       tagList.innerHTML = items.map((tag) => `<button class="catalog-tag${state.tag === tag.slug ? ' is-active' : ''}" type="button" data-tag="${escapeHtml(tag.slug)}" aria-pressed="${state.tag === tag.slug}"><span>${escapeHtml(tag.name)}</span><small>${tag.count}</small></button>`).join('');
       requestAnimationFrame(updateTagOverflowHint);
     }
@@ -323,7 +329,7 @@
       try {
         const catalog = await fetchJson('data/catalog.json');
         if (!Array.isArray(catalog?.tags) || !Array.isArray(catalog?.quizzes)) throw new Error('Некорректный формат каталога');
-        visibleTags = catalog.tags.map((tag) => ({ ...tag, published: true })).sort((a, b) => Number(a.order) - Number(b.order) || ruCollator.compare(a.name, b.name));
+        visibleTags = catalog.tags.map((tag) => ({ ...tag, published: true }));
         visibleTags.forEach((tag) => tags.set(tag.slug, tag));
         quizzes = catalog.quizzes;
         readAndNormalizeUrl(); render();
@@ -336,5 +342,5 @@
     })();
   }
 
-  return { PAGE_SIZE, DIFFICULTY_LABELS, DIFFICULTY_ORDER, validateQuiz, validDateValue, sortQuizzes, arrangeQuizzes, sortTooltip, countTags, paginationItems, getStateFromUrl, buildUrl, questionWord, init };
+  return { PAGE_SIZE, DIFFICULTY_LABELS, DIFFICULTY_ORDER, validateQuiz, validDateValue, sortQuizzes, arrangeQuizzes, sortTooltip, countTags, orderTagsByCount, paginationItems, getStateFromUrl, buildUrl, questionWord, init };
 });

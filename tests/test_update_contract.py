@@ -13,10 +13,11 @@ class UpdateContractTests(unittest.TestCase):
         tags_collection = schema.split("  - name: tags\n", 1)[1].split("  - name: quizzes\n", 1)[0]
         self.assertIn('template: "{fields.slug}.json"', tags_collection)
         self.assertIn("field: false", tags_collection)
-        self.assertRegex(tags_collection, r"view:\s+fields: \[name, slug, order, published\]\s+primary: name")
-        self.assertIn("sort: [order, name]", tags_collection)
+        self.assertRegex(tags_collection, r"view:\s+fields: \[name, slug, published\]\s+primary: name")
+        self.assertIn("sort: [name]", tags_collection)
         self.assertIn("search: [name, slug]", tags_collection)
-        self.assertRegex(tags_collection, r"default:\s+sort: order\s+order: asc")
+        self.assertRegex(tags_collection, r"default:\s+sort: name\s+order: asc")
+        self.assertNotIn("name: order", tags_collection)
 
         quiz_collection = schema.split("  - name: quizzes\n", 1)[1]
         self.assertIn('template: "{fields.slug}.json"', quiz_collection)
@@ -29,15 +30,15 @@ class UpdateContractTests(unittest.TestCase):
 
     def test_tag_files_keep_technical_names_and_russian_labels(self):
         expected = {
-            "horses.json": ("Масти", "horses", 10),
-            "images.json": ("Картинки", "images", 10),
-            "genetics.json": ("Генетика", "genetics", 15),
+            "horses.json": ("Масти", "horses"),
+            "images.json": ("Картинки", "images"),
+            "genetics.json": ("Генетика", "genetics"),
         }
         tag_root = ROOT / "data" / "tags"
         self.assertEqual({path.name for path in tag_root.glob("*.json")}, set(expected))
-        for filename, (name, slug, order) in expected.items():
+        for filename, (name, slug) in expected.items():
             tag = json.loads((tag_root / filename).read_text(encoding="utf-8"))
-            self.assertEqual(tag, {"name": name, "slug": slug, "order": order, "published": True})
+            self.assertEqual(tag, {"name": name, "slug": slug, "published": True})
 
         horse = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
         self.assertEqual(horse["tags"], ["horses", "images"])

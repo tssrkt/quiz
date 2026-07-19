@@ -107,9 +107,6 @@ def load_tags(data_root: Path) -> tuple[list[dict], dict[str, dict]]:
             errors.append(f"{label}.name: название повторяет {names[folded].name} без учёта регистра")
         elif name:
             names[folded] = path
-        order = data.get("order")
-        if isinstance(order, bool) or not isinstance(order, int) or order < 0:
-            errors.append(f"{label}.order: требуется целое неотрицательное число")
         if not isinstance(data.get("published"), bool):
             errors.append(f"{label}.published: требуется true или false")
         tags.append(data)
@@ -238,8 +235,8 @@ def normalize_quiz(source: dict) -> dict:
 
 def make_catalog(tags: list[dict], quizzes: list[dict]) -> dict:
     published_tags = sorted(
-        ({"slug": tag["slug"], "name": tag["name"], "order": tag["order"]} for tag in tags if tag["published"]),
-        key=lambda tag: (tag["order"], tag["name"].casefold()),
+        ({"slug": tag["slug"], "name": tag["name"]} for tag in tags if tag["published"]),
+        key=lambda tag: tag["name"].casefold(),
     )
     published_quizzes = [
         {

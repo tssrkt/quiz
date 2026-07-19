@@ -28,12 +28,12 @@ content:
       template: "{fields.slug}.json"
       field: false
     view:
-      fields: [name, slug, order, published]
+      fields: [name, slug, published]
       primary: name
-      sort: [order, name]
+      sort: [name]
       search: [name, slug]
       default:
-        sort: order
+        sort: name
         order: asc
     fields:
       - name: name
@@ -47,12 +47,6 @@ content:
         pattern:
           regex: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           message: Используйте латинские строчные буквы, цифры и дефисы.
-      - name: order
-        label: Порядок отображения
-        type: number
-        required: true
-        options:
-          min: 0
       - name: published
         label: Опубликован
         type: boolean

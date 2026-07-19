@@ -9,6 +9,7 @@ const {
   arrangeQuizzes,
   sortTooltip,
   countTags,
+  orderTagsByCount,
   paginationItems,
   getStateFromUrl,
   buildUrl
@@ -53,6 +54,30 @@ const counts = countTags(grouped, [{ slug: 'horses' }, { slug: 'biology' }]);
 assert.equal(counts.get('horses'), 2);
 assert.equal(counts.get('biology'), 1);
 assert.equal(counts.has('hidden'), false);
+
+const tagDefinitions = [
+  { slug: 'zero', name: 'Яблоки' },
+  { slug: 'horses', name: 'Масти' },
+  { slug: 'biology', name: 'Биология' },
+  { slug: 'history', name: 'Археология' }
+];
+const tagQuizzes = [
+  quiz(1, { tags: ['horses', 'biology'] }),
+  quiz(2, { tags: ['horses', 'history'] }),
+  quiz(3, { tags: ['horses', 'biology'] })
+];
+assert.deepEqual(
+  orderTagsByCount(tagQuizzes, tagDefinitions).map(({ slug, count }) => [slug, count]),
+  [['horses', 3], ['biology', 2], ['history', 1], ['zero', 0]]
+);
+assert.deepEqual(
+  orderTagsByCount(tagQuizzes.slice(1), tagDefinitions).map(({ slug, count }) => [slug, count]),
+  [['horses', 2], ['history', 1], ['biology', 1], ['zero', 0]]
+);
+assert.deepEqual(
+  orderTagsByCount([...tagQuizzes, quiz(4, { tags: ['history'] })], tagDefinitions).map(({ slug, count }) => [slug, count]),
+  [['horses', 3], ['history', 2], ['biology', 2], ['zero', 0]]
+);
 
 const dated = [
   quiz(1, { title: 'Бета', publication_date: '2026-02-01' }),

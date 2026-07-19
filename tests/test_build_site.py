@@ -41,7 +41,7 @@ class BuildSiteTests(unittest.TestCase):
             build_site.load_quizzes(self.data, known)
 
     def test_auto_discovers_new_tag_and_quiz_but_excludes_draft(self):
-        tag = {"name": "История", "slug": "history", "order": 40, "published": True}
+        tag = {"name": "История", "slug": "history", "published": True}
         (self.data / "tags" / "history.json").write_text(json.dumps(tag, ensure_ascii=False), encoding="utf-8")
         draft = self.horse()
         draft.update({"slug": "history-draft", "title": "Черновик", "published": False, "tags": ["history"]})
