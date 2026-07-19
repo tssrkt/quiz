@@ -10,7 +10,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  const PAGE_SIZE = 25;
+  const PAGE_SIZE = 10;
   const SORTS = new Set(['date', 'difficulty', 'title']);
   const DIRECTIONS = new Set(['down', 'up']);
   const DIFFICULTY_ORDER = Object.freeze({ low: 1, medium: 2, high: 3 });

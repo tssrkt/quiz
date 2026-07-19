@@ -32,15 +32,16 @@ function pagesFor(count) {
   return Math.max(1, Math.ceil(Array.from({ length: count }, (_, index) => quiz(index)).length / PAGE_SIZE));
 }
 
-assert.equal(PAGE_SIZE, 25);
+assert.equal(PAGE_SIZE, 10);
 assert.deepEqual(DIFFICULTY_LABELS, { low: 'низкая', medium: 'средняя', high: 'высокая' });
 assert.equal(pagesFor(0), 1);
 assert.equal(pagesFor(1), 1);
-assert.equal(pagesFor(25), 1);
-assert.equal(pagesFor(26), 2);
-assert.equal(pagesFor(61), 3);
-assert.equal(Array.from({ length: 26 }).slice(PAGE_SIZE).length, 1);
-assert.equal(Array.from({ length: 61 }).slice(PAGE_SIZE * 2).length, 11);
+assert.equal(pagesFor(10), 1);
+assert.equal(pagesFor(11), 2);
+assert.equal(pagesFor(20), 2);
+assert.equal(pagesFor(21), 3);
+assert.equal(Array.from({ length: 11 }).slice(PAGE_SIZE).length, 1);
+assert.equal(Array.from({ length: 21 }).slice(PAGE_SIZE * 2).length, 1);
 
 const grouped = arrangeQuizzes([
   quiz(1, { slug: 'other-new', title: 'Яблоко', publication_date: '2026-04-01', tags: ['biology'] }),
@@ -121,6 +122,11 @@ assert.equal(url, '/quiz/quizzes.html?source=email&sort=title&direction=up&page=
 const paged = Array.from({ length: 30 }, (_, index) => quiz(index, { title: `Название ${String(29 - index).padStart(2, '0')}`, tags: index < 27 ? ['horses'] : ['biology'] }));
 const filteredSorted = arrangeQuizzes(paged, 'horses', 'title', 'down');
 assert.equal(filteredSorted.length, 27);
+assert.equal(Math.ceil(filteredSorted.length / PAGE_SIZE), 3);
 assert.deepEqual(filteredSorted.slice(0, PAGE_SIZE), sortQuizzes(filteredSorted, 'title', 'down').slice(0, PAGE_SIZE));
+assert.deepEqual(filteredSorted.slice(PAGE_SIZE, PAGE_SIZE * 2), sortQuizzes(filteredSorted, 'title', 'down').slice(PAGE_SIZE, PAGE_SIZE * 2));
+const filteredPageUrl = buildUrl('https://example.test/quizzes.html', { tag: 'horses', sort: 'title', direction: 'down', page: 2 });
+assert.equal(filteredPageUrl, '/quizzes.html?tag=horses&sort=title&direction=down&page=2');
+assert.deepEqual(getStateFromUrl('?tag=horses&sort=title&direction=down&page=2', visible, 3), { tag: 'horses', sort: 'title', direction: 'down', page: 2 });
 
 console.log('catalog.test.js: все проверки пройдены');
