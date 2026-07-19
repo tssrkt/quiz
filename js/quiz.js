@@ -1,13 +1,14 @@
 (function (root, factory) {
   'use strict';
-  const core = factory();
+  const catalogCore = typeof module === 'object' && module.exports ? require('./quizzes.js') : root.QuizCatalogCore;
+  const core = factory(catalogCore);
   if (typeof module === 'object' && module.exports) module.exports = core;
   else {
     root.QuizEngineCore = core;
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => init(core));
     else init(core);
   }
-})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (catalogCore) {
   'use strict';
   const STATE_VERSION = 2;
   const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -96,13 +97,14 @@
     if (percent >= 90) return 'Отличный результат!';
     return '';
   }
+  function formatQuestionCount(count) { return `${count} ${catalogCore.questionWord(count)}`; }
   function shareText(quiz, correct, total, quizUrl) { const percent = resultPercent(correct, total); const title = String(quiz.title).replace(/\s+/g, ' ').trim(); return `Мой результат — ${correct} из ${total} (${percent}%) в викторине «${title}». А какой у вас? Проверьте: ${quizUrl}`; }
   function directQuizUrl(currentUrl, slug) { const url = new URL(currentUrl); url.search = ''; url.hash = ''; url.pathname = url.pathname.replace(/[^/]*$/, 'quiz.html'); url.searchParams.set('quiz', slug); return url.href; }
   function prefersReducedMotion(matchMedia) { return Boolean(matchMedia?.('(prefers-reduced-motion: reduce)').matches); }
   function autoAdvanceDelay(correct) { return correct ? 800 : null; }
   function shouldConfetti(correct, reducedMotion) { return Boolean(correct && !reducedMotion); }
   function shareMethod(webShareAvailable) { return webShareAvailable ? 'share' : 'copy'; }
-  return { STATE_VERSION, canOpenQuiz, validateQuiz, structureSignature, versionedUrl, freshState, restoreState, answerQuestion, advance, resultPercent, resultRecommendation, resultMessage, shareText, directQuizUrl, prefersReducedMotion, autoAdvanceDelay, shouldConfetti, shareMethod };
+  return { STATE_VERSION, canOpenQuiz, validateQuiz, structureSignature, versionedUrl, freshState, restoreState, answerQuestion, advance, resultPercent, resultRecommendation, resultMessage, formatQuestionCount, shareText, directQuizUrl, prefersReducedMotion, autoAdvanceDelay, shouldConfetti, shareMethod };
 });
 
 function init(core) {
@@ -143,7 +145,7 @@ function init(core) {
   function renderIntro() {
     setWideLayout(false);
     const hasProgress = Object.keys(state.answers).length > 0 && !state.completed;
-    app.innerHTML = `<section class="quiz-intro">${coverTemplate()}<p class="eyebrow">${quiz.questions.length} вопросов</p><h1>${escapeHtml(quiz.title)}</h1><p class="lead">${escapeHtml(quiz.intro)}</p><div class="quiz-intro-actions"><button class="button" type="button" data-start>${hasProgress ? 'Продолжить' : 'Начать викторину'}</button>${hasProgress ? '<button class="button button-secondary" type="button" data-restart>Начать заново</button>' : ''}</div></section>`;
+    app.innerHTML = `<section class="quiz-intro">${coverTemplate()}<p class="eyebrow">${escapeHtml(core.formatQuestionCount(quiz.questions.length))}</p><h1>${escapeHtml(quiz.title)}</h1><p class="lead">${escapeHtml(quiz.intro)}</p><div class="quiz-intro-actions"><button class="button" type="button" data-start>${hasProgress ? 'Продолжить' : 'Начать викторину'}</button>${hasProgress ? '<button class="button button-secondary" type="button" data-restart>Начать заново</button>' : ''}</div></section>`;
     app.querySelector('[data-start]').addEventListener('click', renderQuestion);
     app.querySelector('[data-restart]')?.addEventListener('click', restart);
   }
