@@ -976,33 +976,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-34",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/34.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Белая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Светло-серая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Светло-соловая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Изабелловая",
-          "correct": true,
-          "id": "answer-04"
+          "correct": true
         }
       ],
       "explanation": "у изабелловых лошадей глаза голубые, кожа розовая, а цвет шерсти может варьировать от кремового до белоснежного.",
-      "image_author": "Неизвестен",
-      "id": "question-34"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/35.webp",
+      "answers": [
+        {
+          "text": "Буланая",
+          "correct": false
+        },
+        {
+          "text": "Саврасая",
+          "correct": true
+        },
+        {
+          "text": "Каурая",
+          "correct": false
+        },
+        {
+          "text": "Гнедая",
+          "correct": false
+        }
+      ],
+      "explanation": "Главным отличием саврасой от буланой является наличие черного ремня на спине, иногда еще и мордочка, которая темнее корпуса, у буланых она обычно светлее. От каурой она отличается черным нависом, а от гнедой — песочно-желтая шерсть корпуса.",
+      "image_author": "Неизвестен"
     }
   ]
 }
