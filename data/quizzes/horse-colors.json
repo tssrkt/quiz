@@ -454,62 +454,86 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-16",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/16.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Белая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Светло-серая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Светло-соловая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Изабелловая",
-          "correct": true,
-          "id": "answer-04"
+          "correct": true
         }
       ],
       "explanation": "У изабелловых лошадей голубые глаза и розовая кожа, а цвет шерсти варьирует от кремового до белоснежного.",
-      "image_author": "Неизвестен",
-      "id": "question-16"
+      "image_author": "Неизвестен"
     },
     {
+      "id": "question-17",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/17.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Соловая",
-          "correct": true,
-          "id": "answer-01"
+          "correct": true
         },
         {
+          "id": "answer-02",
           "text": "Светло-рыжая с ОЗВ",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Светло-игреневая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Каурая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "У соловой масти темная кожа, но может быть светлее чем у рыжих, глаза карие, ореховые или янтарные, ресницы желтые или светло-рыжие, шерсть песочно-желтая, грива и хвост белые или светло-желтые.",
-      "image_author": "Неизвестен",
-      "id": "question-17"
+      "image_author": "Неизвестен"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/18.webp",
+      "answers": [
+        {
+          "text": "Изабелловая",
+          "correct": true
+        },
+        {
+          "text": "Светло-серая",
+          "correct": false
+        },
+        {
+          "text": "Светло-соловая",
+          "correct": false
+        },
+        {
+          "text": "Белая",
+          "correct": false
+        }
+      ],
+      "explanation": "У изабелловых лошадей розовая кожа и голубые глаза, а цвет шерсти может варьировать от кремового к белоснежного.",
+      "image_author": "Неизвестен"
     }
   ]
 }
