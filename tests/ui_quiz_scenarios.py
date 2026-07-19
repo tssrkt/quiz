@@ -45,8 +45,10 @@ def all_correct(page):
         wait_next(page, index)
     assert page.locator(".result-summary").inner_text() == f"Ваш результат: {len(QUIZ['questions'])} из {len(QUIZ['questions'])} (100%)"
     recommendation = page.locator(".result-recommendation")
-    assert recommendation.get_by_role("heading", name="Отличный результат!").count() == 1
-    assert "Вы правильно ответили на все вопросы и прекрасно разбираетесь в мастях лошадей. Вас не так-то просто запутать! А в сборнике статей о лошадках наверняка найдется еще немало интересного." in recommendation.inner_text()
+    assert recommendation.get_by_role("heading").count() == 0
+    explanation = recommendation.locator(":scope > p")
+    assert explanation.inner_text().startswith("Отличный результат! Вы правильно ответили")
+    assert "Отличный результат!\n" not in explanation.inner_text()
     assert recommendation.locator(".result-recommendation__articles-content").inner_text().count("📖") == 1
     page.evaluate("Object.defineProperty(navigator, 'share', {value: async payload => { window.__sharePayload = payload }, configurable: true})")
     page.get_by_role("button", name="Поделиться результатом").click()

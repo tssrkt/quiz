@@ -51,17 +51,17 @@ assert.match(core.resultRecommendation(75), /^Хороший результат!
 assert.match(core.resultRecommendation(99), /^Хороший результат!/);
 assert.equal(core.resultRecommendation(100), 'Вы правильно ответили на все вопросы и прекрасно разбираетесь в мастях лошадей. Вас не так-то просто запутать! А в сборнике статей о лошадках наверняка найдется еще немало интересного.');
 assert.equal(core.resultMessage(90), 'Отличный результат!');
-assert.equal(core.resultMessage(89), 'Очень хороший результат!');
-assert.equal(core.resultMessage(74), 'Неплохо, но есть что повторить.');
-assert.equal(core.resultMessage(49), 'Попробуйте пройти викторину еще раз.', '13: все диапазоны оценок');
+assert.equal(core.resultMessage(89), '');
+assert.equal(core.resultMessage(74), '');
+assert.equal(core.resultMessage(49), '', '13: удаленные вступительные фразы отсутствуют');
 [
   [100, 'Отличный результат!'],
   [95, 'Отличный результат!'],
-  [80, 'Очень хороший результат!'],
-  [60, 'Неплохо, но есть что повторить.'],
-  [40, 'Попробуйте пройти викторину еще раз.'],
-].forEach(([percent, heading]) => {
-  assert.equal(core.resultMessage(percent), heading);
+  [80, ''],
+  [60, ''],
+  [40, ''],
+].forEach(([percent, introduction]) => {
+  assert.equal(core.resultMessage(percent), introduction);
   assert.equal(typeof core.resultRecommendation(percent), 'string');
 });
 
