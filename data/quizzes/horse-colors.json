@@ -715,33 +715,57 @@
       "image_author": "Неизвестен"
     },
     {
+      "id": "question-25",
       "question": "Что это за масть?",
       "image": "img/quiz/horse-colors/25.webp",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Мышастая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Пепельно-вороная",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Вороно-чалая",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Мухортая",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
       "explanation": "Вороно-чалая лошадь имеет дымчатый или сизый корпус из-за равномерной примеси белых волос к черной шерсти. При этом ее голова, нижняя часть ног, грива и хвост остаются черными.",
-      "image_author": "Неизвестный",
-      "id": "question-25"
+      "image_author": "Неизвестный"
+    },
+    {
+      "question": "Что это за масть?",
+      "image": "img/quiz/26-1.webp",
+      "answers": [
+        {
+          "text": "Гнедая",
+          "correct": false
+        },
+        {
+          "text": "Рыжая",
+          "correct": true
+        },
+        {
+          "text": "Бурая",
+          "correct": false
+        },
+        {
+          "text": "Игреневая",
+          "correct": false
+        }
+      ],
+      "explanation": "У рыжих лошадей серая кожа, а цвет шерсти варьирует от молочно-рыжего до темно-бурого, почти черного.",
+      "image_author": "Неизвестен"
     }
   ]
 }
