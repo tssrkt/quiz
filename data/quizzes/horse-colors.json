@@ -890,27 +890,32 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/31.webp",
+      "image": "img/quiz/horse-colors/31.webp",
       "answers": [
         {
           "text": "Мышастая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Вороно-чалая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Пепельно-вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Мухортая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
       "explanation": "У мышастой лошади равномерный зольный или пепельно-серый окрас корпуса, напоминающий цвет шерсти дикой мыши. При этом голова и нижняя часть ног заметно темнее, а вдоль спины обязательно проходит четкий ремень.",
-      "image_author": "Неизвестен"
+      "image_author": "Неизвестен",
+      "id": "question-31"
     }
   ]
 }
