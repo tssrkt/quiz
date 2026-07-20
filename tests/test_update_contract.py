@@ -185,6 +185,13 @@ class UpdateContractTests(unittest.TestCase):
         self.assertIn("question-card question-card--with-image", quiz_js)
         self.assertIn(": `<section class=\"question-card\">${questionContent}</section>`", quiz_js)
 
+    def test_no_image_question_uses_full_card_width(self):
+        css = (ROOT / "css" / "style.css").read_text(encoding="utf-8")
+        self.assertIn(".question-card:not(.question-card--with-image) .question-content{width:100%}", css)
+        self.assertIn(".question-card:not(.question-card--with-image) .quiz-progress progress{flex:1 1 auto;width:100%;min-width:0}", css)
+        self.assertIn(".question-content .answer-option{width:100%;min-width:0}", css)
+        self.assertIn("@media(max-width:520px){.quiz-progress{align-items:stretch;flex-direction:column", css)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
