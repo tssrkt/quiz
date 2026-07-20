@@ -82,6 +82,23 @@ class BuildSiteTests(unittest.TestCase):
         self.assertTrue(any(answer["text"].endswith("(изменён правильный)") for answer in loaded_question["answers"]))
         self.assertTrue(any(answer["text"].endswith("(изменён неправильный)") for answer in loaded_question["answers"]))
 
+    def test_correct_answer_selection_survives_save_reopen_and_change(self):
+        quiz = self.horse()
+        question = quiz["questions"][23]
+        original = question["correct_answer_id"]
+        replacement = next(answer["id"] for answer in question["answers"] if answer["id"] != original)
+        question["correct_answer_id"] = replacement
+        self.write_quiz(quiz)
+
+        reopened = self.horse()
+        reopened_question = reopened["questions"][23]
+        self.assertEqual(reopened_question["correct_answer_id"], replacement)
+        self.assertTrue(all("correct" not in answer for answer in reopened_question["answers"]))
+
+        _, quizzes = self.load()
+        loaded = next(item for item in quizzes if item["slug"] == "horse-colors")
+        self.assertEqual(loaded["questions"][23]["correct_answer_id"], replacement)
+
     def test_legacy_correct_flags_are_supported_and_normalized(self):
         quiz = self.horse()
         question = quiz["questions"][0]
