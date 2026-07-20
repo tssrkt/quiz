@@ -539,36 +539,54 @@
       "explanation": "Чтобы получилась вороная масть нужно как минимум один доминантный ген локуса Extension и два рецессивных гена локуса Agouti."
     },
     {
+      "id": "question-21",
       "question": "У нас есть вороной жеребец ЕЕаа и рыжая кобыла ееАА, какие у них будут жеребята?",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Все вороные",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Все рыжие",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Все гнедые",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Вороные и рыжие",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         },
         {
+          "id": "answer-05",
           "text": "Вороные, рыжие и гнедые",
-          "correct": false,
-          "id": "answer-05"
+          "correct": false
         }
       ],
-      "explanation": "EEaa + eeAA -> EeAa — все потомки гнедые.",
-      "id": "question-21"
+      "explanation": "EEaa + eeAA -> EeAa — все потомки гнедые."
+    },
+    {
+      "question": "Какие гены дадут гнедую масть?",
+      "answers": [
+        {
+          "text": "ЕеАа, ЕЕАА, ЕеАА, ЕЕАа",
+          "correct": true
+        },
+        {
+          "text": "ееАа, ееАА, ееаа",
+          "correct": false
+        },
+        {
+          "text": "Ееаа, ЕЕаа",
+          "correct": false
+        }
+      ],
+      "explanation": "Чтобы получилась гнедая масть нужны доминантные гены в локусах Extension & Agouti одновременно."
     }
   ]
 }
