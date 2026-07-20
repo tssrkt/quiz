@@ -191,7 +191,7 @@ content:
                 hidden: true
                 required: false
               - name: text
-                label: Текст варианта
+                label: false
                 type: string
                 required: true
           - name: correct_answer_id

@@ -172,6 +172,17 @@ class UpdateContractTests(unittest.TestCase):
                 for answer in question["answers"]:
                     self.assertNotRegex(answer["text"], r"^\s*Вариант\s+\d+\s*:")
 
+    def test_cms_hides_answer_text_label_without_changing_field(self):
+        schema = (ROOT / ".pages.yml").read_text(encoding="utf-8")
+        answers = schema.split("          - name: answers\n", 1)[1].split("          - name: correct_answer_id\n", 1)[0]
+        text_field = answers.split("              - name: text\n", 1)[1]
+        self.assertRegex(text_field, r"^\s*label: false\s+type: string\s+required: true")
+        self.assertNotIn("Текст варианта", answers)
+
+        for quiz_path in (ROOT / "data" / "quizzes").glob("*.json"):
+            quiz = json.loads(quiz_path.read_text(encoding="utf-8"))
+            self.assertTrue(all("text" in answer for question in quiz["questions"] for answer in question["answers"]))
+
     def test_json_and_question_images_are_cache_busted(self):
         catalog_js = (ROOT / "js" / "quizzes.js").read_text(encoding="utf-8")
         quiz_js = (ROOT / "js" / "quiz.js").read_text(encoding="utf-8")
