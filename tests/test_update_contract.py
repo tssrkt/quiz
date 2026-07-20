@@ -188,7 +188,8 @@ class UpdateContractTests(unittest.TestCase):
     def test_no_image_question_uses_full_card_width(self):
         css = (ROOT / "css" / "style.css").read_text(encoding="utf-8")
         self.assertIn(".question-card:not(.question-card--with-image) .question-content{width:100%}", css)
-        self.assertIn(".question-card:not(.question-card--with-image) .quiz-progress progress{flex:1 1 auto;width:100%;min-width:0}", css)
+        self.assertIn(".quiz-progress>span{flex:0 0 auto;white-space:nowrap}", css)
+        self.assertIn(".quiz-progress progress{flex:1 1 auto;width:auto;min-width:0", css)
         self.assertIn(".question-content .answer-option{width:100%;min-width:0}", css)
         self.assertIn("@media(max-width:520px){.quiz-progress{align-items:stretch;flex-direction:column", css)
 
