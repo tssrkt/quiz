@@ -4,6 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "pages.yml"
+MEDIA_WORKFLOW = ROOT / ".github" / "workflows" / "organize-quiz-media.yml"
 
 
 class PagesWorkflowTests(unittest.TestCase):
@@ -60,6 +61,12 @@ class PagesWorkflowTests(unittest.TestCase):
         self.assertIn("python tools/normalize_quiz_ids.py", self.workflow)
         self.assertNotIn('git commit -m "Add missing quiz IDs"', self.workflow)
         self.assertNotIn("git push origin HEAD:main", self.workflow)
+
+    def test_media_follow_up_commit_does_not_normalize_ids(self):
+        workflow = MEDIA_WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("python scripts/organize_quiz_media.py", workflow)
+        self.assertNotIn("python tools/normalize_quiz_ids.py", workflow)
+        self.assertIn("python tools/normalize_quiz_ids.py", self.workflow)
 
 
 if __name__ == "__main__":

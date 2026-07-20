@@ -20,7 +20,9 @@ BROKEN_PATH = ROOT / "_site/data/quizzes/ui-broken.json"
 
 
 def chosen_id(question, correct):
-    return next(answer["id"] for answer in question["answers"] if answer["correct"] is correct)
+    if correct:
+        return question["correct_answer_id"]
+    return next(answer["id"] for answer in question["answers"] if answer["id"] != question["correct_answer_id"])
 
 
 def wait_next(page, index):

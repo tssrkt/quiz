@@ -21,12 +21,12 @@
     return data.questions.every((question) => {
       if (!question || !SLUG_PATTERN.test(question.id || '') || questionIds.has(question.id) || typeof question.question !== 'string' || typeof question.explanation !== 'string' || !Array.isArray(question.answers) || question.answers.length < 2 || question.answers.length > 6) return false;
       questionIds.add(question.id);
-      const answerIds = new Set(); let correct = 0;
+      const answerIds = new Set();
       const answersValid = question.answers.every((answer) => {
-        if (!answer || !SLUG_PATTERN.test(answer.id || '') || answerIds.has(answer.id) || typeof answer.text !== 'string' || typeof answer.correct !== 'boolean') return false;
-        answerIds.add(answer.id); if (answer.correct) correct += 1; return true;
+        if (!answer || !SLUG_PATTERN.test(answer.id || '') || answerIds.has(answer.id) || typeof answer.text !== 'string') return false;
+        answerIds.add(answer.id); return true;
       });
-      return answersValid && correct === 1;
+      return answersValid && typeof question.correct_answer_id === 'string' && answerIds.has(question.correct_answer_id);
     });
   }
   function structureSignature(quiz) {
@@ -35,7 +35,8 @@
       question: question.question,
       image: question.image || '',
       explanation: question.explanation,
-      answers: question.answers.map((answer) => ({ id: answer.id, text: answer.text, correct: answer.correct }))
+      correct_answer_id: question.correct_answer_id,
+      answers: question.answers.map((answer) => ({ id: answer.id, text: answer.text }))
     }));
     return `${quiz.content_version || ''}|${JSON.stringify(progressContent)}`;
   }
@@ -58,9 +59,10 @@
     for (const [questionId, record] of Object.entries(saved.answers)) {
       const question = quiz.questions.find((item) => item.id === questionId);
       const answer = question?.answers.find((item) => item.id === record?.answer_id);
-      if (!question || !answer || typeof record.correct !== 'boolean' || record.correct !== answer.correct) return fresh;
-      verified[questionId] = { answer_id: answer.id, correct: answer.correct };
-      if (answer.correct) correctCount += 1;
+      const correct = answer?.id === question?.correct_answer_id;
+      if (!question || !answer || typeof record.correct !== 'boolean' || record.correct !== correct) return fresh;
+      verified[questionId] = { answer_id: answer.id, correct };
+      if (correct) correctCount += 1;
     }
     if (correctCount !== saved.correct_count) return fresh;
     for (let index = 0; index < quiz.questions.length; index += 1) {
@@ -77,8 +79,9 @@
     if (!question || state.answers[question.id]) return { state, accepted: false, correct: false };
     const answer = question.answers.find((item) => item.id === answerId);
     if (!answer) return { state, accepted: false, correct: false };
-    const next = { ...state, answers: { ...state.answers, [question.id]: { answer_id: answer.id, correct: answer.correct } }, correct_count: state.correct_count + (answer.correct ? 1 : 0), saved_at: now };
-    return { state: next, accepted: true, correct: answer.correct };
+    const correct = answer.id === question.correct_answer_id;
+    const next = { ...state, answers: { ...state.answers, [question.id]: { answer_id: answer.id, correct } }, correct_count: state.correct_count + (correct ? 1 : 0), saved_at: now };
+    return { state: next, accepted: true, correct };
   }
   function advance(state, quiz, now = new Date().toISOString()) {
     if (state.completed) return { state, advanced: false };
@@ -165,8 +168,9 @@ function init(core) {
     setWideLayout(withImage);
     const answers = question.answers.map((answer) => {
       const selected = record?.answer_id === answer.id;
-      const status = record ? (answer.correct ? ' is-correct' : selected ? ' is-wrong' : '') : '';
-      const icon = record && answer.correct ? '<span class="answer-icon" aria-hidden="true">✓</span><span class="visually-hidden">Правильный ответ.</span>' : record && selected ? '<span class="answer-icon" aria-hidden="true">×</span><span class="visually-hidden">Неправильный ответ.</span>' : '';
+      const isCorrect = answer.id === question.correct_answer_id;
+      const status = record ? (isCorrect ? ' is-correct' : selected ? ' is-wrong' : '') : '';
+      const icon = record && isCorrect ? '<span class="answer-icon" aria-hidden="true">✓</span><span class="visually-hidden">Правильный ответ.</span>' : record && selected ? '<span class="answer-icon" aria-hidden="true">×</span><span class="visually-hidden">Неправильный ответ.</span>' : '';
       return `<button class="answer-option${status}" type="button" data-answer="${escapeHtml(answer.id)}" ${record ? 'disabled' : ''}>${icon}<span>${escapeHtml(answer.text)}</span></button>`;
     }).join('');
     const correct = record?.correct === true;

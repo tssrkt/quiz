@@ -194,12 +194,21 @@ content:
                 label: Текст варианта
                 type: string
                 required: true
-              - name: correct
-                label: Правильный ответ
-                type: boolean
-                required: true
-                default: false
-                description: Во всём вопросе отметьте ровно один правильный вариант.
+          - name: correct_answer_id
+            label: Правильный вариант
+            type: select
+            required: true
+            description: Выберите один вариант по его номеру в списке выше.
+            options:
+              multiple: false
+              placeholder: Выберите правильный вариант
+              values:
+                - { name: answer-01, label: Вариант 1 }
+                - { name: answer-02, label: Вариант 2 }
+                - { name: answer-03, label: Вариант 3 }
+                - { name: answer-04, label: Вариант 4 }
+                - { name: answer-05, label: Вариант 5 }
+                - { name: answer-06, label: Вариант 6 }
           - name: explanation
             label: Объяснение
             type: text

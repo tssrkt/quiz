@@ -6,8 +6,8 @@ function makeQuiz(published = true) {
   return {
     slug: 'demo-quiz', title: 'Демо', intro: 'Вступление', published, content_version: 'a'.repeat(64),
     questions: [
-      { id: 'question-01', question: 'Первый?', explanation: 'Пояснение 1', answers: [{ id: 'a-01', text: 'Да', correct: true }, { id: 'a-02', text: 'Нет', correct: false }] },
-      { id: 'question-02', question: 'Второй?', explanation: 'Пояснение 2', answers: [{ id: 'a-01', text: 'Нет', correct: false }, { id: 'a-02', text: 'Да', correct: true }] }
+      { id: 'question-01', question: 'Первый?', explanation: 'Пояснение 1', correct_answer_id: 'a-01', answers: [{ id: 'a-01', text: 'Да' }, { id: 'a-02', text: 'Нет' }] },
+      { id: 'question-02', question: 'Второй?', explanation: 'Пояснение 2', correct_answer_id: 'a-02', answers: [{ id: 'a-01', text: 'Нет' }, { id: 'a-02', text: 'Да' }] }
     ]
   };
 }
@@ -72,7 +72,7 @@ const restored = core.restoreState(saved, quiz);
 assert.equal(restored.current_index, 1); assert.equal(restored.answers['question-01'].answer_id, 'a-02', '14: сохранение восстановлено');
 const restarted = core.freshState(quiz);
 assert.equal(restarted.current_index, 0); assert.equal(Object.keys(restarted.answers).length, 0, '15: начало заново');
-const changedQuiz = makeQuiz(); changedQuiz.questions[0].answers.push({ id: 'a-03', text: 'Может быть', correct: false });
+const changedQuiz = makeQuiz(); changedQuiz.questions[0].answers.push({ id: 'a-03', text: 'Может быть' });
 const incompatible = core.restoreState(saved, changedQuiz);
 assert.equal(incompatible.current_index, 0); assert.equal(Object.keys(incompatible.answers).length, 0, '16: несовместимое сохранение сброшено');
 for (const mutate of [
@@ -80,7 +80,7 @@ for (const mutate of [
   (value) => { value.questions[0].explanation = 'Новое объяснение'; },
   (value) => { value.questions[0].answers[0].text = 'Изменённый ответ'; },
   (value) => { value.questions.reverse(); },
-  (value) => { value.questions.push({ id: 'question-03', question: 'Третий?', image: 'img/quiz/demo/03.webp', explanation: 'Пояснение 3', answers: [{ id: 'a-01', text: 'Да', correct: true }, { id: 'a-02', text: 'Нет', correct: false }] }); }
+  (value) => { value.questions.push({ id: 'question-03', question: 'Третий?', image: 'img/quiz/demo/03.webp', explanation: 'Пояснение 3', correct_answer_id: 'a-01', answers: [{ id: 'a-01', text: 'Да' }, { id: 'a-02', text: 'Нет' }] }); }
 ]) {
   const changed = makeQuiz(); mutate(changed);
   assert.equal(core.restoreState(saved, changed).current_index, 0, 'изменение содержимого сбрасывает прогресс');

@@ -36,12 +36,11 @@
       if (!Array.isArray(item?.answers) || item.answers.length < 2 || item.answers.length > 6) errors.push(`${label}: требуется от 2 до 6 ответов`);
       else {
         const answerIds = new Set();
-        let correctCount = 0;
         item.answers.forEach((answer) => {
-          if (!answer || typeof answer.id !== 'string' || typeof answer.text !== 'string' || typeof answer.correct !== 'boolean') errors.push(`${label}: вариант ответа заполнен некорректно`);
-          else { if (answerIds.has(answer.id)) errors.push(`${label}: id ответа «${answer.id}» повторяется`); answerIds.add(answer.id); if (answer.correct) correctCount += 1; }
+          if (!answer || typeof answer.id !== 'string' || typeof answer.text !== 'string') errors.push(`${label}: вариант ответа заполнен некорректно`);
+          else { if (answerIds.has(answer.id)) errors.push(`${label}: id ответа «${answer.id}» повторяется`); answerIds.add(answer.id); }
         });
-        if (correctCount !== 1) errors.push(`${label}: правильным должен быть ровно один вариант`);
+        if (typeof item.correct_answer_id !== 'string' || !answerIds.has(item.correct_answer_id)) errors.push(`${label}: требуется один существующий правильный вариант`);
       }
       if (typeof item?.explanation !== 'string' || !item.explanation.trim()) errors.push(`${label}: объяснение обязательно`);
     });

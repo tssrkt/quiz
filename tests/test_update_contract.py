@@ -63,6 +63,17 @@ class UpdateContractTests(unittest.TestCase):
         self.assertNotIn("multiple:", block)
         self.assertEqual(re.findall(r"- name: (low|medium|high)\s+label: (Низкая|Средняя|Высокая)", block), [("low", "Низкая"), ("medium", "Средняя"), ("high", "Высокая")])
 
+    def test_cms_requires_one_correct_answer_selection(self):
+        schema = (ROOT / ".pages.yml").read_text(encoding="utf-8")
+        questions = schema.split("      - name: questions\n", 1)[1]
+        block = questions.split("          - name: correct_answer_id\n", 1)[1].split("          - name: explanation\n", 1)[0]
+        self.assertIn("label: Правильный вариант", block)
+        self.assertIn("type: select", block)
+        self.assertIn("required: true", block)
+        self.assertIn("multiple: false", block)
+        self.assertEqual(len(re.findall(r"name: answer-0[1-6]", block)), 6)
+        self.assertNotRegex(questions, r"(?m)^\s+- name: correct\s*$")
+
     def test_catalog_card_has_difficulty_before_tags_and_description_is_three_pixels_larger(self):
         javascript = (ROOT / "js" / "quizzes.js").read_text(encoding="utf-8")
         css = (ROOT / "css" / "style.css").read_text(encoding="utf-8")

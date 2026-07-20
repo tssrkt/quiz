@@ -192,7 +192,7 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
                 errors.append(f"{qlabel}.answers: требуется от 2 до 6 вариантов")
                 answers = []
             answer_ids: dict[str, int] = {}
-            correct_count = 0
+            legacy_correct_ids = []
             for a_index, answer in enumerate(answers, 1):
                 alabel = f"{qlabel}.answers[{a_index}]"
                 if not isinstance(answer, dict):
@@ -208,12 +208,23 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
                 elif answer_id:
                     answer_ids[answer_id] = a_index
                 require_string(answer, "text", alabel, errors)
-                if not isinstance(answer.get("correct"), bool):
-                    errors.append(f"{alabel}.correct: требуется true или false")
-                elif answer["correct"]:
-                    correct_count += 1
-            if correct_count != 1:
-                errors.append(f"{qlabel}.answers: правильным должен быть ровно один вариант, найдено {correct_count}")
+                if "correct" in answer:
+                    if not isinstance(answer["correct"], bool):
+                        errors.append(f"{alabel}.correct: требуется true или false")
+                    elif answer["correct"]:
+                        legacy_correct_ids.append(answer_id)
+            correct_answer_id = question.get("correct_answer_id")
+            if correct_answer_id is None:
+                if len(legacy_correct_ids) != 1:
+                    errors.append(f"{qlabel}: требуется correct_answer_id или ровно один старый correct: true")
+                elif legacy_correct_ids[0]:
+                    question["correct_answer_id"] = legacy_correct_ids[0]
+            elif not isinstance(correct_answer_id, str) or not correct_answer_id.strip():
+                errors.append(f"{qlabel}.correct_answer_id: требуется непустой ID варианта")
+            elif correct_answer_id not in answer_ids:
+                errors.append(f"{qlabel}.correct_answer_id: вариант «{correct_answer_id}» отсутствует в answers")
+            if correct_answer_id is not None and legacy_correct_ids and legacy_correct_ids != [correct_answer_id]:
+                errors.append(f"{qlabel}: correct_answer_id противоречит старому correct: true")
         quizzes.append(data)
     quiz_by_slug = {quiz.get("slug"): quiz for quiz in quizzes}
     for quiz in quizzes:
@@ -234,6 +245,8 @@ def normalize_quiz(source: dict) -> dict:
     quiz = copy.deepcopy(source)
     slug = quiz["slug"]
     for q_index, question in enumerate(quiz["questions"], 1):
+        for answer in question["answers"]:
+            answer.pop("correct", None)
         image = question.get("image", "")
         if image:
             question["_source_image"] = image

@@ -19,22 +19,18 @@
       "answers": [
         {
           "text": "Первый вариант",
-          "correct": false,
           "id": "answer-01"
         },
         {
           "text": "Второй вариант",
-          "correct": true,
           "id": "answer-02"
         },
         {
           "text": "Третий вариант",
-          "correct": false,
           "id": "answer-03"
         },
         {
           "text": "Четвёртый вариант",
-          "correct": false,
           "id": "answer-04"
         }
       ],
@@ -42,7 +38,8 @@
       "image_source": "Название источника",
       "image_author": "Имя автора",
       "image_source_url": "https://example.com/source",
-      "id": "question-01"
+      "id": "question-01",
+      "correct_answer_id": "answer-02"
     },
     {
       "question": "Вопрос без изображения?",
@@ -51,22 +48,18 @@
       "answers": [
         {
           "text": "Первый вариант",
-          "correct": true,
           "id": "answer-01"
         },
         {
           "text": "Второй вариант",
-          "correct": false,
           "id": "answer-02"
         },
         {
           "text": "Третий вариант",
-          "correct": false,
           "id": "answer-03"
         },
         {
           "text": "Четвёртый вариант",
-          "correct": false,
           "id": "answer-04"
         }
       ],
@@ -74,7 +67,8 @@
       "image_source": "",
       "image_author": "",
       "image_source_url": "",
-      "id": "question-02"
+      "id": "question-02",
+      "correct_answer_id": "answer-01"
     }
   ]
 }

@@ -59,10 +59,22 @@ class BuildSiteTests(unittest.TestCase):
         self.assertEqual(published["history-draft"]["question_count"], len(draft["questions"]))
 
     def test_no_correct_answer(self):
-        self.assert_quiz_error(lambda quiz: [answer.update(correct=False) for answer in quiz["questions"][0]["answers"]], "ровно один вариант")
+        self.assert_quiz_error(lambda quiz: quiz["questions"][0].pop("correct_answer_id"), "требуется correct_answer_id")
 
-    def test_two_correct_answers(self):
-        self.assert_quiz_error(lambda quiz: quiz["questions"][0]["answers"][0].update(correct=True), "ровно один вариант")
+    def test_correct_answer_must_reference_an_available_option(self):
+        self.assert_quiz_error(lambda quiz: quiz["questions"][0].update(correct_answer_id="answer-99"), "отсутствует в answers")
+
+    def test_legacy_correct_flags_are_supported_and_normalized(self):
+        quiz = self.horse()
+        question = quiz["questions"][0]
+        selected = question.pop("correct_answer_id")
+        for answer in question["answers"]:
+            answer["correct"] = answer["id"] == selected
+        self.write_quiz(quiz)
+        _, quizzes = self.load()
+        loaded = next(item for item in quizzes if item["slug"] == "horse-colors")
+        self.assertEqual(loaded["questions"][0]["correct_answer_id"], selected)
+        self.assertTrue(all("correct" not in answer for answer in loaded["questions"][0]["answers"]))
 
     def test_invalid_and_duplicate_ids_are_rejected(self):
         self.assert_quiz_error(lambda quiz: quiz["questions"][0].update(id="manual"), "формат question-N")
