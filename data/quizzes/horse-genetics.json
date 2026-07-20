@@ -359,22 +359,27 @@
       "answers": [
         {
           "text": "Рыжая",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "Вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Гнедая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Серая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
-      "explanation": "Рецессивные гены в локусе Extension (ee) дадут рыжую масть независимо от того какие гены в локусе Agouti."
+      "explanation": "Рецессивные гены в локусе Extension (ee) дадут рыжую масть независимо от того какие гены в локусе Agouti.",
+      "id": "question-14"
     }
   ]
 }
