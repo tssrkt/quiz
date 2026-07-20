@@ -382,58 +382,80 @@
       "explanation": "Рецессивные гены в локусе Extension (ee) дадут рыжую масть независимо от того какие гены в локусе Agouti."
     },
     {
+      "id": "question-15",
       "question": "Какое будет потомство у вороных лошадей, если известно, что они гетерозиготы по локусу Extension (Ее)?",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Все вороные",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Вороные и гнедые",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Вороные и рыжие",
-          "correct": true,
-          "id": "answer-03"
+          "correct": true
         },
         {
+          "id": "answer-04",
           "text": "Вороные, рыжие и гнедые",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
-      "explanation": "Ee + Ee -> EE, Ee, Ee, ee — 75% вороные и 25% рыжие.",
-      "id": "question-15"
+      "explanation": "Ee + Ee -> EE, Ee, Ee, ee — 75% вороные и 25% рыжие."
     },
     {
+      "id": "question-16",
       "question": "Вороного жеребца случили с рыжей кобылой и у них родился рыжий жеребенок. Что это значит?",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Что кобыла — гетерозигота по локусу Extension",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Что жеребец — гетерозигота по локусу Extension",
-          "correct": true,
-          "id": "answer-02"
+          "correct": true
         },
         {
+          "id": "answer-03",
           "text": "Что кобыла — гетерозигота по локусу Agouti",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Что жеребец — гетерозигота по локусу Agouti",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
-      "explanation": "Рыжий жеребенок может родиться только если он получит по одному рецессивному гену локуса Extension от обоих родителей, а значит его папа — гетерозигота по локусу Extension (Ee) потому что у мамы, раз она рыжая, оба гена в этом локусе — рецессивные (ee).",
-      "id": "question-16"
+      "explanation": "Рыжий жеребенок может родиться только если он получит по одному рецессивному гену локуса Extension от обоих родителей, а значит его папа — гетерозигота по локусу Extension (Ee) потому что у мамы, раз она рыжая, оба гена в этом локусе — рецессивные (ee)."
+    },
+    {
+      "question": "Какая масть у коня с генами ЕеАа?",
+      "answers": [
+        {
+          "text": "Рыжая",
+          "correct": false
+        },
+        {
+          "text": "Гнедая",
+          "correct": true
+        },
+        {
+          "text": "Вороная",
+          "correct": false
+        },
+        {
+          "text": "Серая",
+          "correct": false
+        }
+      ],
+      "explanation": "Доминантный ген в локусе Extension (Ee) дает вороную масть, а доминантный ген в локусе Agouti (Aa) делает из нее гнедую."
     }
   ]
 }
