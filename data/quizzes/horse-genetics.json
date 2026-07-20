@@ -597,18 +597,22 @@
       "answers": [
         {
           "text": "ЕеАаCrn, EeAACrn, EEAaCrn",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "eeAaCrn, eeAACrn, eeaaCrn",
-          "correct": true
+          "correct": true,
+          "id": "answer-02"
         },
         {
           "text": "EeaaCrn, EEaaCrn",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         }
       ],
-      "explanation": "Соловая масть — это кремовый ген (Cn) на рыжей основе (ee), при этом неважно какие гены находятся в локусе Agouti, потому что они на рыжую масть никак не влияют."
+      "explanation": "Соловая масть — это кремовый ген (Cn) на рыжей основе (ee), при этом неважно какие гены находятся в локусе Agouti, потому что они на рыжую масть никак не влияют.",
+      "id": "question-23"
     }
   ]
 }
