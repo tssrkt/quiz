@@ -440,22 +440,27 @@
       "answers": [
         {
           "text": "Рыжая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Гнедая",
-          "correct": true
+          "correct": true,
+          "id": "answer-02"
         },
         {
           "text": "Вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Серая",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
-      "explanation": "Доминантный ген в локусе Extension (Ee) дает вороную масть, а доминантный ген в локусе Agouti (Aa) делает из нее гнедую."
+      "explanation": "Доминантный ген в локусе Extension (Ee) дает вороную масть, а доминантный ген в локусе Agouti (Aa) делает из нее гнедую.",
+      "id": "question-17"
     }
   ]
 }
