@@ -543,26 +543,32 @@
       "answers": [
         {
           "text": "Все вороные",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Все рыжие",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Все гнедые",
-          "correct": true
+          "correct": true,
+          "id": "answer-03"
         },
         {
           "text": "Вороные и рыжие",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         },
         {
           "text": "Вороные, рыжие и гнедые",
-          "correct": false
+          "correct": false,
+          "id": "answer-05"
         }
       ],
-      "explanation": "EEaa + eeAA -> EeAa — все потомки гнедые."
+      "explanation": "EEaa + eeAA -> EeAa — все потомки гнедые.",
+      "id": "question-21"
     }
   ]
 }
