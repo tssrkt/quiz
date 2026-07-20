@@ -571,26 +571,44 @@
       "explanation": "EEaa + eeAA -> EeAa — все потомки гнедые."
     },
     {
+      "id": "question-22",
       "question": "Какие гены дадут гнедую масть?",
       "answers": [
         {
+          "id": "answer-01",
           "text": "ЕеАа, ЕЕАА, ЕеАА, ЕЕАа",
-          "correct": true,
-          "id": "answer-01"
+          "correct": true
         },
         {
+          "id": "answer-02",
           "text": "ееАа, ееАА, ееаа",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Ееаа, ЕЕаа",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         }
       ],
-      "explanation": "Чтобы получилась гнедая масть нужны доминантные гены в локусах Extension & Agouti одновременно.",
-      "id": "question-22"
+      "explanation": "Чтобы получилась гнедая масть нужны доминантные гены в локусах Extension & Agouti одновременно."
+    },
+    {
+      "question": "Какие гены дадут соловую масть?",
+      "answers": [
+        {
+          "text": "ЕеАаCrn, EeAACrn, EEAaCrn",
+          "correct": false
+        },
+        {
+          "text": "eeAaCrn, eeAACrn, eeaaCrn",
+          "correct": true
+        },
+        {
+          "text": "EeaaCrn, EEaaCrn",
+          "correct": false
+        }
+      ],
+      "explanation": "Соловая масть — это кремовый ген (Cn) на рыжей основе (ee), при этом неважно какие гены находятся в локусе Agouti, потому что они на рыжую масть никак не влияют."
     }
   ]
 }
