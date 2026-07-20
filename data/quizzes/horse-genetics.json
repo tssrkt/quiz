@@ -575,18 +575,22 @@
       "answers": [
         {
           "text": "ЕеАа, ЕЕАА, ЕеАА, ЕЕАа",
-          "correct": true
+          "correct": true,
+          "id": "answer-01"
         },
         {
           "text": "ееАа, ееАА, ееаа",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Ееаа, ЕЕаа",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         }
       ],
-      "explanation": "Чтобы получилась гнедая масть нужны доминантные гены в локусах Extension & Agouti одновременно."
+      "explanation": "Чтобы получилась гнедая масть нужны доминантные гены в локусах Extension & Agouti одновременно.",
+      "id": "question-22"
     }
   ]
 }
