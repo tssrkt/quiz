@@ -202,13 +202,7 @@ content:
             options:
               multiple: false
               placeholder: Выберите правильный вариант
-              values:
-                - { name: answer-01, label: Вариант 1 }
-                - { name: answer-02, label: Вариант 2 }
-                - { name: answer-03, label: Вариант 3 }
-                - { name: answer-04, label: Вариант 4 }
-                - { name: answer-05, label: Вариант 5 }
-                - { name: answer-06, label: Вариант 6 }
+              values: [answer-01, answer-02, answer-03, answer-04, answer-05, answer-06]
           - name: explanation
             label: Объяснение
             type: text

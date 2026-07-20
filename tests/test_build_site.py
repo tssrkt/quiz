@@ -64,6 +64,24 @@ class BuildSiteTests(unittest.TestCase):
     def test_correct_answer_must_reference_an_available_option(self):
         self.assert_quiz_error(lambda quiz: quiz["questions"][0].update(correct_answer_id="answer-99"), "отсутствует в answers")
 
+    def test_editing_correct_and_incorrect_answer_text_keeps_selection(self):
+        quiz = self.horse()
+        self.assertGreaterEqual(len(quiz["questions"]), 24)
+        question = quiz["questions"][23]
+        selected = question["correct_answer_id"]
+        correct = next(answer for answer in question["answers"] if answer["id"] == selected)
+        incorrect = next(answer for answer in question["answers"] if answer["id"] != selected)
+        correct["text"] += " (изменён правильный)"
+        incorrect["text"] += " (изменён неправильный)"
+        self.write_quiz(quiz)
+
+        _, quizzes = self.load()
+        loaded = next(item for item in quizzes if item["slug"] == "horse-colors")
+        loaded_question = loaded["questions"][23]
+        self.assertEqual(loaded_question["correct_answer_id"], selected)
+        self.assertTrue(any(answer["text"].endswith("(изменён правильный)") for answer in loaded_question["answers"]))
+        self.assertTrue(any(answer["text"].endswith("(изменён неправильный)") for answer in loaded_question["answers"]))
+
     def test_legacy_correct_flags_are_supported_and_normalized(self):
         quiz = self.horse()
         question = quiz["questions"][0]

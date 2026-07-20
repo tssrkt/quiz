@@ -71,8 +71,24 @@ class UpdateContractTests(unittest.TestCase):
         self.assertIn("type: select", block)
         self.assertIn("required: true", block)
         self.assertIn("multiple: false", block)
-        self.assertEqual(len(re.findall(r"name: answer-0[1-6]", block)), 6)
+        self.assertIn("values: [answer-01, answer-02, answer-03, answer-04, answer-05, answer-06]", block)
+        self.assertNotIn("name: answer-", block)
         self.assertNotRegex(questions, r"(?m)^\s+- name: correct\s*$")
+
+    def test_existing_correct_answer_ids_are_scalar_cms_options(self):
+        schema = (ROOT / ".pages.yml").read_text(encoding="utf-8")
+        questions = schema.split("      - name: questions\n", 1)[1]
+        block = questions.split("          - name: correct_answer_id\n", 1)[1].split("          - name: explanation\n", 1)[0]
+        match = re.search(r"(?m)^\s+values:\s*\[([^]]+)]\s*$", block)
+        self.assertIsNotNone(match)
+        configured = {value.strip() for value in match.group(1).split(",")}
+
+        quiz = json.loads((ROOT / "data" / "quizzes" / "horse-colors.json").read_text(encoding="utf-8"))
+        self.assertGreaterEqual(len(quiz["questions"]), 24)
+        for index, question in enumerate(quiz["questions"]):
+            selected = question["correct_answer_id"]
+            self.assertIn(selected, configured, f"questions.{index}.correct_answer_id")
+            self.assertIn(selected, {answer["id"] for answer in question["answers"]})
 
     def test_catalog_card_has_difficulty_before_tags_and_description_is_three_pixels_larger(self):
         javascript = (ROOT / "js" / "quizzes.js").read_text(encoding="utf-8")
