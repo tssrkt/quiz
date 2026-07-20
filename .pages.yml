@@ -153,7 +153,7 @@ content:
           min: 1
           collapsible:
             collapsed: true
-            summary: "{question}"
+            summary: "{index}. {question}"
         fields:
           - name: id
             type: string
@@ -183,8 +183,8 @@ content:
               min: 2
               max: 6
               collapsible:
-                collapsed: false
-                summary: "{text}"
+                collapsed: true
+                summary: "Вариант {index}: {text}"
             fields:
               - name: id
                 type: string

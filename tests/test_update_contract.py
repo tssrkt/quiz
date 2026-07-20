@@ -154,8 +154,23 @@ class UpdateContractTests(unittest.TestCase):
         hidden_id = r"- name: id\s+type: string\s+hidden: true\s+required: false"
         self.assertEqual(len(re.findall(hidden_id, schema)), 2)
         self.assertRegex(schema, r"settings:\s+content:\s+merge: true")
-        self.assertIn('summary: "{question}"', schema)
-        self.assertIn('summary: "{text}"', schema)
+        self.assertIn('summary: "{index}. {question}"', schema)
+        self.assertIn('summary: "Вариант {index}: {text}"', schema)
+
+    def test_cms_list_summaries_use_visual_indexes_only(self):
+        schema = (ROOT / ".pages.yml").read_text(encoding="utf-8")
+        questions = schema.split("      - name: questions\n", 1)[1]
+        question_list = questions.split("        fields:\n", 1)[0]
+        answers = questions.split("          - name: answers\n", 1)[1].split("            fields:\n", 1)[0]
+        self.assertIn('collapsed: true\n            summary: "{index}. {question}"', question_list)
+        self.assertIn('collapsed: true\n                summary: "Вариант {index}: {text}"', answers)
+
+        for quiz_path in (ROOT / "data" / "quizzes").glob("*.json"):
+            quiz = json.loads(quiz_path.read_text(encoding="utf-8"))
+            for question in quiz["questions"]:
+                self.assertNotRegex(question["question"], r"^\s*\d+\.\s")
+                for answer in question["answers"]:
+                    self.assertNotRegex(answer["text"], r"^\s*Вариант\s+\d+\s*:")
 
     def test_json_and_question_images_are_cache_busted(self):
         catalog_js = (ROOT / "js" / "quizzes.js").read_text(encoding="utf-8")
