@@ -328,31 +328,53 @@
       "explanation": "Два доминантных гена в кремовом локусе (СС) дадут изабелловую масть независимо от основы."
     },
     {
+      "id": "question-13",
       "question": "Какая масть у коня с генотипом ЕЕааCn?",
       "answers": [
         {
+          "id": "answer-01",
           "text": "Соловая",
-          "correct": false,
-          "id": "answer-01"
+          "correct": false
         },
         {
+          "id": "answer-02",
           "text": "Буланая",
-          "correct": false,
-          "id": "answer-02"
+          "correct": false
         },
         {
+          "id": "answer-03",
           "text": "Изабелловая",
-          "correct": false,
-          "id": "answer-03"
+          "correct": false
         },
         {
+          "id": "answer-04",
           "text": "Пепельно-вороная",
-          "correct": false,
-          "id": "answer-04"
+          "correct": false
         }
       ],
-      "explanation": "Доминантные гены в локусе Extension (EE) вместе с рецессивными в локусе Agouti (aa) дадут вороную масть, а доминантный ген в кремовом локусе (Cn) сделает из нее пепельно-вороную.",
-      "id": "question-13"
+      "explanation": "Доминантные гены в локусе Extension (EE) вместе с рецессивными в локусе Agouti (aa) дадут вороную масть, а доминантный ген в кремовом локусе (Cn) сделает из нее пепельно-вороную."
+    },
+    {
+      "question": "Какая масть у коня с генами ееАа?",
+      "answers": [
+        {
+          "text": "Рыжая",
+          "correct": true
+        },
+        {
+          "text": "Вороная",
+          "correct": false
+        },
+        {
+          "text": "Гнедая",
+          "correct": false
+        },
+        {
+          "text": "Серая",
+          "correct": false
+        }
+      ],
+      "explanation": "Рецессивные гены в локусе Extension (ee) дадут рыжую масть независимо от того какие гены в локусе Agouti."
     }
   ]
 }
