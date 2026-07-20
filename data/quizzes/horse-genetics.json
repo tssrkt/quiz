@@ -499,18 +499,22 @@
       "answers": [
         {
           "text": "ЕеАа, ЕЕАА",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "ееАа, ееАА, ееаа",
-          "correct": true
+          "correct": true,
+          "id": "answer-02"
         },
         {
           "text": "Ееаа, ЕЕаа",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         }
       ],
-      "explanation": "За рыжую масть отвечает рецессивный ген локуса Extension, значит рыжими будут все лошади у которых оба гена этого локуса рецессивные."
+      "explanation": "За рыжую масть отвечает рецессивный ген локуса Extension, значит рыжими будут все лошади у которых оба гена этого локуса рецессивные.",
+      "id": "question-19"
     }
   ]
 }
