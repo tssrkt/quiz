@@ -25,6 +25,7 @@ main{min-height:calc(100vh - 157px)}.hero{padding-block:92px 72px;text-align:cen
 @media(hover:hover) and (pointer:fine){.next-quiz__link:hover span{transform:translateY(-2px);filter:drop-shadow(0 3px 7px rgba(190,152,85,.5))}}
 @media(hover:hover) and (pointer:fine){.answer-option:not(:disabled):not(.is-correct):not(.is-wrong):hover{border-color:#aaa0d2;background:#f0edff;color:var(--ink)}}
 .content-narrow.quiz-layout-wide{width:min(100% - 32px,1400px)}.question-card--with-image{padding:32px}.question-layout{display:grid;grid-template-columns:minmax(0,800px);justify-content:center;align-items:start;gap:32px}.question-layout .question-image{margin:0 auto}.question-content{width:min(800px,100%);min-width:0;overflow-wrap:anywhere}.question-card:not(.question-card--with-image) .question-content{width:100%}.question-content .answer-option{width:100%;min-width:0}.question-content .answer-feedback{overflow-wrap:anywhere}@media(min-width:1432px){.question-layout{grid-template-columns:800px 500px}.question-content{width:500px;max-width:100%}}
+.answer-option>span:not(.answer-icon):not(.visually-hidden),.answer-feedback>strong,.answer-feedback>p{font-size:calc(1rem + 3px)}
 @media(max-width:520px){.quiz-progress{align-items:stretch;flex-direction:column;gap:8px}.quiz-progress progress{width:100%}.question-card,.quiz-intro,.result-card{padding:20px}.share-actions,.result-actions,.quiz-intro-actions{align-items:stretch;flex-direction:column}.share-actions .button,.result-actions .button,.quiz-intro-actions .button{width:100%}}
 
 /* Главная страница */

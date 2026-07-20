@@ -208,6 +208,12 @@ class UpdateContractTests(unittest.TestCase):
         self.assertIn(".question-content .answer-option{width:100%;min-width:0}", css)
         self.assertIn("@media(max-width:520px){.quiz-progress{align-items:stretch;flex-direction:column", css)
 
+    def test_answer_and_feedback_text_are_three_pixels_larger(self):
+        css = (ROOT / "css" / "style.css").read_text(encoding="utf-8")
+        rule = ".answer-option>span:not(.answer-icon):not(.visually-hidden),.answer-feedback>strong,.answer-feedback>p{font-size:calc(1rem + 3px)}"
+        self.assertIn(rule, css)
+        self.assertNotIn(".answer-feedback{font-size:calc(1rem + 3px)", css)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
