@@ -332,22 +332,27 @@
       "answers": [
         {
           "text": "Соловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "Буланая",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Изабелловая",
-          "correct": false
+          "correct": false,
+          "id": "answer-03"
         },
         {
           "text": "Пепельно-вороная",
-          "correct": false
+          "correct": false,
+          "id": "answer-04"
         }
       ],
-      "explanation": "Доминантные гены в локусе Extension (EE) вместе с рецессивными в локусе Agouti (aa) дадут вороную масть, а доминантный ген в кремовом локусе (Cn) сделает из нее пепельно-вороную."
+      "explanation": "Доминантные гены в локусе Extension (EE) вместе с рецессивными в локусе Agouti (aa) дадут вороную масть, а доминантный ген в кремовом локусе (Cn) сделает из нее пепельно-вороную.",
+      "id": "question-13"
     }
   ]
 }
