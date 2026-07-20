@@ -68,6 +68,17 @@ class PagesWorkflowTests(unittest.TestCase):
         self.assertNotIn("python tools/normalize_quiz_ids.py", workflow)
         self.assertIn("python tools/normalize_quiz_ids.py", self.workflow)
 
+    def test_media_workflow_dispatches_final_build_after_json_and_files_are_aligned(self):
+        workflow = MEDIA_WORKFLOW.read_text(encoding="utf-8")
+        self.assertRegex(workflow, r"permissions:\s+contents: write\s+actions: write")
+        self.assertEqual(workflow.count("gh workflow run pages.yml --ref main"), 2)
+        no_change = workflow.index('echo "Quiz media is already organized."')
+        no_change_dispatch = workflow.index("gh workflow run pages.yml --ref main", no_change)
+        push = workflow.index("git push origin HEAD:main")
+        changed_dispatch = workflow.index("gh workflow run pages.yml --ref main", push)
+        self.assertLess(no_change, no_change_dispatch)
+        self.assertLess(push, changed_dispatch)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
