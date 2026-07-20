@@ -521,18 +521,22 @@
       "answers": [
         {
           "text": "ЕеАа, ЕЕАА, ЕеАА, ЕЕАа",
-          "correct": false
+          "correct": false,
+          "id": "answer-01"
         },
         {
           "text": "ееАа, ееАА, ееаа",
-          "correct": false
+          "correct": false,
+          "id": "answer-02"
         },
         {
           "text": "Ееаа, ЕЕаа",
-          "correct": true
+          "correct": true,
+          "id": "answer-03"
         }
       ],
-      "explanation": "Чтобы получилась вороная масть нужно как минимум один доминантный ген локуса Extension и два рецессивных гена локуса Agouti."
+      "explanation": "Чтобы получилась вороная масть нужно как минимум один доминантный ген локуса Extension и два рецессивных гена локуса Agouti.",
+      "id": "question-20"
     }
   ]
 }
