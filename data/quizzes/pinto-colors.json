@@ -119,7 +119,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/6.webp",
+      "image": "img/quiz/pinto-colors/06.webp",
       "answers": [
         {
           "text": "Вороная сабино"
@@ -140,7 +140,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/7.webp",
+      "image": "img/quiz/pinto-colors/07.webp",
       "answers": [
         {
           "text": "Рыжая сабино"
@@ -161,7 +161,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/8.webp",
+      "image": "img/quiz/pinto-colors/08.webp",
       "answers": [
         {
           "text": "Вороная сабино"
@@ -182,7 +182,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/9.webp",
+      "image": "img/quiz/pinto-colors/09.webp",
       "answers": [
         {
           "text": "Серебристо-вороная в яблоках сабино"
@@ -203,7 +203,7 @@
     },
     {
       "question": "Какая это пегость по степени выраженности?",
-      "image": "img/quiz/10.webp",
+      "image": "img/quiz/pinto-colors/10.webp",
       "answers": [
         {
           "text": "Минимальная"
