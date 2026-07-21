@@ -18,6 +18,45 @@ function answerAndAdvance(state, quiz, answerId) {
 }
 
 const quiz = makeQuiz(true);
+const originalSnapshot = JSON.stringify(quiz);
+const firstAttempt = core.createAttemptQuiz(quiz);
+assert.deepEqual(firstAttempt.questions.map((question) => question.id), ['question-01', 'question-02'], 'первое прохождение сохраняет порядок вопросов');
+assert.deepEqual(firstAttempt.questions[0].answers.map((answer) => answer.id), ['a-01', 'a-02'], 'первое прохождение сохраняет порядок вариантов');
+const randomValues = [0, 0, 0];
+const shuffledAttempt = core.createAttemptQuiz(quiz, true, () => randomValues.shift());
+assert.deepEqual(shuffledAttempt.questions.map((question) => question.id), ['question-02', 'question-01'], 'вопросы перемешиваются предсказуемым RNG');
+assert.deepEqual(shuffledAttempt.questions[0].answers.map((answer) => answer.id), ['a-02', 'a-01'], 'варианты перемешиваются как объекты');
+assert.equal(shuffledAttempt.questions[0].answers[0].text, quiz.questions[1].answers[1].text, 'текст остаётся связан со своим id');
+assert.equal(shuffledAttempt.questions[0].explanation, quiz.questions[1].explanation, 'пояснение остаётся у вопроса');
+assert.equal(JSON.stringify(quiz), originalSnapshot, 'исходная викторина не мутирует');
+assert.notEqual(shuffledAttempt.questions[0], quiz.questions[1], 'вопросы скопированы');
+assert.notEqual(shuffledAttempt.questions[0].answers[0], quiz.questions[1].answers[1], 'варианты глубоко скопированы');
+const shuffledState = core.freshState(shuffledAttempt);
+const restoredAttempt = core.restoreAttemptOrder(quiz, shuffledState);
+assert.deepEqual(restoredAttempt.questions.map((question) => question.id), shuffledAttempt.questions.map((question) => question.id), 'порядок попытки стабилен после восстановления');
+assert.deepEqual(restoredAttempt.questions[0].answers.map((answer) => answer.id), shuffledAttempt.questions[0].answers.map((answer) => answer.id));
+const shuffledCorrect = core.answerQuestion(shuffledState, shuffledAttempt, shuffledAttempt.questions[0].correct_answer_id);
+assert.equal(shuffledCorrect.correct, true, 'правильность не зависит от новой позиции');
+const variedQuiz = makeQuiz();
+variedQuiz.questions[0].image = 'img/with-image.webp';
+variedQuiz.questions[0].answers.push({ id: 'a-03', text: 'Возможно', metadata: { weight: 3 } });
+delete variedQuiz.questions[1].image;
+const variedSnapshot = JSON.stringify(variedQuiz);
+const variedAttempt = core.createAttemptQuiz(variedQuiz, true, () => 0);
+assert.equal(variedAttempt.questions.find((question) => question.id === 'question-01').image, 'img/with-image.webp', 'изображение остаётся у своего вопроса');
+assert.equal(variedAttempt.questions.find((question) => question.id === 'question-02').image, undefined, 'вопрос без изображения поддерживается');
+assert.equal(variedAttempt.questions.find((question) => question.id === 'question-01').answers.length, 3, 'разное количество вариантов сохраняется');
+assert.notEqual(variedAttempt.questions.find((question) => question.id === 'question-01').answers.find((answer) => answer.id === 'a-03').metadata, variedQuiz.questions[0].answers[2].metadata, 'вложенные данные варианта скопированы глубоко');
+assert.equal(JSON.stringify(variedQuiz), variedSnapshot);
+let repeatedAttempt = shuffledCorrect.state;
+for (const random of [() => 0, () => 0.999999]) {
+  const nextQuiz = core.createAttemptQuiz(quiz, true, random);
+  repeatedAttempt = core.freshState(nextQuiz);
+  assert.equal(repeatedAttempt.current_index, 0, 'повтор начинается с первого вопроса новой попытки');
+  assert.equal(repeatedAttempt.correct_count, 0, 'счёт повторной попытки сброшен');
+  assert.deepEqual(repeatedAttempt.answers, {}, 'выбранные ответы и обратная связь сброшены');
+  assert.equal(repeatedAttempt.completed, false, 'результат предыдущей попытки сброшен');
+}
 assert.equal(core.validateQuiz(quiz), true, '1: опубликованная викторина валидна');
 assert.equal(core.canOpenQuiz(quiz, false), true, '1: опубликованная открывается');
 assert.equal(core.canOpenQuiz(makeQuiz(false), true), true, '2: черновик открывается в preview');

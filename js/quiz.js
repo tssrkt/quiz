@@ -10,7 +10,7 @@
   }
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (catalogCore) {
   'use strict';
-  const STATE_VERSION = 2;
+  const STATE_VERSION = 3;
   const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
   function canOpenQuiz(data, previewMode) { return data?.published === true || (data?.published === false && previewMode === true); }
@@ -45,8 +45,48 @@
     url.searchParams.set('v', version || String(Date.now()));
     return `${url.pathname.replace(/^\//, '')}${url.search}${url.hash}`;
   }
+  function cloneValue(value) {
+    if (Array.isArray(value)) return value.map(cloneValue);
+    if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, cloneValue(item)]));
+    return value;
+  }
+  function fisherYates(items, random = Math.random) {
+    const shuffled = items.slice();
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(random() * (index + 1));
+      [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+    }
+    return shuffled;
+  }
+  function createAttemptQuiz(sourceQuiz, shuffle = false, random = Math.random) {
+    const attempt = cloneValue(sourceQuiz);
+    attempt.questions = attempt.questions.map((question) => ({
+      ...question,
+      answers: shuffle ? fisherYates(question.answers, random) : question.answers
+    }));
+    if (shuffle) attempt.questions = fisherYates(attempt.questions, random);
+    return attempt;
+  }
+  function restoreAttemptOrder(sourceQuiz, saved) {
+    const attempt = createAttemptQuiz(sourceQuiz);
+    if (!saved || !Array.isArray(saved.question_ids) || !saved.answer_ids) return attempt;
+    const questions = new Map(attempt.questions.map((question) => [question.id, question]));
+    if (saved.question_ids.length !== questions.size) return attempt;
+    const ordered = saved.question_ids.map((id) => questions.get(id));
+    if (ordered.some((question) => !question)) return attempt;
+    for (const question of ordered) {
+      const ids = saved.answer_ids[question.id];
+      const answers = new Map(question.answers.map((answer) => [answer.id, answer]));
+      if (!Array.isArray(ids) || ids.length !== answers.size) return attempt;
+      const orderedAnswers = ids.map((id) => answers.get(id));
+      if (orderedAnswers.some((answer) => !answer)) return attempt;
+      question.answers = orderedAnswers;
+    }
+    attempt.questions = ordered;
+    return attempt;
+  }
   function freshState(quiz, now = new Date().toISOString()) {
-    return { version: STATE_VERSION, signature: structureSignature(quiz), question_ids: quiz.questions.map((question) => question.id), current_index: 0, answers: {}, correct_count: 0, saved_at: now, completed: false };
+    return { version: STATE_VERSION, signature: structureSignature(quiz), question_ids: quiz.questions.map((question) => question.id), answer_ids: Object.fromEntries(quiz.questions.map((question) => [question.id, question.answers.map((answer) => answer.id)])), current_index: 0, answers: {}, correct_count: 0, saved_at: now, completed: false };
   }
   function restoreState(raw, quiz, now) {
     const fresh = freshState(quiz, now);
@@ -108,7 +148,7 @@
   function autoAdvanceDelay(correct) { return correct ? 800 : null; }
   function shouldConfetti(correct, reducedMotion) { return Boolean(correct && !reducedMotion); }
   function shareMethod(webShareAvailable) { return webShareAvailable ? 'share' : 'copy'; }
-  return { STATE_VERSION, canOpenQuiz, validateQuiz, structureSignature, versionedUrl, freshState, restoreState, answerQuestion, advance, resultPercent, resultRecommendation, resultMessage, formatQuestionCount, shareText, directQuizUrl, prefersReducedMotion, autoAdvanceDelay, shouldConfetti, shareMethod };
+  return { STATE_VERSION, canOpenQuiz, validateQuiz, structureSignature, versionedUrl, cloneValue, fisherYates, createAttemptQuiz, restoreAttemptOrder, freshState, restoreState, answerQuestion, advance, resultPercent, resultRecommendation, resultMessage, formatQuestionCount, shareText, directQuizUrl, prefersReducedMotion, autoAdvanceDelay, shouldConfetti, shareMethod };
 });
 
 function init(core) {
@@ -121,7 +161,7 @@ function init(core) {
   const slug = params.get('quiz') || '';
   const preview = params.get('preview') === '1';
   const reduceMotion = core.prefersReducedMotion(window.matchMedia.bind(window));
-  let quiz, state, nextQuiz = null, answerLocked = false, transitionScheduled = false;
+  let sourceQuiz, quiz, state, nextQuiz = null, answerLocked = false, transitionScheduled = false;
   const escapeHtml = (value) => String(value).replace(/[&<>"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[character]));
   const storageKey = () => `quiz-progress:${quiz.slug}`;
   const saveState = () => { try { localStorage.setItem(storageKey(), JSON.stringify(state)); } catch (error) { console.warn('[Quiz] Не удалось сохранить прогресс.', error); } };
@@ -145,7 +185,7 @@ function init(core) {
     const credit = [question.image_author ? `Автор: ${escapeHtml(question.image_author)}` : '', source].filter(Boolean).join(' · ');
     return `<figure class="question-image"><img src="${escapeHtml(core.versionedUrl(question.image, quiz.content_version))}" alt="${escapeHtml(question.image_alt || '')}">${credit ? `<figcaption>${credit}</figcaption>` : ''}</figure>`;
   }
-  function restart() { transitionScheduled = false; answerLocked = false; clearState(); state = core.freshState(quiz); saveState(); renderIntro(); }
+  function restart() { transitionScheduled = false; answerLocked = false; clearState(); quiz = core.createAttemptQuiz(sourceQuiz, true); state = core.freshState(quiz); saveState(); renderQuestion(); }
   function renderIntro() {
     setWideLayout(false);
     const hasProgress = Object.keys(state.answers).length > 0 && !state.completed;
@@ -228,13 +268,16 @@ function init(core) {
       const response = await fetch(core.versionedUrl(`data/quizzes/${encodeURIComponent(slug)}.json`, contentVersion), { cache: 'no-store' });
       if (response.status === 404) { errorScreen('Викторина не найдена.'); return; }
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      quiz = await response.json();
+      sourceQuiz = await response.json();
+      quiz = sourceQuiz;
       nextQuiz = quiz.next_quiz && Array.isArray(catalog?.quizzes) ? catalog.quizzes.find((item) => item?.slug === quiz.next_quiz) || null : null;
       if (catalogQuiz && quiz.content_version !== catalogQuiz.content_version) throw new Error('Версия викторины не совпадает с каталогом');
       if (!core.validateQuiz(quiz) || quiz.slug !== slug) { console.error('[Quiz] Повреждённый JSON или несовместимые данные викторины.'); errorScreen('Эту викторину сейчас невозможно открыть.'); return; }
       if (!core.canOpenQuiz(quiz, preview)) { errorScreen('Эта викторина пока не опубликована.'); return; }
       if (!quiz.published) previewBanner.hidden = false;
       let raw = null; try { raw = localStorage.getItem(storageKey()); } catch {}
+      let savedOrder = null; try { savedOrder = raw ? JSON.parse(raw) : null; } catch {}
+      quiz = core.restoreAttemptOrder(sourceQuiz, savedOrder);
       state = core.restoreState(raw, quiz); saveState(); app.setAttribute('aria-busy', 'false');
       if (state.completed) renderResult(); else renderIntro();
     } catch (error) { console.error('[Quiz] Ошибка загрузки викторины.', error); errorScreen('Не удалось загрузить викторину. Попробуйте позже.'); }

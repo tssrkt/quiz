@@ -123,7 +123,7 @@ def all_wrong(page):
     page.get_by_text("Результат скопирован.").wait_for()
     assert recommendation.get_by_role("link", name="↻ Пройти викторину еще раз").count() == 0
     page.locator("[data-restart]").click()
-    page.get_by_role("button", name="Начать викторину").wait_for()
+    page.locator("#question-position").wait_for()
     saved = page.evaluate("JSON.parse(localStorage.getItem('quiz-progress:horse-colors'))")
     assert saved["current_index"] == 0
     assert saved["correct_count"] == 0
