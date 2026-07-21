@@ -6,7 +6,7 @@
   "difficulty": "medium",
   "short_description": "Разберемся с типами пегости. Здесь, как и в других викторинах, принцип всё тот же: смотрите фотку, выбираете правильный вариант. Даже если ничему не научитесь, так хоть красивых лошадок посмотрите.",
   "intro": "Разберемся с типами пегости. Здесь, как и в других викторинах, принцип всё тот же: смотрите фотку, выбираете правильный вариант. Даже если ничему не научитесь, так хоть красивых лошадок посмотрите.",
-  "cover": "img/covers/5.webp",
+  "cover": "img/covers/pinto-colors.webp",
   "tags": [
     "horses",
     "images"
@@ -14,7 +14,7 @@
   "questions": [
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/1.webp",
+      "image": "img/quiz/pinto-colors/01.webp",
       "answers": [
         {
           "text": "Рыжая сабино"
@@ -35,7 +35,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/2.webp",
+      "image": "img/quiz/pinto-colors/02.webp",
       "answers": [
         {
           "text": "Рыжая с ОЗВ сабино"
@@ -56,7 +56,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/3.webp",
+      "image": "img/quiz/pinto-colors/03.webp",
       "answers": [
         {
           "text": "Гнедая сабино"
@@ -77,7 +77,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/4.webp",
+      "image": "img/quiz/pinto-colors/04.webp",
       "answers": [
         {
           "text": "Серебристо-гнедая сабино"
@@ -98,7 +98,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/5.webp",
+      "image": "img/quiz/pinto-colors/05.webp",
       "answers": [
         {
           "text": "Мышастая сабино"
