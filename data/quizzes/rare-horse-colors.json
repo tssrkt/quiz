@@ -769,7 +769,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/36.webp",
+      "image": "img/quiz/rare-horse-colors/36.webp",
       "answers": [
         {
           "text": "Темно-буланая"
@@ -790,7 +790,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/37.webp",
+      "image": "img/quiz/rare-horse-colors/37.webp",
       "answers": [
         {
           "text": "Игреневая"
@@ -811,7 +811,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/38.webp",
+      "image": "img/quiz/rare-horse-colors/38.webp",
       "answers": [
         {
           "text": "Вороно-чалая"
@@ -832,7 +832,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/39.webp",
+      "image": "img/quiz/rare-horse-colors/39.webp",
       "answers": [
         {
           "text": "Светло-серая"
@@ -853,7 +853,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/40.webp",
+      "image": "img/quiz/rare-horse-colors/40.webp",
       "answers": [
         {
           "text": "Темно-игреневая в яблоках"
