@@ -664,7 +664,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/31.webp",
+      "image": "img/quiz/rare-horse-colors/31.webp",
       "answers": [
         {
           "text": "Темно-соловая в яблоках"
@@ -685,7 +685,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/32.webp",
+      "image": "img/quiz/rare-horse-colors/32.webp",
       "answers": [
         {
           "text": "Гнедая с ЗП"
@@ -706,7 +706,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/33.webp",
+      "image": "img/quiz/rare-horse-colors/33.webp",
       "answers": [
         {
           "text": "Красно-серая"
@@ -727,7 +727,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/34.webp",
+      "image": "img/quiz/rare-horse-colors/34.webp",
       "answers": [
         {
           "text": "Серебристо-вороная в яблоках"
@@ -748,7 +748,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/35.webp",
+      "image": "img/quiz/rare-horse-colors/35.webp",
       "answers": [
         {
           "text": "Красно-серая"
