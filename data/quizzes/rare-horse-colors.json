@@ -244,7 +244,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/11.webp",
+      "image": "img/quiz/rare-horse-colors/11.webp",
       "answers": [
         {
           "text": "Светло-гнедая"
@@ -264,7 +264,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/12.webp",
+      "image": "img/quiz/rare-horse-colors/12.webp",
       "answers": [
         {
           "text": "Вороная в загаре"
