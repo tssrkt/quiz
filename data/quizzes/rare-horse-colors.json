@@ -454,7 +454,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/21.webp",
+      "image": "img/quiz/rare-horse-colors/21.webp",
       "answers": [
         {
           "text": "Светло-рыжая"
@@ -475,7 +475,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/22.webp",
+      "image": "img/quiz/rare-horse-colors/22.webp",
       "answers": [
         {
           "text": "Серебристо-вороная"
@@ -496,7 +496,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/23.webp",
+      "image": "img/quiz/rare-horse-colors/23.webp",
       "answers": [
         {
           "text": "Гнедая с ЗП"
@@ -517,7 +517,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/24.webp",
+      "image": "img/quiz/rare-horse-colors/24.webp",
       "answers": [
         {
           "text": "Светло-серая"
@@ -538,7 +538,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/25.webp",
+      "image": "img/quiz/rare-horse-colors/25.webp",
       "answers": [
         {
           "text": "Светло-серая"
