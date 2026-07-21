@@ -221,7 +221,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/11-1.webp",
+      "image": "img/quiz/pinto-colors/11.webp",
       "answers": [
         {
           "text": "Темно-гнедая сабино"
@@ -242,7 +242,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/12.webp",
+      "image": "img/quiz/pinto-colors/12.webp",
       "answers": [
         {
           "text": "Рыжая сабино"
@@ -263,7 +263,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/13.webp",
+      "image": "img/quiz/pinto-colors/13.webp",
       "answers": [
         {
           "text": "Вороная сабино"
@@ -284,7 +284,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/14.webp",
+      "image": "img/quiz/pinto-colors/14.webp",
       "answers": [
         {
           "text": "Саврасая сабино"
@@ -305,7 +305,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/15.webp",
+      "image": "img/quiz/pinto-colors/15.webp",
       "answers": [
         {
           "text": "Рыжая сабино"
@@ -326,7 +326,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/16.webp",
+      "image": "img/quiz/pinto-colors/16.webp",
       "answers": [
         {
           "text": "Соловая сабино"
@@ -347,7 +347,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/17.webp",
+      "image": "img/quiz/pinto-colors/17.webp",
       "answers": [
         {
           "text": "Рыжая сабино"
@@ -368,7 +368,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/18.webp",
+      "image": "img/quiz/pinto-colors/18.webp",
       "answers": [
         {
           "text": "Гнедая сабино"
@@ -389,7 +389,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/19.webp",
+      "image": "img/quiz/pinto-colors/19.webp",
       "answers": [
         {
           "text": "Изабелловая сабино"
@@ -410,7 +410,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/20.webp",
+      "image": "img/quiz/pinto-colors/20.webp",
       "answers": [
         {
           "text": "Вороная сабино"
