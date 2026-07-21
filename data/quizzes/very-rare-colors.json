@@ -644,7 +644,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/31.webp",
+      "image": "img/quiz/very-rare-colors/31.webp",
       "answers": [
         {
           "text": "Саврасая"
@@ -665,7 +665,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/32.webp",
+      "image": "img/quiz/very-rare-colors/32.webp",
       "answers": [
         {
           "text": "Темно-игреневая"
@@ -686,7 +686,7 @@
     },
     {
       "question": "Что это за мастевое явление",
-      "image": "img/quiz/33.webp",
+      "image": "img/quiz/very-rare-colors/33.webp",
       "answers": [
         {
           "text": "Гречка"
@@ -707,7 +707,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/34.webp",
+      "image": "img/quiz/very-rare-colors/34.webp",
       "answers": [
         {
           "text": "Саврасая"
@@ -728,7 +728,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/35.webp",
+      "image": "img/quiz/very-rare-colors/35.webp",
       "answers": [
         {
           "text": "Саврасая"
@@ -749,7 +749,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/36.webp",
+      "image": "img/quiz/very-rare-colors/36.webp",
       "answers": [
         {
           "text": "Саврасая"
@@ -770,7 +770,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/37.webp",
+      "image": "img/quiz/very-rare-colors/37.webp",
       "answers": [
         {
           "text": "Темно-игреневая"
@@ -791,7 +791,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/38.webp",
+      "image": "img/quiz/very-rare-colors/38.webp",
       "answers": [
         {
           "text": "Бурая с ОЗВ"
@@ -812,7 +812,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/39.webp",
+      "image": "img/quiz/very-rare-colors/39.webp",
       "answers": [
         {
           "text": "Гнедо-чалая"
@@ -833,7 +833,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/40.webp",
+      "image": "img/quiz/very-rare-colors/40.webp",
       "answers": [
         {
           "text": "Светло-соловая"
