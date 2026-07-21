@@ -434,7 +434,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/21.webp",
+      "image": "img/quiz/very-rare-colors/21.webp",
       "answers": [
         {
           "text": "Темно-игреневая в яблоках"
@@ -455,7 +455,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/22.webp",
+      "image": "img/quiz/very-rare-colors/22.webp",
       "answers": [
         {
           "text": "Буланая"
@@ -476,7 +476,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/23.webp",
+      "image": "img/quiz/very-rare-colors/23.webp",
       "answers": [
         {
           "text": "Буланая"
@@ -497,7 +497,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/24.webp",
+      "image": "img/quiz/very-rare-colors/24.webp",
       "answers": [
         {
           "text": "Гнедая с ЗП в яблоках"
@@ -518,7 +518,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/25.webp",
+      "image": "img/quiz/very-rare-colors/25.webp",
       "answers": [
         {
           "text": "Саврасая"
@@ -539,7 +539,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/26.webp",
+      "image": "img/quiz/very-rare-colors/26.webp",
       "answers": [
         {
           "text": "Соловая"
@@ -560,7 +560,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/27.webp",
+      "image": "img/quiz/very-rare-colors/27.webp",
       "answers": [
         {
           "text": "Светло-серая"
@@ -581,7 +581,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/28.webp",
+      "image": "img/quiz/very-rare-colors/28.webp",
       "answers": [
         {
           "text": "Бурая с ОЗВ"
@@ -602,7 +602,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/29.webp",
+      "image": "img/quiz/very-rare-colors/29.webp",
       "answers": [
         {
           "text": "Рыжая"
@@ -623,7 +623,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/30.webp",
+      "image": "img/quiz/very-rare-colors/30.webp",
       "answers": [
         {
           "text": "Рыжая с ОЗВ"
