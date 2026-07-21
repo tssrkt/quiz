@@ -329,7 +329,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/16.webp",
+      "image": "img/quiz/very-rare-colors/16.webp",
       "answers": [
         {
           "text": "Гнедая с ЗП"
@@ -350,7 +350,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/17.webp",
+      "image": "img/quiz/very-rare-colors/17.webp",
       "answers": [
         {
           "text": "Саврасая"
@@ -371,7 +371,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/18.webp",
+      "image": "img/quiz/very-rare-colors/18.webp",
       "answers": [
         {
           "text": "Саврасая"
@@ -392,7 +392,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/19.webp",
+      "image": "img/quiz/very-rare-colors/19.webp",
       "answers": [
         {
           "text": "Саврасая"
@@ -413,7 +413,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/20.webp",
+      "image": "img/quiz/very-rare-colors/20.webp",
       "answers": [
         {
           "text": "Буланая"
