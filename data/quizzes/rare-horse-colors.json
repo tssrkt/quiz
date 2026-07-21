@@ -412,7 +412,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/19.webp",
+      "image": "img/quiz/rare-horse-colors/19.webp",
       "answers": [
         {
           "text": "Игреневая"
@@ -433,7 +433,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/20.webp",
+      "image": "img/quiz/rare-horse-colors/20.webp",
       "answers": [
         {
           "text": "Светло-соловая"
