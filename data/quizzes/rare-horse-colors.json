@@ -286,7 +286,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/13.webp",
+      "image": "img/quiz/rare-horse-colors/13.webp",
       "answers": [
         {
           "text": "Игреневая в яблоках"
@@ -307,7 +307,7 @@
     },
     {
       "question": "Что это за масть?",
-      "image": "img/quiz/14.webp",
+      "image": "img/quiz/rare-horse-colors/14.webp",
       "answers": [
         {
           "text": "Светло-гнедая"
