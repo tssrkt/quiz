@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "_site"
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 QUESTION_ID_RE = re.compile(r"^question-\d{2,}$")
+PUBLICATION_DATETIME_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})$")
 ANSWER_ID_RE = re.compile(r"^answer-\d{2,}$")
 DIFFICULTIES = {"low", "medium", "high"}
 HTML_FILES = ("index.html", "quizzes.html", "quiz.html", "contacts.html")
@@ -140,9 +141,19 @@ def load_quizzes(data_root: Path, known_tags: dict[str, dict]) -> list[dict]:
         publication_date = require_string(data, "publication_date", label, errors)
         if publication_date:
             try:
-                dt.date.fromisoformat(publication_date)
+                if PUBLICATION_DATETIME_RE.fullmatch(publication_date):
+                    publication_datetime = dt.datetime.fromisoformat(publication_date.replace("Z", "+00:00"))
+                    if publication_datetime.tzinfo is None or publication_datetime.utcoffset() is None:
+                        raise ValueError
+                elif re.fullmatch(r"\d{4}-\d{2}-\d{2}", publication_date):
+                    dt.date.fromisoformat(publication_date)
+                else:
+                    raise ValueError
             except ValueError:
-                errors.append(f"{label}.publication_date: требуется существующая дата YYYY-MM-DD")
+                errors.append(
+                    f"{label}.publication_date: требуется дата YYYY-MM-DD либо ISO 8601 "
+                    "с секундами и часовым поясом"
+                )
         tags = data.get("tags")
         if not isinstance(tags, list) or not tags or any(not isinstance(tag, str) or not tag for tag in tags):
             errors.append(f"{label}.tags: требуется непустой массив slug тегов")

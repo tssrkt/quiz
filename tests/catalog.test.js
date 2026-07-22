@@ -5,6 +5,7 @@ const {
   PAGE_SIZE,
   DIFFICULTY_LABELS,
   validateQuiz,
+  validDateValue,
   sortQuizzes,
   arrangeQuizzes,
   sortTooltip,
@@ -90,6 +91,24 @@ assert.deepEqual(sortQuizzes(dated, 'date', 'down').map((item) => item.title), [
 assert.deepEqual(sortQuizzes(dated, 'date', 'up').map((item) => item.title), ['Старая', 'Альфа', 'Бета', 'Ошибка даты']);
 assert.deepEqual(sortQuizzes(dated, 'title', 'down').map((item) => item.title), ['Альфа', 'Бета', 'Ошибка даты', 'Старая']);
 assert.deepEqual(sortQuizzes(dated, 'title', 'up').map((item) => item.title), ['Старая', 'Ошибка даты', 'Бета', 'Альфа']);
+
+const timed = [
+  quiz(1, { title: 'Викторина A', publication_date: '2026-07-22T10:00:00+03:00' }),
+  quiz(2, { title: 'Викторина B', publication_date: '2026-07-22T15:00:00+03:00' }),
+  quiz(3, { title: 'Викторина C', publication_date: '2026-07-21T18:00:00+03:00' }),
+  quiz(4, { title: 'Я — совпадение', publication_date: '2026-07-22T15:00:00+03:00' }),
+  quiz(5, { title: 'А — совпадение', publication_date: '2026-07-22T15:00:00+03:00' }),
+  quiz(6, { title: 'Старая запись без времени', publication_date: '2026-07-20' })
+];
+assert.deepEqual(sortQuizzes(timed.slice(0, 3), 'date', 'down').map((item) => item.title), ['Викторина B', 'Викторина A', 'Викторина C']);
+assert.deepEqual(sortQuizzes(timed.slice(0, 3), 'date', 'up').map((item) => item.title), ['Викторина C', 'Викторина A', 'Викторина B']);
+assert.deepEqual(sortQuizzes(timed, 'date', 'down').map((item) => item.title), ['А — совпадение', 'Викторина B', 'Я — совпадение', 'Викторина A', 'Викторина C', 'Старая запись без времени']);
+assert.deepEqual(sortQuizzes(timed, 'date', 'up').map((item) => item.title), ['Старая запись без времени', 'Викторина C', 'Викторина A', 'А — совпадение', 'Викторина B', 'Я — совпадение']);
+assert.equal(validDateValue('2026-07-22'), Date.parse('2026-07-22T00:00:00Z'));
+assert.equal(validDateValue('2026-07-22T15:00:00+03:00'), Date.parse('2026-07-22T15:00:00+03:00'));
+assert.equal(validDateValue('2026-07-22T15:00:00'), null);
+assert.equal(validDateValue('2026-07-22T15:00+03:00'), null);
+assert.equal(validDateValue('2026-02-30T15:00:00+03:00'), null);
 
 const difficulties = [
   quiz(1, { title: 'Средняя старая', difficulty: 'medium', publication_date: '2025-01-01' }),

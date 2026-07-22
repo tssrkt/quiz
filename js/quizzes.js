@@ -24,6 +24,7 @@
     });
     if (!Object.hasOwn(DIFFICULTY_LABELS, quiz?.difficulty)) errors.push('поле «difficulty» должно содержать low, medium или high');
     if (typeof quiz?.published !== 'boolean') errors.push('поле «published» должно быть логическим');
+    if (validDateValue(quiz?.publication_date) === null) errors.push('поле «publication_date» должно содержать дату либо ISO 8601 с часовым поясом');
     if (!Array.isArray(quiz?.tags) || quiz.tags.some((tag) => typeof tag !== 'string' || !tag.trim())) errors.push('поле «tags» должно быть массивом непустых строк');
     if (!Array.isArray(quiz?.questions) || quiz.questions.length === 0) errors.push('массив «questions» не должен быть пустым');
     const ids = new Set();
@@ -52,9 +53,15 @@
   }
 
   function validDateValue(value) {
-    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
-    const timestamp = Date.parse(`${value}T00:00:00Z`);
-    if (!Number.isFinite(timestamp) || new Date(timestamp).toISOString().slice(0, 10) !== value) return null;
+    if (typeof value !== 'string') return null;
+    const legacyDate = /^\d{4}-\d{2}-\d{2}$/.test(value);
+    const zonedDateTime = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})$/.test(value);
+    if (!legacyDate && !zonedDateTime) return null;
+    const [year, month, day] = value.slice(0, 10).split('-').map(Number);
+    if (month < 1 || month > 12 || day < 1 || day > new Date(Date.UTC(year, month, 0)).getUTCDate()) return null;
+    const timestamp = Date.parse(legacyDate ? `${value}T00:00:00Z` : value);
+    if (!Number.isFinite(timestamp)) return null;
+    if (legacyDate && new Date(timestamp).toISOString().slice(0, 10) !== value) return null;
     return timestamp;
   }
 
