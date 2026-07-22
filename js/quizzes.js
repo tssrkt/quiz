@@ -171,7 +171,6 @@
   function init() {
     const list = document.getElementById('quiz-list');
     const tagList = document.getElementById('tag-list');
-    const tagViewport = document.querySelector('.tag-viewport');
     const sortControl = document.getElementById('sort-control');
     const sortCriterion = document.getElementById('sort-criterion');
     const sortDirection = document.querySelector('[data-sort-direction]');
@@ -184,7 +183,6 @@
     let tags = new Map();
     let visibleTags = [];
     let state = { tag: 'all', sort: 'date', direction: 'down', page: 1 };
-    let suppressTagClick = false;
 
     function scrollToCatalog() {
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -210,7 +208,6 @@
     function renderTags() {
       const items = [{ slug: 'all', name: 'Все', count: quizzes.length }, ...orderTagsByCount(quizzes, visibleTags)];
       tagList.innerHTML = items.map((tag) => `<button class="catalog-tag${state.tag === tag.slug ? ' is-active' : ''}" type="button" data-tag="${escapeHtml(tag.slug)}" aria-pressed="${state.tag === tag.slug}"><span>${escapeHtml(tag.name)}</span><small>${tag.count}</small></button>`).join('');
-      requestAnimationFrame(updateTagOverflowHint);
     }
 
     function renderSort() {
@@ -266,39 +263,9 @@
       if (shouldScroll) scrollToCatalog();
     }
 
-    function updateTagOverflowHint() {
-      if (!tagViewport) return;
-      const hasMore = tagViewport.scrollWidth - tagViewport.clientWidth - tagViewport.scrollLeft > 2;
-      tagViewport.parentElement.classList.toggle('has-more', hasMore);
-    }
-
-    function enableTagDragging() {
-      if (!tagViewport) return;
-      let pointerId = null, startX = 0, startY = 0, startScroll = 0, dragged = false;
-      tagViewport.addEventListener('pointerdown', (event) => {
-        if (event.pointerType !== 'mouse' || event.button !== 0) return;
-        pointerId = event.pointerId; startX = event.clientX; startY = event.clientY; startScroll = tagViewport.scrollLeft; dragged = false;
-      });
-      tagViewport.addEventListener('pointermove', (event) => {
-        if (event.pointerId !== pointerId) return;
-        const dx = event.clientX - startX, dy = event.clientY - startY;
-        if (!dragged && Math.hypot(dx, dy) < 6) return;
-        dragged = true; tagViewport.classList.add('is-dragging'); tagViewport.setPointerCapture(pointerId); tagViewport.scrollLeft = startScroll - dx; event.preventDefault();
-      });
-      const finish = (event) => {
-        if (event.pointerId !== pointerId) return;
-        if (dragged) { suppressTagClick = true; setTimeout(() => { suppressTagClick = false; }, 0); }
-        tagViewport.classList.remove('is-dragging'); pointerId = null; dragged = false; updateTagOverflowHint();
-      };
-      tagViewport.addEventListener('pointerup', finish);
-      tagViewport.addEventListener('pointercancel', finish);
-      tagViewport.addEventListener('scroll', updateTagOverflowHint, { passive: true });
-      window.addEventListener('resize', updateTagOverflowHint);
-    }
-
     tagList.addEventListener('click', (event) => {
       const button = event.target.closest('[data-tag]');
-      if (!button || suppressTagClick) return;
+      if (!button) return;
       selectTag(button.dataset.tag, false);
     });
     sortCriterion.addEventListener('change', () => {
@@ -322,7 +289,6 @@
       state = { ...state, page }; writeUrl(); render(); scrollToCatalog();
     });
     window.addEventListener('popstate', () => { readAndNormalizeUrl(); render(); });
-    enableTagDragging();
 
     (async function load() {
       try {
