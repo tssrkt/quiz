@@ -224,7 +224,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/11-1.webp",
+      "image": "img/quiz/horse-breeds/11.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -245,7 +245,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/12.webp",
+      "image": "img/quiz/horse-breeds/12.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -266,7 +266,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/13.webp",
+      "image": "img/quiz/horse-breeds/13.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -287,7 +287,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/14.webp",
+      "image": "img/quiz/horse-breeds/14.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -308,7 +308,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/15.webp",
+      "image": "img/quiz/horse-breeds/15.webp",
       "answers": [
         {
           "text": "Кладрубская лошадь"
@@ -329,7 +329,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/16.webp",
+      "image": "img/quiz/horse-breeds/16.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -350,7 +350,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/17.webp",
+      "image": "img/quiz/horse-breeds/17.webp",
       "answers": [
         {
           "text": "Кладрубская лошадь"
