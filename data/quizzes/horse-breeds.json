@@ -114,7 +114,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/6.webp",
+      "image": "img/quiz/horse-breeds/06.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -134,7 +134,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/7.webp",
+      "image": "img/quiz/horse-breeds/07.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -154,7 +154,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/8.webp",
+      "image": "img/quiz/horse-breeds/08.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
