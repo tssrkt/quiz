@@ -748,7 +748,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/36.webp",
+      "image": "img/quiz/horse-breeds/36.webp",
       "answers": [
         {
           "text": "Кладрубская лошадь"
@@ -769,7 +769,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/37.webp",
+      "image": "img/quiz/horse-breeds/37.webp",
       "answers": [
         {
           "text": "Кладрубская лошадь"
@@ -790,7 +790,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/38.webp",
+      "image": "img/quiz/horse-breeds/38.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -811,7 +811,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/39.webp",
+      "image": "img/quiz/horse-breeds/39.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -832,7 +832,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/40.webp",
+      "image": "img/quiz/horse-breeds/40.webp",
       "answers": [
         {
           "text": "Гуцульский пони"
