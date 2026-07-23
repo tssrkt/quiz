@@ -6,7 +6,7 @@
   "difficulty": "low",
   "short_description": "Это одна из самых простых викторин, идеальный вариант для тех кто не знает с чего начать. Кроме того, здесь лучшие фотографии самых узнаваемых пород лошадей: любуетесь на породное разнообразие непарнокопытных и выбираете правильный вариант из списка.",
   "intro": "Это одна из самых простых викторин, идеальный вариант для тех кто не знает с чего начать. Кроме того, здесь лучшие фотографии самых узнаваемых пород лошадей: любуетесь на породное разнообразие непарнокопытных и выбираете правильный вариант из списка.",
-  "cover": "img/covers/10.webp",
+  "cover": "img/covers/horse-breeds.webp",
   "tags": [
     "images",
     "breed"
@@ -14,7 +14,7 @@
   "questions": [
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/1.webp",
+      "image": "img/quiz/horse-breeds/01.webp",
       "answers": [
         {
           "text": "Ахалтекинская чистокровная"
@@ -34,7 +34,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/2.webp",
+      "image": "img/quiz/horse-breeds/02.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -54,7 +54,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/3.webp",
+      "image": "img/quiz/horse-breeds/03.webp",
       "answers": [
         {
           "text": "Кладрубская лошадь"
@@ -74,7 +74,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/4.webp",
+      "image": "img/quiz/horse-breeds/04.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
@@ -94,7 +94,7 @@
     },
     {
       "question": "Что это за порода?",
-      "image": "img/quiz/5.webp",
+      "image": "img/quiz/horse-breeds/05.webp",
       "answers": [
         {
           "text": "Клейдесдаль"
