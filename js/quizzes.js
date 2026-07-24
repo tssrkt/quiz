@@ -244,8 +244,8 @@
       pagination.hidden = false;
       const middle = paginationItems(state.page, totalPages).map((item) => item === 'ellipsis'
         ? '<span class="pagination-ellipsis" aria-hidden="true">…</span>'
-        : `<button type="button" data-page="${item}"${item === state.page ? ' class="is-active" aria-current="page"' : ''} aria-label="Страница ${item}">${item}</button>`).join('');
-      pagination.innerHTML = `<button type="button" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''} aria-label="Предыдущая страница">← <span>Назад</span></button>${middle}<button type="button" data-page="${state.page + 1}" ${state.page === totalPages ? 'disabled' : ''} aria-label="Следующая страница"><span>Вперёд</span> →</button>`;
+        : `<button type="button" data-page="${item}"${item === state.page ? ' class="is-active" aria-current="page" disabled' : ''} aria-label="Страница ${item}">${item}</button>`).join('');
+      pagination.innerHTML = `<button type="button" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''} aria-label="Предыдущая страница">← <span>Назад</span></button>${middle}<button type="button" data-page="${state.page + 1}" ${state.page === totalPages ? 'disabled' : ''} aria-label="Следующая страница"><span>Вперед</span> →</button>`;
     }
 
     function render() {
