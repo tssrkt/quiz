@@ -38,7 +38,7 @@ main{min-height:calc(100vh - 157px)}.hero{padding-block:92px 72px;text-align:cen
 
 /* Адаптивные инструменты каталога и контакты */
 .catalog-tools{align-items:center;justify-content:flex-start;gap:8px}
-.catalog-tools>.tag-list{display:contents}.catalog-tools>.sort-tool{max-width:100%}.sort-control{margin-top:4px}.sort-control select{min-height:28px;padding:2px 20px 2px 8px}.pagination button.is-active:disabled{opacity:1;cursor:default;pointer-events:none}
+.catalog-tools>.tag-list{display:contents}.catalog-tools>.sort-tool{max-width:100%}.sort-control{margin-top:4px}.sort-control select{min-width:170px;min-height:28px;padding:2px 30px 2px 8px}.pagination button.is-active:disabled{opacity:1;cursor:default;pointer-events:none}
 @media(max-width:768px){
   .tag-tool,.tag-scroll-shell,.tag-viewport{width:100%;max-width:100%}
   .tag-tool{align-self:stretch}
