@@ -1,0 +1,246 @@
+{
+  "tags": [
+    {
+      "slug": "gaits",
+      "name": "Аллюры"
+    },
+    {
+      "slug": "amunition",
+      "name": "Амуниция"
+    },
+    {
+      "slug": "anatomy",
+      "name": "Анатомия"
+    },
+    {
+      "slug": "genetics",
+      "name": "Генетика"
+    },
+    {
+      "slug": "riding",
+      "name": "Езда"
+    },
+    {
+      "slug": "health",
+      "name": "Здоровье"
+    },
+    {
+      "slug": "history",
+      "name": "История"
+    },
+    {
+      "slug": "images",
+      "name": "Картинки"
+    },
+    {
+      "slug": "horses",
+      "name": "Масти"
+    },
+    {
+      "slug": "behavior",
+      "name": "Поведение"
+    },
+    {
+      "slug": "breed",
+      "name": "Породы"
+    },
+    {
+      "slug": "words",
+      "name": "Термины"
+    },
+    {
+      "slug": "treating",
+      "name": "Уход"
+    },
+    {
+      "slug": "exterior",
+      "name": "Экстерьер"
+    }
+  ],
+  "quizzes": [
+    {
+      "slug": "amunition-words",
+      "title": "Амуничные термины",
+      "published": true,
+      "publication_date": "2026-07-24T11:22:00+00:00",
+      "short_description": "Конная амуниция — это не просто ремни и железо, а сложная система, обеспечивающая безопасность всадника и комфорт животного. Проверим насколько хорошо вы в ней разбираетесь?",
+      "difficulty": "low",
+      "cover": "img/covers/amunition-words.webp",
+      "tags": [
+        "words",
+        "amunition"
+      ],
+      "question_count": 40,
+      "content_version": "4862e027d93b3245d28a63aa7b3639f5276986d08a6440c8737d16adf190268a"
+    },
+    {
+      "slug": "anatomy",
+      "title": "Анатомия лошади",
+      "published": true,
+      "publication_date": "2026-07-24T15:13:00+00:00",
+      "short_description": "Это викторина о частях тела лошади, некоторых особенностях экстерьера и совсем немного о ее здоровье. Проверим, насколько хорошо вы разбираетесь в лошадиной анатомии?",
+      "difficulty": "medium",
+      "cover": "img/covers/anatomy.webp",
+      "tags": [
+        "words",
+        "anatomy",
+        "health"
+      ],
+      "question_count": 5,
+      "content_version": "72b598dc85962d8d2758668817f79dc7f244f8bf28bd68e607aec7afad3988d6"
+    },
+    {
+      "slug": "horse-breeds",
+      "title": "Породы лошадей",
+      "published": true,
+      "publication_date": "2026-07-23T13:14:00+00:00",
+      "short_description": "Это, пожалуй, самая простая викторина среди представленных на сайте, а также идеальный вариант для тех кто не знает с чего начать. Кроме того, здесь лучшие фотографии самых узнаваемых пород. ",
+      "difficulty": "low",
+      "cover": "img/covers/horse-breeds.webp",
+      "tags": [
+        "images",
+        "breed"
+      ],
+      "question_count": 40,
+      "content_version": "6b6eb80bec7085c438e39f6bc21c6882a7c783446458214492377c6c73bd9dbb"
+    },
+    {
+      "slug": "horse-colors",
+      "title": "Масти лошадей",
+      "published": true,
+      "publication_date": "2026-07-18T12:00:00+03:00",
+      "short_description": "Смотрите фотки лошадок и выбираете из списка что за масть на фотке. Отличная викторина для старта, особенно, если вы новичок в этой теме.",
+      "difficulty": "low",
+      "cover": "img/covers/horse-colors.webp",
+      "tags": [
+        "horses",
+        "images"
+      ],
+      "question_count": 40,
+      "content_version": "50131662f0968e21881a2bc8ab85dfd6e1d7c0c715fb686c596c23e43093a598"
+    },
+    {
+      "slug": "horse-genetics-2",
+      "title": "Генетика лошади 2",
+      "published": true,
+      "publication_date": "2026-07-20T12:00:00+03:00",
+      "short_description": "Если викторины «Генетика лошади» показалось вам мало, то здесь вы можете продолжить свой вояж по данной науке. Сложность тут примерно на том же уровне, что и в предыдущей викторине.",
+      "difficulty": "high",
+      "cover": "img/covers/horse-genetics-2.webp",
+      "tags": [
+        "horses",
+        "genetics"
+      ],
+      "question_count": 40,
+      "content_version": "a6bebb1fc0881a0075534d1280bb4f4aaa4427ab4c8950694580136faa3150a6"
+    },
+    {
+      "slug": "horse-genetics",
+      "title": "Генетика лошади",
+      "published": true,
+      "publication_date": "2026-07-19T15:00:00+03:00",
+      "short_description": "Викторина без фотографий, только генетика, только хардкор. Специально для любителей лошадок и кратких задачек по генетике, без которой, увы, в мастях не разобраться.",
+      "difficulty": "high",
+      "cover": "img/covers/horse-genetics.webp",
+      "tags": [
+        "horses",
+        "genetics"
+      ],
+      "question_count": 40,
+      "content_version": "ad9743201def81926715e06fd51841d563b61c17f121463ff58cba180b8f06ff"
+    },
+    {
+      "slug": "horse-words",
+      "title": "Лошадиные термины",
+      "published": true,
+      "publication_date": "2026-07-22T07:00:00+00:00",
+      "short_description": "Пройдемся по терминам, связанным с лошадьми, а именно с их содержанием, разведением, поведением, аллюрами, некоторыми возрастными изменениями и многим другим.",
+      "difficulty": "low",
+      "cover": "img/covers/horse-words.webp",
+      "tags": [
+        "words",
+        "behavior",
+        "gaits"
+      ],
+      "question_count": 40,
+      "content_version": "808161c273c49996e5caa7df8d560c9b1479b78f04297bd4994659ada6f2e40a"
+    },
+    {
+      "slug": "horseman-words",
+      "title": "Тезаурус конника",
+      "published": true,
+      "publication_date": "2026-07-22T12:00:00+00:00",
+      "short_description": "В данной викторине собраны основные термины, которые должен знать каждый уважающий себя конник, независимо от того занимается он конным спортом, держит лошадь для души или просто работает с этими благородными животными.",
+      "difficulty": "low",
+      "cover": "img/covers/horseman-words.webp",
+      "tags": [
+        "words",
+        "gaits",
+        "riding"
+      ],
+      "question_count": 40,
+      "content_version": "6b9f51699c90df1d8ea12e254f4ab4e28eee6124bd954eca2f937a5a9d5b4ea1"
+    },
+    {
+      "slug": "pinto-colors",
+      "title": "Пегие масти",
+      "published": true,
+      "publication_date": "2026-07-21T10:00:00+03:00",
+      "short_description": "Разберемся с типами пегости. Здесь, как и в других викторинах, принцип всё тот же: смотрите фотку и выбираете правильный вариант. Даже если ничему не научитесь хоть красивых лошадок посмотрите.",
+      "difficulty": "medium",
+      "cover": "img/covers/pinto-colors.webp",
+      "tags": [
+        "horses",
+        "images"
+      ],
+      "question_count": 40,
+      "content_version": "304c3b36c3fcfc9bb62916a12bbae7d1d64932cee491e6618274e6a05452efad"
+    },
+    {
+      "slug": "rare-horse-colors",
+      "title": "Редкие масти",
+      "published": true,
+      "publication_date": "2026-07-19T10:00:00+03:00",
+      "short_description": "Если вы уже прошли викторину «Масти лошадей» то эта может стать логичным продолжением, она построена по тому же принципу: фотографии + варианты ответов. Хорошо подходит тем кто начал изучать мастевое разнообразие этих благородных животных.",
+      "difficulty": "medium",
+      "cover": "img/covers/rare-horse-colors.webp",
+      "tags": [
+        "horses",
+        "images"
+      ],
+      "question_count": 40,
+      "content_version": "2bd6e586f4c64abd4f4d1483043253db606906474b9f1a61cf0b33c91e1eef80"
+    },
+    {
+      "slug": "taking-care-horse",
+      "title": "Уход за лошадью",
+      "published": true,
+      "publication_date": "2026-07-23T10:50:00+00:00",
+      "short_description": "Самая актуальная викторина для тех у кого есть лошадь, а также для желающих ею обзавестись. Поговорим об уходе, здоровье и поведении наших непарнокопытных друзей.",
+      "difficulty": "low",
+      "cover": "img/covers/taking-care-horse.webp",
+      "tags": [
+        "treating",
+        "health",
+        "behavior"
+      ],
+      "question_count": 40,
+      "content_version": "392999a1ce06901d6f6af0c7d1f85dcb676add831a4e906a9142cc5297e91d5e"
+    },
+    {
+      "slug": "very-rare-colors",
+      "title": "Очень редкие масти",
+      "published": true,
+      "publication_date": "2026-07-21T12:00:00+00:00",
+      "short_description": "Эта викторина построена по всё тому же принципу: фотка + варианты ответов, но она немного сложнее предыдущей, поэтому если вы еще не проходили викторину «Редкие масти», то рекомендуем начать с нее и потом уже переходить к этой.",
+      "difficulty": "medium",
+      "cover": "img/covers/very-rare-colors.webp",
+      "tags": [
+        "horses",
+        "images"
+      ],
+      "question_count": 40,
+      "content_version": "8bb257286b793d12222354ce830c3a8ec987054fa43855d3a13e6cf0a0bb38a0"
+    }
+  ]
+}
