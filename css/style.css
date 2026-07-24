@@ -37,6 +37,8 @@ main{min-height:calc(100vh - 157px)}.hero{padding-block:92px 72px;text-align:cen
 .contact-text,.quiz-card-description,.answer-feedback p,.result-recommendation p{text-align:justify;text-align-last:left;hyphens:auto}
 
 /* Адаптивные инструменты каталога и контакты */
+.catalog-tools{align-items:center;justify-content:flex-start;gap:8px}
+.catalog-tools>.tag-list{display:contents}.catalog-tools>.sort-tool{max-width:100%}
 @media(max-width:768px){
   .tag-tool,.tag-scroll-shell,.tag-viewport{width:100%;max-width:100%}
   .tag-tool{align-self:stretch}
